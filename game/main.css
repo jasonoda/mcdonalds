@@ -36,6 +36,93 @@ body{
     display: none;
 }
 
+#testLoc{
+    position: absolute;
+    top: 100px;
+    left: 0px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    z-index:1110;
+    display: none;
+}
+
+.foodDiv{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    bottom: 0px;
+    /* border: 2px solid red; */
+    z-index:1110;
+}
+
+.foodButton{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    /* border: 2px solid blue; */
+    z-index:1110;
+}
+
+/* 
+.foodButton{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 2px solid blue;
+}
+
+#foodButton1{
+    left: 0px;
+}
+
+#foodButton2{
+    
+}
+
+#foodButton3{
+    right: 0px;
+}  */
+
+.container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index:111110;
+
+  }
+  
+  .image-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px; /* Adjust as needed */
+    width: 100%;
+    padding: 0 20px; /* Adjust as needed */
+    box-sizing: border-box;
+  }
+  
+  .image-container img {
+    max-width: 100%;
+    width: 15%;
+    padding-bottom: 30px;
+    height: auto;
+    margin: 0 10px; /* Adjust as needed */
+  }
+  
+  @media screen and (max-width: 768px) {
+    .image-container {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  
+    .image-container img {
+      margin: 10px; /* Adjust as needed */
+    }
+  }
+
 #loadingImage{
     position: fixed;
     width: 237px;
@@ -54,6 +141,14 @@ body{
     z-index: 11000;
 
     image-rendering: smooth ;
+    pointer-events: none;
+}
+
+#ringDiv{
+    pointer-events: none;
+}
+
+#ringImage{
     pointer-events: none;
 }
 

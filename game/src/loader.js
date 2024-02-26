@@ -26,15 +26,8 @@ export class Loader {
 	}
 
 	loadTexture(loader) {
-		loader.objectsLoaded += 1;
-		console.log(
-			"LOAD 3D TEXTURE: " +
-				loader +
-				" - " +
-				this.objectsLoaded +
-				" / " +
-				this.loaderArray.length
-		);
+		// loader.objectsLoaded += 1;
+		console.log("LOAD 3D TEXTURE: " + loader + " - " + this.objectsLoaded + " / " +this.loaderArray.length);
 
 		if (this.objectsLoaded === this.loaderArray.length) {
 			this.isLoaded_3DTEXTURES = true;
@@ -45,16 +38,10 @@ export class Loader {
 		this.objectsLoaded += 1;
 		this.totalModelsLoaded += 1;
 
-		console.log(
-			"MODEL: " +
-				obName +
-				" - " +
-				this.objectsLoaded +
-				" / " +
-				this.loaderArray.length
-		);
+		console.log("MODEL: " +obName +" - " +this.objectsLoaded +" / " +(this.loaderArray.length));
 
 		if (this.objectsLoaded === this.loaderArray.length) {
+			console.log("3d is loaddedd")
 			this.isLoaded_3D = true;
 		}
 	}
@@ -79,11 +66,15 @@ export class Loader {
 			this.loadCubeTexture
 		);
 
-		this.loaderArray.push("blackTemp");
-		this.e.blackTemp = new THREE.TextureLoader().load(
-			"./src/img/black.png",
-			this.loadTexture(this)
-		);
+		// this.loaderArray.push("blackTemp");
+
+		this.e.target2000 = new THREE.TextureLoader().load("./src/img/target2000.png",this.loadTexture(this));
+		this.e.target2000_b = new THREE.TextureLoader().load("./src/img/target2000_b.png",this.loadTexture(this));
+		this.e.target1000 = new THREE.TextureLoader().load("./src/img/target1000.png",this.loadTexture(this));
+		this.e.target1000_b = new THREE.TextureLoader().load("./src/img/target1000_b.png",this.loadTexture(this));
+		this.e.target500 = new THREE.TextureLoader().load("./src/img/target500.png",this.loadTexture(this));
+		this.e.target500_b = new THREE.TextureLoader().load("./src/img/target500_b.png",this.loadTexture(this));
+
 		// this.e.blackTemp.anisotropy = this.e.renderer.capabilities.getMaxAnisotropy();
 
 		// this.e.blackTemp.repeat.x = 260;
@@ -101,16 +92,14 @@ export class Loader {
 		this.myObject1 = "stadium";
 		this.loaderArray.push(this.myObject1);
 		this.totalModels += 1;
-		this.manage = new THREE.LoadingManager();
-		this.manage.onLoad = () => {
+		this.manage1 = new THREE.LoadingManager();
+		this.manage1.onLoad = () => {
 			this.managerLoad(this.myObject1);
 		};
 
 		this.loader = new GLTFLoader(this.manage);
 		this.loader.setDRACOLoader(dracoLoader);
-		this.loader.load(
-			"./src/models/" + this.myObject1 + ".glb",
-			(gltf) => {
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
 				gltf.scene.traverse(function (object) {
 					e.stadium = gltf.scene;
 
@@ -134,9 +123,7 @@ export class Loader {
 			this.managerLoad(this.myObject1);
 		};
 		this.loader = new GLTFLoader(this.manage);
-		this.loader.load(
-			"./src/models/" + this.myObject1 + ".glb",
-			(gltf) => {
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
 				gltf.scene.traverse(function (object) {
 					e.ring = gltf.scene;
 
@@ -152,7 +139,7 @@ export class Loader {
 
 		//------------------------------------------------------------------
 
-		this.myObject1 = "spinner2";
+		this.myObject1 = "soccerBall";
 		this.loaderArray.push(this.myObject1);
 		this.totalModels += 1;
 		this.manage = new THREE.LoadingManager();
@@ -160,11 +147,9 @@ export class Loader {
 			this.managerLoad(this.myObject1);
 		};
 		this.loader = new GLTFLoader(this.manage);
-		this.loader.load(
-			"./src/models/" + this.myObject1 + ".glb",
-			(gltf) => {
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
 				gltf.scene.traverse(function (object) {
-					e.spinner = gltf.scene;
+					e.soccerBall = gltf.scene;
 
 					if (object.isMesh) {
 						object.castShadow = true;
@@ -178,7 +163,7 @@ export class Loader {
 
 		//------------------------------------------------------------------
 
-		this.myObject1 = "gate";
+		this.myObject1 = "goal";
 		this.loaderArray.push(this.myObject1);
 		this.totalModels += 1;
 		this.manage = new THREE.LoadingManager();
@@ -186,11 +171,9 @@ export class Loader {
 			this.managerLoad(this.myObject1);
 		};
 		this.loader = new GLTFLoader(this.manage);
-		this.loader.load(
-			"./src/models/" + this.myObject1 + ".glb",
-			(gltf) => {
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
 				gltf.scene.traverse(function (object) {
-					e.gate = gltf.scene;
+					e.goal = gltf.scene;
 
 					if (object.isMesh) {
 						object.castShadow = true;
@@ -204,7 +187,7 @@ export class Loader {
 
 		//------------------------------------------------------------------
 
-		this.myObject1 = "pole";
+		this.myObject1 = "cone";
 		this.loaderArray.push(this.myObject1);
 		this.totalModels += 1;
 		this.manage = new THREE.LoadingManager();
@@ -212,11 +195,9 @@ export class Loader {
 			this.managerLoad(this.myObject1);
 		};
 		this.loader = new GLTFLoader(this.manage);
-		this.loader.load(
-			"./src/models/" + this.myObject1 + ".glb",
-			(gltf) => {
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
 				gltf.scene.traverse(function (object) {
-					e.pole = gltf.scene;
+					e.cone = gltf.scene;
 
 					if (object.isMesh) {
 						object.castShadow = true;
@@ -227,6 +208,182 @@ export class Loader {
 			},
 			this.loadSomething
 		);
+
+		//------------------------------------------------------------------
+
+		this.myObject1 = "cone2";
+		this.loaderArray.push(this.myObject1);
+		this.totalModels += 1;
+		this.manage = new THREE.LoadingManager();
+		this.manage.onLoad = () => {
+			this.managerLoad(this.myObject1);
+		};
+		this.loader = new GLTFLoader(this.manage);
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
+				gltf.scene.traverse(function (object) {
+					e.cone2 = gltf.scene;
+
+					if (object.isMesh) {
+						object.castShadow = true;
+						object.receiveShadow = true;
+						object.material.side = THREE.FrontSide;
+					}
+				});
+			},
+			this.loadSomething
+		);
+
+		//------------------------------------------------------------------
+
+		this.myObject1 = "waterLine";
+		this.loaderArray.push(this.myObject1);
+		this.totalModels += 1;
+		this.manage = new THREE.LoadingManager();
+		this.manage.onLoad = () => {
+			this.managerLoad(this.myObject1);
+		};
+		this.loader = new GLTFLoader(this.manage);
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
+				gltf.scene.traverse(function (object) {
+					e.waterLine = gltf.scene;
+
+					if (object.isMesh) {
+						object.castShadow = true;
+						object.receiveShadow = true;
+						object.material.side = THREE.FrontSide;
+					}
+				});
+			},
+			this.loadSomething
+		);
+
+		//------------------------------------------------------------------
+
+		this.myObject1 = "field";
+		this.loaderArray.push(this.myObject1);
+		this.totalModels += 1;
+		this.manage = new THREE.LoadingManager();
+		this.manage.onLoad = () => {
+			this.managerLoad(this.myObject1);
+		};
+		this.loader = new GLTFLoader(this.manage);
+		this.loader.load("./src/models/" + this.myObject1 + ".glb", (gltf) => {
+				gltf.scene.traverse(function (object) {
+					e.field = gltf.scene;
+
+					if (object.isMesh) {
+						object.castShadow = true;
+						object.receiveShadow = true;
+						object.material.side = THREE.FrontSide;
+					}
+				});
+			},
+			this.loadSomething
+		);
+
+		//------------------------------------------------------------------
+
+		// this.myObject1 = "spinner2";
+		// this.loaderArray.push(this.myObject1);
+		// this.totalModels += 1;
+		// this.manage = new THREE.LoadingManager();
+		// this.manage.onLoad = () => {
+		// 	this.managerLoad(this.myObject1);
+		// };
+		// this.loader = new GLTFLoader(this.manage);
+		// this.loader.load(
+		// 	"./src/models/" + this.myObject1 + ".glb",
+		// 	(gltf) => {
+		// 		gltf.scene.traverse(function (object) {
+		// 			e.spinner = gltf.scene;
+
+		// 			if (object.isMesh) {
+		// 				object.castShadow = true;
+		// 				object.receiveShadow = true;
+		// 				object.material.side = THREE.FrontSide;
+		// 			}
+		// 		});
+		// 	},
+		// 	this.loadSomething
+		// );
+
+		//------------------------------------------------------------------
+
+		// this.myObject1 = "gate";
+		// this.loaderArray.push(this.myObject1);
+		// this.totalModels += 1;
+		// this.manage = new THREE.LoadingManager();
+		// this.manage.onLoad = () => {
+		// 	this.managerLoad(this.myObject1);
+		// };
+		// this.loader = new GLTFLoader(this.manage);
+		// this.loader.load(
+		// 	"./src/models/" + this.myObject1 + ".glb",
+		// 	(gltf) => {
+		// 		gltf.scene.traverse(function (object) {
+		// 			e.gate = gltf.scene;
+
+		// 			if (object.isMesh) {
+		// 				object.castShadow = true;
+		// 				object.receiveShadow = true;
+		// 				object.material.side = THREE.FrontSide;
+		// 			}
+		// 		});
+		// 	},
+		// 	this.loadSomething
+		// );
+
+		//------------------------------------------------------------------
+
+		// this.myObject1 = "pole";
+		// this.loaderArray.push(this.myObject1);
+		// this.totalModels += 1;
+		// this.manage = new THREE.LoadingManager();
+		// this.manage.onLoad = () => {
+		// 	this.managerLoad(this.myObject1);
+		// };
+		// this.loader = new GLTFLoader(this.manage);
+		// this.loader.load(
+		// 	"./src/models/" + this.myObject1 + ".glb",
+		// 	(gltf) => {
+		// 		gltf.scene.traverse(function (object) {
+		// 			e.pole = gltf.scene;
+
+		// 			if (object.isMesh) {
+		// 				object.castShadow = true;
+		// 				object.receiveShadow = true;
+		// 				object.material.side = THREE.FrontSide;
+		// 			}
+		// 		});
+		// 	},
+		// 	this.loadSomething
+		// );
+
+		//------------------------------------------------------------------
+
+		// this.myObject1 = "track";
+		// this.loaderArray.push(this.myObject1);
+		// this.totalModels += 1;
+		// this.manage = new THREE.LoadingManager();
+		// this.manage.onLoad = () => {
+		// 	this.managerLoad(this.myObject1);
+		// };
+		// this.loader = new GLTFLoader(this.manage);
+		// this.loader.load(
+		// 	"./src/models/" + this.myObject1 + ".glb",
+		// 	(gltf) => {
+		// 		gltf.scene.traverse(function (object) {
+		// 			e.track = gltf.scene;
+
+		// 			if (object.isMesh) {
+		// 				object.castShadow = true;
+		// 				object.receiveShadow = true;
+		// 				object.material.side = THREE.FrontSide;
+		// 			}
+		// 		});
+		// 	},
+		// 	this.loadSomething
+		// );
 
 		// //------------------------------------------------------------------
 		// // Inside your load method or appropriate place
@@ -244,15 +401,44 @@ export class Loader {
 		this.loader = new GLTFLoader(this.manage);
 		this.loader.setDRACOLoader(dracoLoader); // Attach DRACOLoader to GLTFLoader
 
-		this.loader.load(
-			"./src/models/" + this.myObject1 + ".glb",
-			(gltf) => {
-				gltf.scene.traverse(function (object) {
+		this.loader.load("./src/models/" + this.myObject1 + ".glb",(gltf) => {gltf.scene.traverse(function (object) {
+
 					object.castShadow = true;
-					object.receiveShadow = true;
+					object.receiveShadow = false;
+
 					if (object.isSkinnedMesh) {
+
+						console.log(">>> "+object.material.name)
+
+						if(object.material.name==="SKINBODY" || object.material.name==="SKINBODYARMS"){
+
+							e.scene.skinMaterial = new THREE.MeshLambertMaterial({ color: 0x2f1918 });
+							object.material = e.scene.skinMaterial;
+
+						}else if(object.material.name==="TOP.001" || object.material.name==="PANTS.003" || object.material.name==="SOCKS.001"){
+
+							// e.scene.uniformColor = 0x4e228c;
+							object.material = new THREE.MeshLambertMaterial({ color: 0xff0000, roughness: 1, metalness: 0 });
+
+							e.scene.uniformArray.push(object.material)
+							
+							// console.log("----- found "+object.name)
+
+						}else if(object.material.name==="PANTSTRIPE.001" || object.material.name==="SHIRTSTRIPE.001" || object.material.name==="ARMBAND.001" || object.material.name==="WHITEBAND.001" || object.material.name==="ARMBANDSTRIPE.001"){
+
+							e.scene.stripeMaterial = new THREE.MeshLambertMaterial({ color: 0x888888 });
+							object.material = e.scene.stripeMaterial;
+
+						// }else if(object.material.name==="CLEATS"){
+
+						// 	e.scene.cleatsMaterial = new THREE.MeshLambertMaterial({ color: 0x999999 });
+						// 	object.material = e.scene.cleatsMaterial;
+
+						}
+
 						object.material.skinning = true;
 					}
+
 				});
 
 				// Create the animation mixer for the loaded scene
@@ -260,7 +446,7 @@ export class Loader {
 
 				// Log each animation name
 				gltf.animations.forEach((clip) => {
-					console.log("Animation name:", clip.name);
+					// console.log("Animation name:", clip.name);
 				});
 
 				// Assign the scene to e.readyplayerme

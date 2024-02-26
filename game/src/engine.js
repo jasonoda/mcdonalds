@@ -37,6 +37,10 @@ export class Engine {
         this.action="set up"
         this.count=0;
 
+        this.mouseDown = new THREE.Vector2();
+        this.mouseDown.x=0;
+        this.mouseDown.y=0;
+        
         document.addEventListener('mousemove',  (event) => {
             if(this.mobile===false){
                 this.mouse.x = event.clientX 
@@ -97,7 +101,14 @@ export class Engine {
         //     this.ui.tester.position.y=this.mouse.y;
         // }
 
-        document.getElementById("feedback").innerHTML = this.action;
+        if(this.scene.playerCont!==undefined){
+            // document.getElementById("feedback").innerHTML = this.scene.playerAction + " / " + this.scene.gameAction + " / " + this.scene.playerCont.position.x;
+            // document.getElementById("feedback").innerHTML = this.mouseDown.x + " / " + this.mouseDown.y;
+            // document.getElementById("feedback").innerHTML = this.scene.playerAction;
+            // document.getElementById("feedback").innerHTML = this.scene.playerCont.position.z;
+            document.getElementById("feedback").innerHTML = this.scene.uniformColor;
+            // document.getElementById("feedback").innerHTML = this.scene.hasPushedButton1;
+        }
 
         if(this.action==="set up"){
 
@@ -106,7 +117,7 @@ export class Engine {
             //---scene parts--------------------------------------------------------------------------------------------------------------
 
             this.scene3D = new THREE.Scene();
-            this.camera = new THREE.PerspectiveCamera(30,window.innerWidth/window.innerHeight,.1, 740);
+            this.camera = new THREE.PerspectiveCamera(30,window.innerWidth/window.innerHeight,.1, 940);
             // this.scene3D.background = new THREE.Color( 0x000000 );
             // this.scene3D.fog = new THREE.Fog(0x000000, 0, 151);
             this.scene3D.fog = new THREE.Fog(0x000000, 0, 330*1.6);
@@ -140,7 +151,7 @@ export class Engine {
             this.camContY.position.y=2;
 
             this.camContY.rotation.y = this.u.ca(180)
-            this.camContX.rotation.x = this.u.ca(-2)
+            this.camContX.rotation.x = this.u.ca(-8)
 
             //---webgl--------------------------------------------------------------------------------------------------------------
 
@@ -168,8 +179,8 @@ export class Engine {
 
             this.renderer.shadowMapBias = 0.0039;
             this.renderer.shadowMapDarkness = 0.5;
-            this.renderer.shadowMapWidth = 2048;
-            this.renderer.shadowMapHeight = 2048;
+            this.renderer.shadowMapWidth = 4096;
+            this.renderer.shadowMapHeight = 4096;
             this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
             this.renderer.domElement.style.position="absolute"
@@ -205,6 +216,22 @@ export class Engine {
         }else if(this.action==="loading 3d"){
 
             // wait for 3d assets
+
+            // console.log(this.stadium+" / "+this.ring+" / "+this.soccerBall+" / "+this.goal+" / "+this.cone+" / "+this.waterLine+" / "+this.readyplayerme)
+            // console.log(this.loader.isLoaded_3DTEXTURES+" / "+this.loader.isLoaded_3D+" / "+this.loader.isLoaded_CUBE)
+
+            if(this.stadium!==undefined&&
+                this.ring!==undefined&&
+                this.soccerBall!==undefined&&
+                this.goal!==undefined&&
+                this.cone!==undefined&&
+                this.cone2!==undefined&&
+                this.waterLine!==undefined&&
+                this.readyplayerme!==undefined&&
+                this.field!==undefined
+                ){
+                this.loader.isLoaded_3D=true
+            }
 
             if(this.loader.isLoaded_3DTEXTURES===true && this.loader.isLoaded_3D===true && this.loader.isLoaded_CUBE===true){
                 this.action="wait before build";
