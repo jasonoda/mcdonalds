@@ -5,6 +5,235 @@ export class Scene {
 	setUp(e) {
 		this.e = e;
 		this.uniformArray=[];
+		this.uniformArray2=[];
+		this.uniformArray3=[];
+		this.uniformArray4=[];
+		this.uniformArray5=[];
+	}
+
+	resetGame(){
+
+		console.log("reset game ")
+
+		this.e.loadBack=1;
+
+		this.playerAction = "set";
+		this.count = 0;
+		this.movePlayer = false;
+		this.aniAction = "go"
+		this.ballAction = "start"
+		this.gameAction = "splash";
+		this.e.ui.uiAction = "splash"
+		this.e.ui.insAction = "splash wait";
+		this.score=0;
+
+		this.e.camera.position.z = 17;
+        this.e.camContY.position.y = 3.75;
+		this.e.setCamPosition=false;
+		this.e.camContX.rotation.x = this.e.u.ca(0)
+		
+		this.e.ui.insOb = new Object();
+		this.e.ui.insOb.splashAlpha = 1;
+		this.e.ui.insOb.charAlpha = 0;
+		this.e.ui.insOb.insAlpha1 = 0;
+		this.e.ui.insOb.insAlpha2 = 0;
+		this.e.ui.insOb.blackAlpha = 0;
+
+		this.e.ui.foodSizer1.opacity = 0;
+		this.e.ui.foodSizer2.opacity = 0;
+		this.e.ui.foodSizer3.opacity = 0;
+
+		this.e.ui.labelOffset.alpha1 = 0;
+		this.e.ui.labelOffset.alpha2 = 0;
+		this.e.ui.labelOffset.alpha3 = 0;
+
+		this.ballCont2.position.x=0;
+		this.ballCont2.position.z=0;
+
+		this.lerpCamera = false;
+		
+		// this.playerCont.position.z = this.fieldStart;
+		// this.e.camContY.position.z = this.playerCont.position.z
+
+		this.properFade(this.victoryAction, this.idleAction, .02)
+		
+		document.getElementById('resultDiv').style.pointerEvents = 'none';
+		document.getElementById('resultDiv').style.opacity = '0';
+		document.getElementById('meterDiv').style.display = 'none';
+
+		this.ballTween.play();
+
+		this.e.ui.curBarTime = 10;
+
+		this.e.ui.meterAction="wait"
+
+		for(var i=0; i<this.pellets.length; i++){
+
+			this.pellets[i].scale.x = this.pellets[i].scale.y = this.pellets[i].scale.z = 0.3;
+			
+			for(var j=0; j< this.pellets[i].glows.length; j++){
+
+				this.pellets[i].glows[j].action = "delay"
+
+			}
+
+			this.pellets[i].action = "ready";
+			
+		}
+
+		for(var i=0; i<this.hurdleLines.length; i++){
+
+			this.hurdleLines[i].action="wait"
+
+		}
+
+		for(var i=0; i<this.dummyLines.length; i++){
+
+			this.dummyLines[i].action="wait"
+
+		}
+
+		for(var i=0; i<this.targets.length; i++){
+
+			this.targets[i].cont.rotation.x=0;
+			this.targets[i].material.map = this.targets[i].startTexture;
+
+		}
+
+		this.gameAction="reset"
+		document.getElementById("charContainer").style.pointerEvents="auto"
+
+		//hidde the timer
+
+		// this.positionPlayersForSplash()
+
+	}
+
+	positionPlayersForSplash(){
+
+		this.e.player1.animMixer.stopAllAction();
+		this.e.player2.animMixer.stopAllAction();
+		this.e.player3.animMixer.stopAllAction();
+
+		this.e.player1.position.y=0;
+		this.e.player2.position.y=0;
+		this.e.player3.position.y=0;
+
+		this.e.player1.rotation.y = this.e.u.ca(120);
+		this.e.player2.rotation.y = this.e.u.ca(0);
+		this.e.player3.rotation.y = this.e.u.ca(240);
+
+		var direction = new THREE.Vector3(0, 0, 1);
+		direction.applyQuaternion(this.e.player1.quaternion);
+		this.e.player1.position.add(direction.multiplyScalar(1));
+
+		var direction = new THREE.Vector3(0, 0, 1);
+		direction.applyQuaternion(this.e.player2.quaternion);
+		this.e.player2.position.add(direction.multiplyScalar(1));
+
+		var direction = new THREE.Vector3(0, 0, 1);
+		direction.applyQuaternion(this.e.player3.quaternion);
+		this.e.player3.position.add(direction.multiplyScalar(1));
+
+		this.idleClip1 = THREE.AnimationClip.findByName(this.e.player1.animations, "Idle");
+		this.idleAnimation1 = this.e.player1.animMixer.clipAction(this.idleClip1);
+		this.idleAnimation1.reset()
+		this.idleAnimation1.play()
+		
+		this.idleClip2 = THREE.AnimationClip.findByName(this.e.player2.animations, "Idle");
+		this.idleAnimation2 = this.e.player2.animMixer.clipAction(this.idleClip2);
+		this.idleAnimation2.reset()
+		this.idleAnimation2.play()
+		
+		this.idleClip3 = THREE.AnimationClip.findByName(this.e.player3.animations, "Idle");
+		this.idleAnimation3 = this.e.player3.animMixer.clipAction(this.idleClip3);
+		this.idleAnimation3.reset()
+		this.idleAnimation3.play()
+
+	}
+
+	
+	loadPlayer(num){
+
+		
+		this.e.player1.animMixer.stopAllAction();
+		this.e.player2.animMixer.stopAllAction();
+		this.e.player3.animMixer.stopAllAction();
+
+
+		this.playerCont.add(this.e.player1);
+		this.playerCont.add(this.e.player2);
+		this.playerCont.add(this.e.player3);
+			
+		this.e.player1.scale.set(.015, .015, .015);
+		this.e.player2.scale.set(1.5, 1.5, 1.5);
+		this.e.player3.scale.set(1.5, 1.5, 1.5);
+
+		//-----------------------------------------
+
+		if(num===1){
+			this.e.myPlayerModel = this.e.player1
+		}else if(num===2){
+			this.e.myPlayerModel = this.e.player2
+		}else if(num===3){
+			this.e.myPlayerModel = this.e.player3
+		}
+
+		this.animations = this.e.myPlayerModel.animations;
+
+		this.runningClip = THREE.AnimationClip.findByName(this.animations, "Running");
+		this.runningAction = this.e.myPlayerModel.animMixer.clipAction(this.runningClip);
+
+		this.spinningClip = THREE.AnimationClip.findByName(this.animations, "Spinning");
+		this.spinningAction = this.e.myPlayerModel.animMixer.clipAction(this.spinningClip)
+
+		this.strikeClip = THREE.AnimationClip.findByName(this.animations, "Strike");
+		this.strikeAction = this.e.myPlayerModel.animMixer.clipAction(this.strikeClip)
+
+		this.idleClip = THREE.AnimationClip.findByName(this.animations, "Idle");
+		this.idleAction = this.e.myPlayerModel.animMixer.clipAction(this.idleClip)
+
+		this.victoryClip = THREE.AnimationClip.findByName(this.animations, "Victory");
+		this.victoryAction = this.e.myPlayerModel.animMixer.clipAction(this.victoryClip)
+
+		this.rushClip = THREE.AnimationClip.findByName(this.animations, "SodaRush");
+		this.rushAction = this.e.myPlayerModel.animMixer.clipAction(this.rushClip)
+		this.rushAction.setEffectiveWeight(1)
+		this.rushAction.enabled=true;
+
+		// if(num===1){
+
+		// 	this.stumbleBackClip = THREE.AnimationClip.findByName(this.animations, "Stumble");
+			
+		// }else{
+
+			this.stumbleBackClip = THREE.AnimationClip.findByName(this.animations, "StumbleBack");
+			
+		// }
+
+		this.stumbleBackAction = this.e.myPlayerModel.animMixer.clipAction(this.stumbleBackClip);
+		this.stumbleBackAction.setEffectiveWeight(1)
+		this.stumbleBackAction.enabled=true;
+
+		this.stumbleClip = THREE.AnimationClip.findByName(this.animations, "Stumble");
+		this.stumbleAction = this.e.myPlayerModel.animMixer.clipAction(this.stumbleClip);
+		this.stumbleAction.setEffectiveWeight(1)
+		this.stumbleAction.enabled=true;
+		
+		this.idleAction.play();
+		
+		this.playerBody = this.e.myPlayerModel;
+
+		// if(num===1){
+			
+		// }else if(num===2){
+		// 	this.playerBody.scale.set(1.5, 1.5, 1.5);
+		// }else if(num===3){
+		// 	this.playerBody.scale.set(1.5, 1.5, 1.5);
+		// }
+
+		
+
 	}
 
 	buildScene() {
@@ -13,16 +242,33 @@ export class Scene {
 		this.playerAction = "set";
 		this.count = 0;
 
-		this.movePlayer = true;
+		this.charCount=0;
+
+		this.movePlayer = false;
 		this.aniAction = "go"
-		this.ballAction = "go"
+		this.ballAction = "start"
+
+		this.score=0;
+		this.preventMoving=0;
+
+		this.playerNum = 2;
 
 		this.raycaster = new THREE.Raycaster();
 
 		this.spinnerBoxes=[];
-		this.holeLines=[];
+		this.dummyLines=[];
+		this.sprinklers=[];
+		this.waterHits=[];
+
+		this.waterHitDelay=0;
 		
 		this.uniformColor=new THREE.Color(0x4e228c)
+		this.uniformColor2=new THREE.Color(0x111111)
+		this.uniformColor3=new THREE.Color(0xe66800)
+		this.uniformColor4=new THREE.Color(0xcccccc)
+		this.uniformColor5=new THREE.Color(0xff0000)
+
+		this.lerpCamera=false;
 
 		//---BASE--------------------------------------------------------------------------------------------------------------------
 
@@ -33,51 +279,63 @@ export class Scene {
 
 		// main light
 
-		// this.dl = new THREE.DirectionalLight(0xffffff, .75);
-		// this.dl.position.x=-20;
-		// this.dl.position.z=20;
-		// this.dl.position.y=40;
-		// this.mainCont.add(this.dl);
+		this.dl = new THREE.DirectionalLight(0xfff88b, .5);
+		// this.dl.position.x=-26 * 6;
+		// this.dl.position.z=12 * 6;
+		this.dl.position.y=12 * 6;
+		this.mainCont.add(this.dl);
 
 		// shadow light
 
-		this.dl_shad = new THREE.DirectionalLight(0xffffff, 0.75);
-		this.dl_shad.position.x = 12 * 6;
+		// this.dl_shad = new THREE.DirectionalLight(0xffffff, .75);
+		this.dl_shad = new THREE.DirectionalLight(0xffffff, 1.2);
+		this.dl_shad.position.x = 6 * 6;
 		this.dl_shad.position.z = -26 * 6;
 		this.dl_shad.position.y = 26 * 6;
 		this.mainCont.add(this.dl_shad);
 
-		this.dl_shad.castShadow = true;
+		// if(this.e.mobile===false){
+				
+			this.dl_shad.castShadow = true;
 
-		this.dl_shad.shadow.mapSize.width = 4096*2;
-		this.dl_shad.shadow.mapSize.height = 4096*2;
-		// this.dl_shad.shadow.bias = 0.001;
+			this.shadowMapMult=.125;
 
-		this.e.sSize = 210;
-		this.dl_shad.shadow.camera.near = 0.1;
-		this.dl_shad.shadow.camera.far = 680;
-		this.dl_shad.shadow.camera.left = -this.e.sSize;
-		this.dl_shad.shadow.camera.right = this.e.sSize;
-		this.dl_shad.shadow.camera.top = this.e.sSize;
-		this.dl_shad.shadow.camera.bottom = -this.e.sSize;
-		this.dl_shad.shadow.radius = 2;
+			this.dl_shad.shadow.mapSize.width = Math.round(4096*this.shadowMapMult);
+			this.dl_shad.shadow.mapSize.height = Math.round(4096*this.shadowMapMult);
+			// this.dl_shad.shadow.bias = 0.001;
+
+			this.e.sSize = 55;
+			// this.e.sSize = 5;
+			this.dl_shad.shadow.camera.near = 0.1;
+			this.dl_shad.shadow.camera.far = 380;
+			this.dl_shad.shadow.camera.left = -this.e.sSize/2;
+			this.dl_shad.shadow.camera.right = this.e.sSize/2;
+			this.dl_shad.shadow.camera.top = this.e.sSize;
+			this.dl_shad.shadow.camera.bottom = -this.e.sSize;
+			this.dl_shad.shadow.radius = 2;
+
+		// }
 
 		// const shadowHelper = new THREE.CameraHelper(this.dl_shad.shadow.camera);
 		// this.mainCont.add(shadowHelper);
 
 		// ambient light
 
-		this.ambLight = new THREE.AmbientLight(0xffffff, 0.75);
+		// this.ambLight = new THREE.AmbientLight(0xffffff, 0.475);
+		this.ambLight = new THREE.AmbientLight(0xffffff, 0.65);
 		this.mainCont.add(this.ambLight);
 
 		//---PLAYER------------------------------------------------------------------------------------------------------
 
 		// Create a cube geometry for the skybox
-		// const skyboxGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
-		// const skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.BackSide });
-		// const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
-		// this.e.scene.add(skybox);
+		const skyboxGeometry = new THREE.BoxGeometry(1000, 1, 1000);
+		const skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.BackSide });
+		const skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+		skybox.castShadow=true;
+		skybox.position.y=10;
+		// this.mainCont.add(skybox);
 
+		this.hurdleLines=[];
 		this.waterLines=[];
 		this.hasPushedButton3 = false;
 		this.landAt = 0;
@@ -110,7 +368,7 @@ export class Scene {
 		// hit
 		
 		var geometry = new THREE.BoxGeometry(.5,1.5,.5);
-		var material = new THREE.MeshStandardMaterial({ color: 0xff0000, visible: true });
+		var material = new THREE.MeshStandardMaterial({ color: 0xff0000, visible: false });
 		this.playerHit2 = new THREE.Mesh(geometry, material);
 		this.playerHit2.position.y=2
 		this.playerCont.add( this.playerHit2 );
@@ -119,42 +377,7 @@ export class Scene {
 
 		// animatedd body
 
-		console.log(this.e.readyplayerme)
-		
-		this.animations = this.e.readyplayerme.animations;
-
-		this.runningClip = THREE.AnimationClip.findByName(this.animations, "Running");
-		this.runningAction = this.e.readyplayerme.animMixer.clipAction(this.runningClip);
-
-		this.spinningClip = THREE.AnimationClip.findByName(this.animations, "Spinning");
-		this.spinningAction = this.e.readyplayerme.animMixer.clipAction(this.spinningClip)
-
-		this.strikeClip = THREE.AnimationClip.findByName(this.animations, "Strike");
-		this.strikeAction = this.e.readyplayerme.animMixer.clipAction(this.strikeClip)
-
-		this.idleClip = THREE.AnimationClip.findByName(this.animations, "Idle");
-		this.idleAction = this.e.readyplayerme.animMixer.clipAction(this.idleClip)
-
-		this.rushClip = THREE.AnimationClip.findByName(this.animations, "SodaRush");
-		this.rushAction = this.e.readyplayerme.animMixer.clipAction(this.rushClip)
-		this.rushAction.setEffectiveWeight(1)
-		this.rushAction.enabled=true;
-
-		this.stumbleClip = THREE.AnimationClip.findByName(this.animations, "Stumble");
-		this.stumbleAction = this.e.readyplayerme.animMixer.clipAction(this.stumbleClip);
-		this.stumbleAction.setEffectiveWeight(1)
-		this.stumbleAction.enabled=true;
-		
-		// this.rushAction.play();
-		this.runningAction.play();
-		// this.stumbleAction.play();
-		// this.strikeAction.play();
-		// this.strikeAction.setLoop(THREE.LoopOnce);
-		
-		this.playerBody = this.e.readyplayerme;
-		this.playerBody.scale.set(1.5, 1.5, 1.5);
-
-		this.playerCont.add(this.playerBody);
+		this.loadPlayer(3)
 
 		//-----------------------------------------------------------
 
@@ -173,7 +396,7 @@ export class Scene {
 		this.ball = this.e.soccerBall.clone();
 
 		this.ball.castShadow = true;
-		this.ball.receiveShadow = true;
+		this.ball.receiveShadow = false;
 		this.ballCont2.add(this.ball);
 
 		this.ball.traverse((object) => {
@@ -181,6 +404,9 @@ export class Scene {
 			this.ballObject = object;
 
 		});
+
+		// this.playerBody.position.y=200;
+		// this.ball.position.y=200;
 
 		// console.log(this.ballObject)
 
@@ -217,7 +443,7 @@ export class Scene {
 		this.field.scale.x = 1.5;
 		this.field.scale.y = 1.5;
 		this.field.scale.z = 7;
-		this.field.position.y = -0.25;
+		this.field.position.y = 0.1;
 		this.mainCont.add(this.field);
 
 		this.field.traverse((object) => {
@@ -230,7 +456,11 @@ export class Scene {
 				if(object.name==="field"){
 					// object.color = 0xffffff;
 					object.castShadow=false;
-					object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xffffff, map: this.saveMat});
+					object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xcccccc, map: this.saveMat});
+
+					this.saveMat.wrapS = this.saveMat.wrapT = THREE.RepeatWrapping;
+					this.saveMat.repeat.set(2, 2);
+
 				}
 				
 				// if(object.material!==undefined){
@@ -270,8 +500,13 @@ export class Scene {
 						color: 0xbf4240,
 						map: this.saveMat,
 					});
+				} else if (object.material.name === "blueSeats") {
+					object.material = new THREE.MeshStandardMaterial({
+						wireframe: false,
+						color: 0x06172a,
+					});
+					
 				} else if (object.material.name === "upperFence") {
-					console.log("---lowerfence");
 
 					this.upperFence = object;
 					object.material = new THREE.MeshStandardMaterial({
@@ -361,8 +596,8 @@ export class Scene {
 				this.sLights.push(this.glintPlane);
 			}
 
-			object.castShadow = true;
-			object.receiveShadow = true;
+			// object.castShadow = true;
+			// object.receiveShadow = true;
 
 			if (object.name === "top") {
 				object.material = new THREE.MeshStandardMaterial({
@@ -371,13 +606,26 @@ export class Scene {
 					map: this.saveMat,
 				});
 				object.material.side = THREE.DoubleSide;
-			} else if (object.name === "lines" || object.name === "lines2" || object.name === "lines3" || object.name === "logo") {
 
-				object.material = new THREE.MeshBasicMaterial({ wireframe: false, color: 0xffbc0d });
+			} else if (object.name === "lines" || object.name === "lines2" || object.name === "lines3") {
+
+				object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xff960d });
 
 				object.material.transparent = true;
 				object.material.opacity = 0.5;
-				object.position.x += -0.1;
+				object.position.y += -0.025;
+
+			} else if (object.name === "logo") {
+
+				object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xff960d });
+
+				object.receiveShadow=true;
+
+				object.material.transparent = true;
+				object.material.opacity = 0.5;
+				object.position.y += -0.05;
+
+				this.fieldLogo = object;
 
 			} else if (object.name === "seats") {
 				object.material = new THREE.MeshStandardMaterial({
@@ -392,14 +640,17 @@ export class Scene {
 					map: this.saveMat,
 				});
 			} else if (object.name === "skySphere") {
-				console.log("skysphere");
+				// console.log("skysphere");
 				object.material = new THREE.MeshBasicMaterial({
 					wireframe: false,
+					// color: 0x73d4dd,
 					color: 0xffffff,
 					map: this.saveMat,
 					fog: false,
 					side: THREE.DoubleSided,
 				});
+
+				this.skySphere = object;
 
 				object.castShadow = false;
 				object.receiveShadow = false;
@@ -599,9 +850,12 @@ export class Scene {
 		this.pellets = [];
 
 		this.fieldStart = -320;
+		// this.fieldStart = 0;
 		// this.fieldStart = -260;
 		this.fieldEnd = 260 * 1;
 		this.gameSpeed = 16;
+		this.slowDownFactor = new Object();
+		this.slowDownFactor.num = 1;
 
 		this.gateContainers = [];
 		this.spinners = [];
@@ -609,7 +863,7 @@ export class Scene {
 
 		this.resetBoard();
 
-		this.makeWaterLine(210, 2);
+		this.makeHurdleLine(210, 2);
 
 		this.makePellet(180+5, 0);
 		this.makeConeLine(180, 2);
@@ -617,30 +871,8 @@ export class Scene {
 		this.makeConeLine(165, 1);
 		this.makePellet(150+5, 0);
 		this.makeConeLine(150, 2);
-		// this.makeConeLine(70, 2);
-		// this.makeConeLine(-70, 2);
 
-		//this.makePoleLine(130, 0);
-
-		//this.makeSpinner(0, 120);
-		//this.makeSpinner(17, 120);
-		//this.makeSpinner(-17, 120);
-
-		// this.makePellet(110, 0);
-
-		//this.makeSpinner(8.5, 100);
-		//this.makeSpinner(-8.5, 100);
-
-		// this.makePellet(90, 0);
-
-		this.makeHoleLine(106.5)
-
-		//this.makePoleLine(75, 0);
-		//this.makePoleLine(60, 0);
-
-		//this.makeGateLine(40, 0.5);
-
-		// this.makePellet(30, 0);
+		this.makeDummyLine(106.5)
 
 		this.makeConeLine(80, 2);
 		this.makePellet(65+5, 0);
@@ -648,16 +880,10 @@ export class Scene {
 		this.makePellet(50+5, 0);
 		this.makeConeLine(50, 2);
 
-		this.makeWaterLine(30, 2);
-
-		//this.makeSpinner(8.5, 20);
-		//this.makeSpinner(-8.5, 20);
-
-		// this.makePellet(5, 0);
-
+		this.makeHurdleLine(30, 2);
+		
 		this.makePellet(-5, 0);
 		this.makePellet(-15, 0);
-		// this.makePellet(-20, 0);
 
 		this.makePellet(-30+5, 0);
 		this.makeConeLine(-30, 2);
@@ -666,36 +892,7 @@ export class Scene {
 		this.makePellet(-60+5, 1);
 		this.makeConeLine(-60, 2);
 
-		//this.makeSpinner(0, -10);
-		//this.makeSpinner(17, -10);
-		//this.makeSpinner(-17, -10);
-
-		//this.makeGateLine(-30, 0);
-
-		// this.makePellet(-40, 0);
-
-		//this.makePoleLine(-50, 2);
-
-		// this.makeConeLine(-65, 2);
-
-		//this.makeSpinner(8.5, -80);
-		//this.makeSpinner(-8.5, -80);
-
-		// this.makePellet(-90, 0);
-
-		// this.makePellet(-60, 1);
-		// this.makePellet(-70, 1);
-		// this.makePellet(-80, 1);
-
-		this.makeHoleLine(-100)
-
-		//this.makeSpinner(0, -100);
-		//this.makeSpinner(17, -100);
-		//this.makeSpinner(-17, -100);
-
-		// this.makePellet(-115, 0);
-
-		//this.makePoleLine(-125, 2);
+		this.makeDummyLine(-100);
 
 		this.makeConeLine(-130, 2);
 		this.makePellet(-135-5, 0);
@@ -703,7 +900,7 @@ export class Scene {
 		this.makePellet(-150-5, 0);
 		this.makeConeLine(-160, 2);
 
-		this.makeWaterLine(-180, 2);
+		this.makeHurdleLine(-180, 2);
 
 		this.makePellet(-210-5, 0);
 		this.makeConeLine(-220, 2);
@@ -714,11 +911,16 @@ export class Scene {
 
 	}
 
+    playAgain(){
+
+        //
+
+    }
+
 	resetBoard() {
 
-		this.resetCutOuts()
-
 		this.playerCont.position.z = this.fieldStart;
+		this.e.camContY.position.z = this.playerCont.position.z
 
 		// for(var i = 0; i<this.rings.length; i++){
 
@@ -745,7 +947,7 @@ export class Scene {
 		}
 	}
 
-	makeHoleLine(z){
+	makeDummyLine(z){
 
 		for(var i=-3; i<4; i++){
 
@@ -772,6 +974,13 @@ export class Scene {
 	
 			this.crashers.push(this.holeBox)
 
+			//
+
+			this.dummy = this.e.dummy.clone();
+			this.dummy.position.z = z+18;
+			this.dummy.position.x = i*11.9;
+			this.mainCont.add( this.dummy );
+
 		}
 
 		var geometry = new THREE.BoxGeometry(1, 21, 1);
@@ -780,7 +989,7 @@ export class Scene {
 		this.holeLine.position.z = z;
 
 		this.holeLine.action="wait"
-		this.holeLines.push(this.holeLine)
+		this.dummyLines.push(this.holeLine)
 		this.mainCont.add( this.holeLine );
 
 		this.holeLine.spinnerBoxes=[];
@@ -793,33 +1002,35 @@ export class Scene {
 
 	}
 
-	controlHoleLines(){
+	controlDummyLines(){
 
-		for(var i=0; i<this.holeLines.length; i++){
+		for(var i=0; i<this.dummyLines.length; i++){
 
-			// console.log(this.holeLines[i])
+			// console.log(this.dummyLines[i])
 
-			if(this.holeLines[i].action==="wait"){
+			if(this.dummyLines[i].action==="wait" && this.gameAction==="run"){
 
-				var d = this.holeLines[i].position.z - this.playerCont.position.z
-				if(d<30){
+				var d = this.dummyLines[i].position.z - this.playerCont.position.z
+				if(d<30 && d>0){
 	
-					this.holeLines[i].action="alert";
+					this.dummyLines[i].action="alert";
 	
 				}
 
-			}else if(this.holeLines[i].action==="alert"){
+			}else if(this.dummyLines[i].action==="alert"){
 
 				console.log("----------------SET SPIN----------------")
 
 				this.e.ui.highlight1();
-				this.holeLines[i].action="ready";
+				this.dummyLines[i].action="ready";
 
 				this.hasPushedButton1 = false;
 
-			}else if(this.holeLines[i].action==="ready"){
+			}else if(this.dummyLines[i].action==="ready"){
 
 				if(this.hasPushedButton1===true){
+
+					this.getScore(1000);
 
 					this.uniformFlash()
 
@@ -832,15 +1043,15 @@ export class Scene {
 					var closestBox = null;
 					var closestDistance = 100000
 
-					for(var j=0; j<this.holeLines[i].spinnerBoxes.length; j++){
+					for(var j=0; j<this.dummyLines[i].spinnerBoxes.length; j++){
 
-						var d = this.holeLines[i].spinnerBoxes[j].position.x - this.playerCont.position.x
+						var d = this.dummyLines[i].spinnerBoxes[j].position.x - this.playerCont.position.x
 
 						// console.log("------"+j+"---"+d)
 
 						if( Math.abs(d)<closestDistance){
 
-							closestBox = this.holeLines[i].spinnerBoxes[j];
+							closestBox = this.dummyLines[i].spinnerBoxes[j];
 							closestDistance = Math.abs(d);
 
 						}
@@ -852,23 +1063,23 @@ export class Scene {
 					// change the player action to be locked in
 
 					this.playerAction = "set spin";
-					this.doTheSpinAt = this.holeLines[i].position.z;
+					this.doTheSpinAt = this.dummyLines[i].position.z;
 
-					this.holeLines[i].action="done"
+					this.dummyLines[i].action="done"
 
 					this.hasPushedButton1 = false;
 
 
 				}
 
-				if(this.playerCont.position.z>this.holeLines[i].position.z){
+				if(this.playerCont.position.z>this.dummyLines[i].position.z){
 
 					this.e.ui.highlightReset()
-					this.holeLines[i].action="done"
+					this.dummyLines[i].action="done"
 
 				}
 
-			}else if(this.holeLines[i].action==="done"){
+			}else if(this.dummyLines[i].action==="done"){
 
 			}
 			
@@ -883,107 +1094,112 @@ export class Scene {
 	//---------------------------------------------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------------------------------------------
 
-	makeWaterLine(z){
+	makeHurdleLine(z){
 
-		this.waterLine = this.e.waterLine.clone();
-		this.waterLine.position.z = z;
+		this.hurdleCont = new THREE.Group();
+		this.mainCont.add(this.hurdleCont);
 
-		this.waterLine.traverse((object) => {
+		this.hurdleLines.push(this.hurdleCont);
+
+		this.hurdleCont.position.z = z;
+
+		for(var i=-6; i<=6; i++){
+
+			this.hurdle = this.e.hurdle.clone();
 			
-			object.receiveShadow = false;
-			object.castShadow = false;
+			this.hurdle.position.x = (i * 7);
 
-			// console.log(object.name)
+			this.hurdle.traverse((object) => {
 
-			if( object.name==="water" ){
+				if(i % 2 !== 0){
+					object.material = new THREE.MeshStandardMaterial({ color: 0xff2727 });
+				}else{
+					object.material = new THREE.MeshStandardMaterial({ color: 0xffbc0d });
+				}
 
-				object.material = new THREE.MeshStandardMaterial({ color: 0x3d5b6c });
-				this.water = object;
+			});
 
-			}else if( object.name==="ramp_0" || object.name==="divs" ){
+			this.hurdle.scale.x = this.hurdle.scale.y = this.hurdle.scale.z = .603;
+			this.hurdleCont.add(this.hurdle);
 
-				object.material = new THREE.MeshStandardMaterial({ color: 0x772318 });
-				this.ramp1 = object;
+		}
 
-			}else if( object.name==="ramp_1" ){
+		this.warning = this.e.warning.clone();
+		this.warning.position.z = -10;
+		this.warning.position.y = .1;
+		this.warning.scale.x = this.warning.scale.y = .7
+		this.warning.scale.z = 2;
+		this.hurdleCont.add(this.warning);
 
-				object.material = new THREE.MeshStandardMaterial({ color: 0x912921 });
-				this.ramp2 = object;
+		this.warning.traverse((object) => {
 
-			}else if( object.name==="grad" ){
-
-				object.material.opacity = .3
-
-			}else if( object.name==="grad2" ){
-
-				object.material.opacity = .3
-				// object.material = new THREE.MeshStandardMaterial({ color: 0xff0000, side: THREE.DoubleSide });
-				// object.material.opacity = 1
-
-			}
+			object.material = new THREE.MeshBasicMaterial({ color: 0xffbc0d, transparent: true, opacity:.5 });
 
 		});
 
-		this.waterLine.scale.y = 1;
-		this.waterLine.scale.x = 1.2;
-		this.waterLine.scale.z = 3;
-		// this.waterLine.position.y = .2
-		this.mainCont.add(this.waterLine);
-
-		this.waterLines.push(this.waterLine);
+		
 
 	}
 
-	controlWaterLines(){
+	controlHurdleLines(){
+		
+		for(var i=0; i<this.hurdleLines.length; i++){
 
-		for(var i=0; i<this.waterLines.length; i++){
+			if(this.hurdleLines[i].action===undefined){
 
-			if(this.waterLines[i].action===undefined){
+				this.hurdleLines[i].action="wait";
 
-				this.waterLines[i].action="wait";
+			}else if(this.hurdleLines[i].action==="wait" && this.gameAction==="run"){
 
-			}else if(this.waterLines[i].action==="wait"){
+				var d = this.hurdleLines[i].position.z - this.playerCont.position.z
+				if(d<35 && d>0){
 
-				var d = this.waterLines[i].position.z - this.playerCont.position.z
-				if(d<35){
-	
-					this.waterLines[i].action="alert";
-	
+					this.hurdleLines[i].action="alert";
+
 				}
 
-			}else if(this.waterLines[i].action==="alert"){
+			}else if(this.hurdleLines[i].action==="alert"){
 
 				this.e.ui.highlight3();
 
-				this.waterLines[i].action="ready";
+				gsap.to(this.slowDownFactor, { num: .1, duration: .1, ease: "sine.out"});
+				// gsap.to(this.slowDownFactor, { num: 1, duration: 2, delay: .1, ease: "sine.out"});
 
-			}else if(this.waterLines[i].action==="ready"){
+				this.hurdleLines[i].action="ready";
 
-				var d = this.waterLines[i].position.z - this.playerCont.position.z
+			}else if(this.hurdleLines[i].action==="ready"){
+
+				var d = this.hurdleLines[i].position.z - this.playerCont.position.z
 				if(d<5 && this.playerAction==="move"){
 
-					this.playerAction="crash"
-					this.waterLines[i].action="complete"
+					console.log("hurdle crash "+i)
+
+					this.getScore(-500)
+
+					this.playerAction="crashBack"
+					this.hurdleLines[i].action="complete"
 
 					this.e.ui.highlightReset()
 
 				}
-	
+
 				if(this.hasPushedButton3===true){
 
 					console.log("success")
+
+					this.getScore(1000, true);
 
 					this.uniformFlash()
 
 					this.e.ui.highlightReset();
 
-					this.waterLines[i].action="complete";
+					this.hurdleLines[i].action="complete";
 					this.playerAction="fly set";
-					this.landAt = this.waterLines[i].position.z+10;
+					this.landAt = this.hurdleLines[i].position.z+10;
 
 				}
 
-			}else if(this.waterLines[i].action==="complete"){
+			}else if(this.hurdleLines[i].action==="complete"){
 
 
 
@@ -995,6 +1211,12 @@ export class Scene {
 
 	}
 
+	//---------------------------------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------------------------------------------------
+
 	makeConeLine(z, type){
 
 		this.coneCont = new THREE.Group();
@@ -1004,19 +1226,78 @@ export class Scene {
 
 		for (var i = -6; i < 6; i++) {
 
-			if(type===1){
-				this.cone = this.e.cone2.clone();
+			if(type===1 && i===2 || type===1 && i===-2 || type===1 && i===5 || type===1 && i===-5){
+
+				this.cone = this.e.sprinkler.clone();
+
+				this.cone.traverse((object) => {
+
+					if(object.material!==undefined){
+
+						this.saveMap = object.material.map;
+
+						if(object.material.name==="water"){
+
+							console.log("found water")
+
+							object.material = new THREE.MeshBasicMaterial({ wireframe: false, map: this.saveMap, color: 0xffffff, transparent: true});
+							this.cone.water=object;
+	
+							object.receiveShadow = false;
+							object.castShadow = false;
+
+						}else if(object.material.name==="spray"){
+
+							object.material = new THREE.MeshBasicMaterial({ wireframe: false, map: this.saveMap, color: 0xffffff, transparent: true, opacity:.4});
+							this.cone.spray=object;
+							this.cone.sprayTexture=this.saveMap
+	
+							object.receiveShadow = false;
+							object.castShadow = false;
+
+						}else{
+
+							object.castShadow = true;
+
+						}
+					
+					}
+
+				});
+
+				this.cone.count=0;
+
+				//
+
+				for(var j=-10; j<10; j++){
+
+					var geometry = new THREE.BoxGeometry(1, 2, 1);
+					var material = new THREE.MeshStandardMaterial({ color: 0x66ff66, visible: false });
+					this.crashBox = new THREE.Mesh(geometry, material);
+					this.crashBox.position.z = j*1.4;
+					this.cone.add( this.crashBox );
+
+					this.waterHits.push(this.crashBox);
+
+				}
+
+				//
+
+				this.sprinklers.push(this.cone)
+
+
 			}else{
+
 				this.cone = this.e.cone.clone();
-			}
 
-			this.cone.traverse((object) => {
+				this.cone.traverse((object) => {
 				
-				// object.material = this.coneMaterial;
-				object.receiveShadow = false;
-				object.castShadow = true;
+					object.receiveShadow = false;
+					object.castShadow = true;
+	
+				});
 
-			});
+			}
 
 			if(type===1){
 				this.cone.position.x = (i * 6);
@@ -1041,6 +1322,75 @@ export class Scene {
 
 	}
 
+	controlSpriklers(){
+
+		if(this.switchCount===undefined){
+
+			this.switchCount=0
+
+		}
+
+		this.switchCount+=this.e.dt;
+
+		if(this.switchCount>.03){
+
+			this.switchCount=0;
+
+			for(var i=0; i<this.sprinklers.length; i++){
+
+				this.sprinklers[i].spray
+
+				if(this.sprinklers[i].water.material.opacity===.8){
+
+					this.sprinklers[i].water.material.opacity=.56;
+
+				}else{
+
+					this.sprinklers[i].water.material.opacity=.8;
+
+				}
+
+			}
+			
+		}
+
+		for(var i=0; i<this.sprinklers.length; i++){
+
+			this.sprinklers[i].sprayTexture.offset.y+=this.e.dt*-.2
+			this.sprinklers[i].rotation.y+=this.e.dt
+			
+
+		}
+
+		//--------------------------------------------
+
+		if(this.waterHitDelay>0){
+
+			this.waterHitDelay-=this.e.dt;
+
+		}
+
+		for(var i=0; i<this.waterHits.length; i++){
+
+			const box1 = new THREE.Box3().setFromObject(this.playerHit);
+			const box2 = new THREE.Box3().setFromObject(this.waterHits[i]);
+
+			if (box1.intersectsBox(box2) === true && this.waterHitDelay<=0) {
+
+				// console.log("hit")
+
+				this.waterHitDelay=2;
+
+				this.getScore(-100);
+
+			}
+
+		}
+
+
+
+	}
+
 	//---------------------------------------------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------------------------------------------
@@ -1048,451 +1398,187 @@ export class Scene {
 	//---------------------------------------------------------------------------------------------------------------------
 
 	makePellet(z, x, addRan) {
-		// var geometry = new THREE.SphereGeometry(.25,20,20);
-		// var material = new THREE.MeshStandardMaterial({ color: 0x66ff66 });
-		// this.pellet = new THREE.Mesh(geometry, material);
+		
+		// create clone object
+
 		this.pellet = this.e.ring.clone();
+
+		this.pellet.traverse( ( object ) =>  {
+
+			if(object.name==="glowBall"){
+				// object.material = new THREE.MeshStandardMaterial({ wireframe: false, envMap: this.e.reflectionTexture, metalness: .5, roughness: 0.1, color: 0xffffff});
+				object.material = new THREE.MeshBasicMaterial({ wireframe: false, color: 0xffffff});
+			}
+
+			object.castShadow=false
+
+		});
+
+		// set up
+
+		this.pellet.scale.x = this.pellet.scale.y = this.pellet.scale.z = 0.3;
+		this.pellet.castShadow = false;
+		this.pellet.receiveShadow = false;
+		this.pellet.glows=[];
+		
 		this.pellet.position.y = 1.2;
+		this.pellet.position.y = 0;
 		this.pellet.position.z = z;
 
 		if(addRan===false){
 			this.pellet.position.x = x;
 		}else{
-			this.pellet.position.x = x + this.e.u.nran(5);
+			this.pellet.position.x = x + (this.e.u.nran(4)*10)/10;
 		}
-		
 
+		
+		
 		this.pellet.action = "ready";
 
-		this.pellet.scale.x = this.pellet.scale.y = this.pellet.scale.z = 0.6;
-
-		this.pellet.castShadow = true;
-		this.pellet.receiveShadow = true;
 		this.mainCont.add(this.pellet);
-
 		this.pellets.push(this.pellet);
 
-		this.pellet.traverse( ( object ) =>  {
+		// make glows
 
-			if(object.material!==undefined){
-				object.material = this.goldMaterial;
-			}
+		for(var i=0; i<40; i++){
 
-		});
+			// this.planeGeo = new THREE.PlaneGeometry( 1.1, 1.1 );
+			// this.planeMat = new THREE.MeshStandardMaterial({ map: this.e.glowTexture, transparent:true, side: THREE.DoubleSide});
+
+			this.planeGeo = new THREE.SphereGeometry( 0.2, 10, 8 );
+			this.planeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1});
+
+			this.glintPlane = new THREE.Mesh( this.planeGeo, this.planeMat );
+			this.mainCont.add( this.glintPlane );
+
+			this.glintPlane.scale.x = this.glintPlane.scale.y = this.glintPlane.scale.z = 0
+
+			this.glintPlane.position.x = this.pellet.position.x;
+			this.glintPlane.position.y = this.pellet.position.y;
+			this.glintPlane.position.z = this.pellet.position.z;
+			this.glintPlane.startx = this.pellet.position.z;
+			this.glintPlane.starty = this.pellet.position.y;
+			this.glintPlane.startz = this.pellet.position.z;
+
+			this.glintPlane.myPellet = this.pellet;
+
+			this.pellet.glows.push(this.glintPlane);
+
+		}
 
 	}
 
 	controlRings() {
+
+		this.moveTime = 2;
+
 		for (var i = 0; i < this.pellets.length; i++) {
 
-			this.pellets[i].rotation.y += this.e.dt;
+			// console.log(i)
+
+			for(var j=0; j< this.pellets[i].glows.length; j++){
+
+				// console.log(j)
+
+				var p = this.pellets[i].glows[j];
+
+				if(p.action===undefined){
+
+					p.count=0;
+					p.delay=this.e.u.ran(this.moveTime*10)/10
+
+					p.action="delay"
+
+				}else if(p.action==="delay"){
+
+					p.count+=this.e.dt;
+
+					if(p.count>p.delay){
+
+						p.count=0;
+						p.action="set"
+
+					}
+
+				}else if(p.action==="set"){
+
+					// console.log(p.startz)
+
+					p.scale.x=p.scale.y=p.scale.z=1*.3;
+					// p.scale.y=1.5;
+
+					p.position.x=p.myPellet.position.x;
+					p.position.y=p.myPellet.position.y;
+					p.position.z=p.myPellet.position.z;
+					p.alpha=.8
+
+					this.gDist = 1.9;
+					
+					gsap.to(p.scale, {x: 0, y: 0, z: 0, duration: this.moveTime, ease: "sine.out" });
+					gsap.to(p.position, {
+						x: p.myPellet.position.x + this.e.u.nran(this.gDist*10)/20, 
+						y: p.myPellet.position.y + this.e.u.nran(this.gDist*10)/20, 
+						z: p.myPellet.position.z + this.e.u.nran(this.gDist*10)/20, 
+						duration: this.moveTime, 
+						ease: "sine.out" 
+					});
+
+					p.action="moving"
+
+				}else if(p.action==="moving"){
+
+					p.count+=this.e.dt;
+					if(p.count>this.moveTime){
+
+						p.count=0;
+						p.action="set"
+
+					}
+
+				}else if(p.action==="got"){
+
+					gsap.killTweensOf(p.scale);
+					gsap.killTweensOf(p.position);
+
+					gsap.to(p.scale, {x: 0, y: 0, z: 0, duration: this.moveTime/2, ease: "sine.out" });
+					gsap.to(p.position, {
+						x: p.myPellet.position.x + this.e.u.nran(this.gDist*100)/20, 
+						y: p.myPellet.position.y + this.e.u.nran(this.gDist*100)/20, 
+						z: p.myPellet.position.z + this.e.u.nran(this.gDist*100)/20, 
+						duration: this.moveTime, 
+						ease: "sine.out" 
+					});
+
+					p.action="done"
+
+
+				}
+				
+			}
+
+			// -----
 
 			const box1 = new THREE.Box3().setFromObject(this.playerHit);
 			const box2 = new THREE.Box3().setFromObject(this.pellets[i]);
 
-			if (box1.intersectsBox(box2) === true &&this.pellets[i].action === "ready") {
+			if (box1.intersectsBox(box2) === true && this.pellets[i].action === "ready") {
 
 				this.pellets[i].action = "done";
 
-				gsap.to(this.pellets[i].scale, {
-					x: 0,
-					y: 0,
-					z: 0,
-					duration: 0.2,
-					ease: "sine.out",
-				});
+				this.getScore(250);
+
+				console.log("add 250")
+
+				gsap.to(this.pellets[i].scale, {x: 0, y: 0, z: 0, duration: 0.2, ease: "sine.out" });
+				gsap.to(this.pellets[i].position, {y: this.pellets[i].position.y+.5, duration: 0.2, ease: "sine.out" });
 				
-			}
-		}
-	}
+				for(var j=0; j< this.pellets[i].glows.length; j++){
 
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-
-	makePoleLine(z, delay) {
-
-		this.poleCont = new THREE.Group();
-		this.mainCont.add(this.poleCont);
-
-		this.poleCont.position.z = z;
-		this.poleCont.action="wait";
-		this.poleCont.count=0;
-
-		this.poleCont.cutouts=[];
-
-		this.poleContainers.push(this.poleCont);
-
-		for (var i = -4; i < 4; i++) {
-
-			this.pole = this.e.pole.clone();
-
-			this.pole.traverse((object) => {
-
-				// object.castShadow = false;
-				// object.receiveShadow = false;
-				// object.material = new THREE.MeshStandardMaterial({ color: 0x999999 });
-
-				// console.log(object.name);
-
-				if(object.name==="cutOut2"){
-
-					this.crashBox.name = "cutOutCrashBox";
-					this.crashers.push(object);
+					this.pellets[i].glows[j].action="got"
 
 				}
-
-			});
-
-			this.pole.position.x = i * 6;
-			this.pole.rotation.x = this.e.u.ca(90);
-			this.pole.scale.x = this.pole.scale.y = this.pole.scale.z = 0.45;
-			this.poleCont.add(this.pole);
-
-			this.poleCont.cutouts.push(this.pole);
-
-		}
-
-		this.track = this.e.track.clone();
-		this.track.scale.x=100;
-		this.track.scale.y=.25;
-		this.track.castShadow = false;
-		this.track.receiveShadow = false;
-		this.poleCont.add(this.track);
-
-	}
-
-	controlPoleLines(){
-
-		for(var i=0; i<this.poleContainers.length; i++){
-
-			if(this.poleContainers[i].action==="wait"){
-
-				for(var j=0; j<this.poleContainers[i].cutouts.length; j++){
-
-					this.poleContainers[i].cutouts[j].rotation.x = this.e.u.ca(90);
-					this.poleContainers[i].cutouts[j].rotation.y = 0;
-					this.poleContainers[i].cutouts[j].rotation.z = 0;
-
-				}
-
-				var dist = this.poleContainers[i].position.z - this.playerCont.position.z;
-
-				if (dist < 75) {
-
-					this.poleContainers[i].action="up"
-
-				}
-
-				//----------------------------------------------------
-
-			}else if(this.poleContainers[i].action==="up"){
-
-				for(var j=0; j<this.poleContainers[i].cutouts.length; j++){
-
-					gsap.killTweensOf(this.poleContainers[i].cutouts[j].rotation);
-					gsap.to(this.poleContainers[i].cutouts[j].rotation, {x: 0, duration: .5, ease: "sine.inOut"});
-
-				}
-
-				this.poleContainers[i].count=0;
-				this.poleContainers[i].action="up wait"
-
-				//----------------------------------------------------
-
-			}else if(this.poleContainers[i].action==="up wait"){
-
-				this.poleContainers[i].count+=this.e.dt;
-
-				if(this.poleContainers[i].count>.5){
-
-					this.poleContainers[i].count=0;
-					this.poleContainers[i].action="move"
-
-				}
-
-				//----------------------------------------------------
-
-			}else if(this.poleContainers[i].action==="move"){
-
-				if(i % 2===0){
-
-					gsap.to(this.poleContainers[i].position, { x: this.poleContainers[i].position.x + 4, duration: 2, repeat: -1, yoyo: true, ease: "sine.inOut"});
-					
-				}else{
-
-					gsap.to(this.poleContainers[i].position, { x: this.poleContainers[i].position.x - 4, duration: 2, repeat: -1, yoyo: true, ease: "sine.inOut"});
-
-				}
-
-				for(var j=0; j<this.poleContainers[i].cutouts.length; j++){
-
-					gsap.killTweensOf(this.poleContainers[i].cutouts[j].rotation);
-					this.poleContainers[i].cutouts[j].rotation.y=0;
-
-					gsap.to(this.poleContainers[i].cutouts[j].rotation, { y: this.poleContainers[i].cutouts[j].rotation.y + this.e.u.ca(180), duration: .4, delay: 2, repeatDelay: 2, repeat: -1, yoyo: true, ease: "sine.inOut"});
-
-				}
-
-				this.poleContainers[i].action="";
 
 			}
-			
-		}
-
-	}
-
-	resetCutOuts(){
-
-		for(var i=0; i<this.poleContainers.length; i++){
-
-			gsap.killTweensOf( this.poleContainers[i].position );
-
-			this.poleContainers[i].action="wait";
-			this.poleContainers[i].count=0;
-			this.poleContainers[i].position.x=0;
-
-			for(var j=0; j<this.poleContainers[i].cutouts.length; j++){
-
-				this.poleContainers[i].cutouts[j].rotation.x = this.e.u.ca(90);
-
-				gsap.killTweensOf( this.poleContainers[i].cutouts[j].rotation );
-
-			}
-
-		}
-
-	}
-
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-
-	makeGateLine(z, delay) {
-
-		this.gateCont = new THREE.Group();
-		this.mainCont.add(this.gateCont);
-
-		this.gateCont.position.z = z;
-
-		this.gateCont.gates = [];
-
-		this.gateContainers.push(this.gateCont);
-
-		for (var i = -3; i < 3; i++) {
-
-			this.gate = this.e.gate.clone();
-
-			this.gate.scale.z = 1.1;
-			this.gate.position.x = i * 11;
-			this.gate.rotation.y = this.e.u.ca(90);
-
-			this.gateCont.add(this.gate);
-
-			this.gate.traverse((object) => {
-
-				object.castShadow = false;
-				object.receiveShadow = false;
-
-				if (object.name === "door") {
-
-					this.gateCont.gates.push(object);
-					object.delay = delay;
-
-					if(i===-3){
-
-						object.material = new THREE.MeshStandardMaterial({ color: "red", visible: false });
-						object.position.x=10000;
-
-					}else{
-
-						object.material = this.gateMaterial;
-
-					}
-
-				}else if (object.name === "door_0") {
-
-					object.material = this.gateMaterial;
-
-					this.crashBox.name = "door0CrashBox";
-					this.crashers.push(object);
-
-				}else if (object.name === "door_1") {
-
-					object.material = this.postMaterial;
-
-					this.crashBox.name = "door1CrashBox";
-					this.crashers.push(object);
-
-				}else if (object.name === "post") {
-
-					object.material = this.spinner1Material;
-
-					this.crashBox.name = "doorPostCrashBox";
-					this.crashers.push(object);
-
-				}
-
-			});
-		}
-	}
-
-	controlGates() {
-		for (var i = 0; i < this.gateContainers.length; i++) {
-			var g = this.gateContainers[i];
-
-			if (g.action === undefined) {
-				g.action = "wait";
-				g.count = 0;
-				g.state = "even";
-			} else if (g.action === "wait") {
-				g.count += this.e.dt;
-
-				if (g.count > 2) {
-					g.action = "switch";
-					g.count = 0;
-				}
-			} else if (g.action === "switch") {
-				g.dist = g.position.z - this.playerCont.position.z;
-
-				// console.log(i+" / "+g.dist)
-				// console.log(i+" / "+g.position.z)
-
-				//----------------------------------------------------
-
-				if (g.dist < 115) {
-					// console.log(i+" switch")
-
-					if (g.state === "even") {
-						g.state = "odd";
-					} else if (g.state === "odd") {
-						g.state = "even";
-					}
-
-					g.action = "wait";
-
-					//----------------------------------------------------
-
-					for (var j = 0; j < g.gates.length; j++) {
-						if (g.state === "even") {
-							if (j % 2 === 0) {
-								gsap.to(g.gates[j].position, {
-									y: 0,
-									duration: 0.2,
-									ease: "sine.out",
-								});
-							} else {
-								gsap.to(g.gates[j].position, {
-									y: -5,
-									duration: 0.2,
-									ease: "sine.out",
-								});
-							}
-						} else {
-							if (j % 2 === 0) {
-								gsap.to(g.gates[j].position, {
-									y: -5,
-									duration: 0.2,
-									ease: "sine.out",
-								});
-							} else {
-								gsap.to(g.gates[j].position, {
-									y: 0,
-									duration: 0.2,
-									ease: "sine.out",
-								});
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-	//---------------------------------------------------------------------------------------------------------------------
-
-	makeSpinner(x, z) {
-
-		this.spinner = this.e.spinner.clone();
-		this.spinner.position.x = x;
-		this.spinner.position.z = z;
-		this.spinner.scale.x = this.spinner.scale.y = this.spinner.scale.z = 0.6;
-		this.mainCont.add(this.spinner);
-
-		this.spinner.traverse((object) => {
-
-			// object.material = new THREE.MeshStandardMaterial({ color: 0x999999 });
-
-			// console.log(object.name)
-
-			if (object.name === "bar") {
-
-				this.spinner.bar = object;
-				object.material = this.spinner1Material;
-
-			}else if(object.name === "base"){
-
-				object.material = this.spinner1Material;
-
-			}else{
-
-				object.material = this.spinner2Material;
-
-			}
-
-		});
-
-		this.spinners.push(this.spinner);
-
-		this.hitCont = new THREE.Group();
-		this.mainCont.add(this.hitCont);
-
-		this.hitCont.position.x=this.spinner.position.x;
-		this.hitCont.position.y=this.spinner.position.y;
-		this.hitCont.position.z=this.spinner.position.z;
-
-		this.spinner.hitCont = this.hitCont;
-
-		for(var i=-7; i<8; i++){
-
-			var geometry = new THREE.BoxGeometry(.6, 3, .6);
-			var material = new THREE.MeshStandardMaterial({ color: 0x0000ff, visible: false });
-			this.crashBox = new THREE.Mesh(geometry, material);
-			this.crashBox.position.z = i*1;
-			this.hitCont.add( this.crashBox );
-
-			this.crashBox.name = "spinnerCrashBox";
-			this.crashers.push(this.crashBox);
-
-		}
-
-		var geometry = new THREE.BoxGeometry(2, 4, 2);
-		var material = new THREE.MeshStandardMaterial({ color: 0x66ff66, visible: false });
-		this.crashBox = new THREE.Mesh(geometry, material);
-		this.crashBox.position.y = 2;
-		this.spinner.add( this.crashBox );
-
-		this.crashBox.name = "spinnerPostCrashBox";
-		this.crashers.push(this.crashBox);
-
-	}
-
-	controlSpinners() {
-		for (var i = 0; i < this.spinners.length; i++) {
-			// console.log(this.spinners[i].bar.rotation.y)
-
-			this.spinners[i].bar.rotation.y += this.e.dt * 1.5;
-
-			this.spinners[i].hitCont.rotation.y = this.spinners[i].bar.rotation.y;
-
 		}
 	}
 
@@ -1504,14 +1590,164 @@ export class Scene {
 
 	uniformFlash(){
 
-		this.uniformColor = new THREE.Color( "#ffffff" );
+		this.uniformColor = new THREE.Color( "#00fff6" );
 
 		var endColor = new THREE.Color( "#4e228c" );
     	gsap.to(this.uniformColor, { r: endColor.r, g: endColor.g, b: endColor.b, duration: 1});
 
+
+		this.uniformColor2 = new THREE.Color( "#00fff6" );
+
+		var endColor = new THREE.Color( "#111111" );
+    	gsap.to(this.uniformColor2, { r: endColor.r, g: endColor.g, b: endColor.b, duration: 1});
+
+
+		this.uniformColor3 = new THREE.Color( "#00fff6" );
+
+		var endColor = new THREE.Color( "#e66800" );
+    	gsap.to(this.uniformColor3, { r: endColor.r, g: endColor.g, b: endColor.b, duration: 1});
+
+
+		this.uniformColor4 = new THREE.Color( "#00fff6" );
+
+		var endColor = new THREE.Color( "#ffffff" );
+    	gsap.to(this.uniformColor4, { r: endColor.r, g: endColor.g, b: endColor.b, duration: 1});
+
+		this.uniformColor5 = new THREE.Color( "#00fff6" );
+
+		var endColor = new THREE.Color( "#ff0000" );
+    	gsap.to(this.uniformColor5, { r: endColor.r, g: endColor.g, b: endColor.b, duration: 1});
+
+	}
+
+	getScore(num, height){
+
+		this.score+=num;
+
+		if(this.score<0){
+			this.score=0;
+		}
+
+		if(num<0){
+			this.showScore.style.color = "#ff3209";
+		}else{
+			this.showScore.style.color = "#ffc402";
+		}
+
+		this.showScore.innerHTML=num+"";
+
+		if(height===true){
+			console.log('extraheight')
+			this.extraHeight=200;
+		}else{
+			this.extraHeight=0;
+		}
+
+		this.scoreOb.left = window.innerWidth/2;
+		this.scoreOb.top = (window.innerHeight/2)-this.extraHeight
+		this.scoreOb.opacity = 1
+
+		gsap.killTweensOf(this.scoreOb)
+		gsap.to(this.scoreOb, { left: (window.innerWidth/2)+this.e.u.nran(30), top:(window.innerHeight/2)-50-this.extraHeight, duration: 1, ease: "expo.out"});
+		gsap.to(this.scoreOb, { opacity: 0, delay: .5, duration: .5});
+
+	}
+
+	nextChar(){
+
+		if(this.charCount<=0){
+
+			console.log("next char")
+	
+			gsap.to(this.playerCont.rotation, { y: this.playerCont.rotation.y+this.e.u.ca(120), duration: .25, ease: "expo.out"});
+			this.charCount=.25;
+			this.playerNum+=1;
+			if(this.playerNum>3){
+				this.playerNum=1;
+			}
+
+			console.log(this.playerNum)
+		}
+		
+	}
+
+	prevChar(){
+		
+		if(this.charCount<=0){
+
+			console.log("prev char")
+	
+			gsap.to(this.playerCont.rotation, { y: this.playerCont.rotation.y-this.e.u.ca(120), duration: .25, ease: "expo.out"});
+			this.charCount=.25;
+			this.playerNum-=1;
+			if(this.playerNum<1){
+				this.playerNum=3;
+			}
+
+			console.log(this.playerNum)
+		}
+
+	}
+
+	confirmChar(){
+
+		this.gameAction="char selected"
+
 	}
 
 	update() {
+
+		if(this.charCount>0){
+			this.charCount-=this.e.dt;
+		}
+
+		// score show
+
+		if(this.scoreOb===undefined){
+
+			this.showScore = document.getElementById("showScore")
+
+			this.scoreOb = new Object();
+			this.scoreOb.left = 0;
+			this.scoreOb.top = 0;
+			this.scoreOb.top = 0;
+
+		}
+
+		this.showScore.style.left = (this.scoreOb.left-100)+"px"
+		this.showScore.style.top = this.scoreOb.top+"px"
+		this.showScore.style.opacity = this.scoreOb.opacity+""
+
+		// update shadow
+
+		this.dl_shad.target.position.x=this.playerCont.position.x
+		this.dl_shad.target.position.z=this.playerCont.position.z+22
+		this.dl_shad.target.updateMatrixWorld();
+
+		this.dl_shad.position.x = this.playerCont.position.x+12*6
+		this.dl_shad.position.z = this.playerCont.position.z-26*6
+		this.dl_shad.updateMatrixWorld();
+
+		// this.dl_shad.shadow.mapSize.width = this.dl_shad.shadow.mapSize.height = 4096 * this.shadowMapMult;
+		
+		// this.e.sSize = 210;
+		// this.dl_shad.shadow.camera.near = 0.1;
+		// this.dl_shad.shadow.camera.far = 680;
+		// this.dl_shad.shadow.camera.left = -this.e.sSize;
+		// this.dl_shad.shadow.camera.right = this.e.sSize;
+		// this.dl_shad.shadow.camera.top = this.e.sSize;
+		// this.dl_shad.shadow.camera.bottom = -this.e.sSize;
+		// this.dl_shad.shadow.radius = 2;
+
+
+		// if(this.shadowMapMult<2){
+
+		// 	this.shadowMapMult+=this.e.dt/10;
+		// 	if(this.shadowMapMult>2){
+		// 		this.shadowMapMult=2;
+		// 	}
+
+		// }
 
 		for(var i=0; i<this.uniformArray.length; i++){
 
@@ -1519,16 +1755,40 @@ export class Scene {
 
 		}
 
+		for(var i=0; i<this.uniformArray2.length; i++){
+
+			this.uniformArray2[i].color= this.uniformColor2 
+
+		}
+
+		for(var i=0; i<this.uniformArray3.length; i++){
+
+			this.uniformArray3[i].color= this.uniformColor3 
+
+		}
+
+		for(var i=0; i<this.uniformArray4.length; i++){
+
+			this.uniformArray4[i].color= this.uniformColor4 
+
+		}
+
+		for(var i=0; i<this.uniformArray5.length; i++){
+
+			this.uniformArray5[i].color= this.uniformColor5 
+
+		}
+
 		this.dl_shad.target.position.set( this.playerCont.position.x, this.dl_shad.target.position.y, this.playerCont.position.z );
 
-		this.controlPoleLines()
-		this.controlGates();
-		this.controlSpinners();
+		this.controlSpriklers();
 		this.controlRings();
-		this.controlWaterLines()
-		this.controlHoleLines();
+		this.controlHurdleLines();
+		this.controlDummyLines();
 
 		this.mixer();
+
+		document.getElementById("gameScore").innerHTML = this.score+"";
 
 		//--------------------------------------------------------------------------------------------------------------
 
@@ -1536,8 +1796,165 @@ export class Scene {
 
 		if(this.gameAction===undefined){
 
-			this.gameAction="run";
+			this.gameAction="reset";
 			this.gameCount=0;
+
+		}else if(this.gameAction==="reset"){
+
+			for(var i=0; i<this.hurdleLines.length; i++){
+
+				this.hurdleLines[i].position.y=-10;
+	
+			}
+	
+			for(var i=0; i<this.pellets.length; i++){
+	
+				this.pellets[i].position.y=-10;
+	
+			}
+
+			this.playerNum = 1;
+	
+			this.positionPlayersForSplash()
+			this.gameAction="splash"
+	
+		}else if(this.gameAction==="splash"){
+
+			// if(this.e.ui.insAction==="splash"){
+
+				this.stadium.scale.z = 5;
+				this.field.scale.z = 5;
+	
+				this.playerCont.rotation.y=this.e.u.ca(60)
+
+				this.e.camContY.position.z=0;
+				this.e.camContY.position.y=2.95;
+				this.e.camContY.rotation.y+=this.e.dt*.3;
+				if(this.e.camContY.rotation.y>3.14*2){
+					this.e.camContY.rotation.y-=3.14*2
+				}
+				this.playerCont.position.z=0;
+
+				// this.fieldLogo.rotation.y=this.e.u.ca(180)
+
+				this.e.ui.labelOffset.alpha1=0;
+				this.e.ui.labelOffset.alpha2=0;
+				this.e.ui.labelOffset.alpha3=0;
+
+			// }
+
+		}else if(this.gameAction==="fade splash"){
+
+			gsap.to(this.e.camContY.position, { y: 1.15, duration: 1, ease: "sine.inOut"});
+			gsap.to(this.e.camContY.rotation, { y: this.e.u.ca(180), duration: 1, ease: "sine.inOut"});
+			gsap.to(this.e.camera.position, { z: 14, duration: 1, ease: "sine.inOut"});
+			// this.camContY.rotation.y=0
+			gsap.to(this.e.camContX.rotation, { x: this.e.u.ca(-7.5), duration: this.transSpeed*6, ease: "expo.inOut"});
+
+			this.gameAction="char select wait"
+
+		}else if(this.gameAction==="char select wait"){
+
+			//
+
+		}else if(this.gameAction==="char selected"){
+
+			document.getElementById("charContainer").style.pointerEvents="none"
+
+			gsap.to(this.e.ui.insOb, { charAlpha: 0, duration: 0, ease: "sine.out"});
+			// gsap.to(this.e.ui.insOb, { blackAlpha: 1, duration: 0, ease: "sine.out"});
+
+			this.e.ui.insOb.charAlpha = 0;
+			this.e.ui.insOb.blackAlpha = .3
+
+			this.gameAction="char fading in"
+
+		}else if(this.gameAction==="char fading in"){
+
+			this.gameCount+=this.e.dt;
+			if(this.gameCount>0){
+
+				this.gameCount=0;
+				this.gameAction="char faded in"
+
+			}
+
+		}else if(this.gameAction==="char faded in"){
+
+			this.e.player1.position.x=0; this.e.player1.position.y=0; this.e.player1.position.z=0; this.e.player1.rotation.y=0;
+			this.e.player2.position.x=0; this.e.player2.position.y=0; this.e.player2.position.z=0; this.e.player2.rotation.y=0;
+			this.e.player3.position.x=0; this.e.player3.position.y=0; this.e.player3.position.z=0; this.e.player3.rotation.y=0;
+
+			this.playerCont.rotation.y = this.e.u.ca(0);
+			this.playerCont.position.z = this.fieldStart;
+            this.e.camContY.position.z = this.fieldStart;
+
+			this.stadium.scale.z = 7;
+			this.field.scale.z = 7;
+			this.e.camera.position.y = 0;
+
+            this.e.camera.position.z = 17;
+            this.e.camContY.position.y = 3.25;
+
+            this.setCamPosition = false;
+
+			this.e.ui.insOb.blackAlpha = 0
+
+            this.e.camContY.rotation.y = this.e.u.ca(180)
+            this.e.camContX.rotation.x = this.e.u.ca(-8)
+			
+			gsap.killTweensOf(this.e.ui.insOb)
+			gsap.to(this.e.ui.insOb, { blackAlpha: 0, duration: this.e.ui.transSpeed*4, ease: "sine.out"});
+			gsap.to(this.e.ui.insOb, { insAlpha1: 1, duration: this.e.ui.transSpeed, ease: "sine.out"});
+
+			for(var i=0; i<this.hurdleLines.length; i++){
+
+				this.hurdleLines[i].position.y=0;
+
+			}
+
+			for(var i=0; i<this.pellets.length; i++){
+
+				this.pellets[i].position.y=1.2;;
+
+			}
+
+			if(this.playerNum===1){
+				this.e.player2.position.y=-20;
+				this.e.player3.position.y=-20;
+				this.loadPlayer(1);
+			}else if(this.playerNum===2){
+				this.e.player1.position.y=-20;
+				this.e.player3.position.y=-20;
+				this.loadPlayer(2);
+			}else if(this.playerNum===3){
+				this.e.player1.position.y=-20;
+				this.e.player2.position.y=-20;
+				this.loadPlayer(3);
+			}
+
+			this.e.ui.highlightReset()
+
+			this.gameAction="instructions"
+			this.e.ui.insAction="ins1"
+
+			// this.e.ui.insAction="fade ins1"
+
+		}else if(this.gameAction==="splash"){
+
+		}else if(this.gameAction==="game start"){
+
+			document.getElementById("gameScore").style.opacity=1;
+
+			this.lerpCamera=true;
+
+			this.e.ui.highlightReset()
+
+			this.properFade(this.idleAction, this.runningAction, .3);
+			this.movePlayer=true;
+			this.playerAction = "move"
+			this.ballAction = "go"
+			this.gameAction="run"
 
 		}else if(this.gameAction==="run"){
 
@@ -1555,7 +1972,7 @@ export class Scene {
 
 			// -----------------------------------------------------------------
 
-			this.playerCont.position.z += this.e.dt * this.gameSpeed;
+			this.movePlayerForward();
 
 			// -----------------------------------------------------------------
 
@@ -1573,6 +1990,7 @@ export class Scene {
 				gsap.to(this.playerCont.rotation, { y: this.e.u.ca(0), duration: this.et/2, delay: this.et/2, ease: "sine.in"});
 			}
 
+			this.gameCount=0;
 			this.playerAction="wait"
 			this.gameAction="move to center"
 
@@ -1582,7 +2000,7 @@ export class Scene {
 
 			// -----------------------------------------------------------------
 
-			this.playerCont.position.z += this.e.dt * this.gameSpeed;
+			this.movePlayerForward();
 
 			// -----------------------------------------------------------------
 
@@ -1595,17 +2013,23 @@ export class Scene {
 
 			}
 
+			console.log(">>>>>"+this.ballAction);
+
 		}else if(this.gameAction==="set shoot"){
 			
 			this.ballTween.pause();
 			gsap.to(this.ballCont.position, { z: this.playerCont.position.z + 2, duration: .3, ease: "sine.out"});
 
-			this.strikeAction.play();
-			this.runningAction.crossFadeTo(this.strikeAction, 0.3, true)
+			// this.strikeAction.play();
+			// this.runningAction.crossFadeTo(this.strikeAction, 0.3, true)
+
+			this.properFade(this.runningAction, this.strikeAction, .1)
 
 			// this.runningAction.stop();
 			// this.strikeAction.play();
 			// this.aniAction="pause";
+
+			this.gameCount=0;
 
 			this.gameAction="shoot ani wait";
 			this.ballAction="pause"
@@ -1620,6 +2044,8 @@ export class Scene {
 
 				this.currentTarget = -1;
 				this.targetDirection = "up"
+
+				this.e.ui.meterAction="show"
 
 				this.e.ui.highlight2();
 			}
@@ -1668,6 +2094,8 @@ export class Scene {
 
 			console.log("was picked")
 
+			this.e.ui.meterAction="stop"
+
 			this.e.ui.highlightReset();
 
 			this.pickedTarget = this.targets[this.currentTarget];
@@ -1711,6 +2139,22 @@ export class Scene {
 
 		// 	// console.log(this.pickedTarget)
 
+		}else if(this.gameAction==="force shoot"){
+
+			this.e.ui.highlightReset();
+
+			this.pickedTarget = this.targets[2];
+
+			for(var i=0; i<this.targets.length; i++){
+
+				this.targets[i].material.map = this.targets[i].startTexture;
+
+			}
+
+			this.targets[2].material.map = this.targets[2].highlightTexture;
+
+			this.gameAction="shoot set";
+
 		}else if(this.gameAction==="shoot set"){
 
 			this.pickedTargetLoc = new THREE.Vector3();
@@ -1731,6 +2175,8 @@ export class Scene {
 			this.gameAction="shooting"
 
 			this.strikeAction.play();
+
+			this.playerCont.rotation.y=0
 
 		}else if(this.gameAction==="shooting"){
 
@@ -1785,7 +2231,18 @@ export class Scene {
 				gsap.to(this.ballCont2.rotation, { z: this.ballCont2.rotation.z-15, duration: 3.5, ease: "sine.out"});
 			}
 
+			this.gameCount=0;
 			this.gameAction="has hit target"
+
+			if(this.pickedTarget.num===1 || this.pickedTarget.num===7){
+				// this.getScore(3000);
+				this.score*=3;
+			}else if(this.pickedTarget.num===2 || this.pickedTarget.num===4 || this.pickedTarget.num===5){
+				this.score*=2;
+				// this.getScore(2000);
+			}else if(this.pickedTarget.num===3 || this.pickedTarget.num===5){
+				// this.getScore(1000);
+			}
 
 		}else if(this.gameAction==="has hit target"){
 
@@ -1797,12 +2254,14 @@ export class Scene {
 
 				this.properFade(this.strikeAction, this.idleAction, .2)
 
-				this.gameAction="done"
+				this.gameAction="wait before victory"
 
 			}
 
-			// this.gameCount+=this.e.dt;
-			// if(this.gameCount>4){
+		}else if(this.gameAction==="wait before victory"){
+
+			this.gameCount+=this.e.dt;
+			if(this.gameCount>2){
 
 				// for(var i=0; i<this.targets.length; i++){
 				// 	this.targets[i].cont.rotation.x=this.targets[i].startRot;
@@ -1810,9 +2269,55 @@ export class Scene {
 
 				// this.ballCont.position.x=0;
 
-				// this.gameAction = "set shoot"
+				if(this.playerNum===1){
+					document.getElementById('rmImage').style.backgroundImage = "url('src/img/resultBack1.png')";
+				}else if(this.playerNum===2){
+					document.getElementById('rmImage').style.backgroundImage = "url('src/img/resultBack2.png')";
+				}else if(this.playerNum===3){
+					document.getElementById('rmImage').style.backgroundImage = "url('src/img/resultBack3.png')";
+				}
 
-			// }
+				this.properFade(this.idleAction, this.victoryAction, .2)
+
+				this.gameAction = "show victory"
+
+			}
+
+		}else if(this.gameAction==="show victory"){
+
+			this.gameCount+=this.e.dt;
+
+			if(this.gameCount>5.5){
+
+				this.rmOpacity = 0;
+				this.gameAction="fade in result menu"
+
+				document.getElementById("scoreDisplay").innerHTML = "1000 pts";
+				this.date=this.getDate();
+				this.time=this.getTime();
+				document.getElementById("dateAndScore").innerHTML = "Date:<br>"+this.date+"<br><br>Time:<br>"+this.time+"<br><br>Score:<br>"+this.score;
+
+				document.getElementById('resultDiv').style.pointerEvents = 'auto';
+
+
+			}
+
+		}else if(this.gameAction==="fade in result menu"){
+
+			this.rmOpacity+=this.e.dt*3;
+
+			document.getElementById("resultDiv").style.opacity = this.rmOpacity+"";
+
+			if(this.rmOpacity>=1){
+
+				this.gameAction="show result menu"
+				this.rmOpacity=0;
+
+			}
+
+		}else if(this.gameAction==="show result menu"){
+
+
 
 		}
 
@@ -1827,10 +2332,16 @@ export class Scene {
 		if(this.ballAction==="go"){
 
 			this.ballCont.position.x = this.playerCont.position.x - 0.22 + this.xspeed * 0.02;
-			this.ballCont.position.y = 0.22 + this.ballTweenObject.y;
+			this.ballCont.position.y = 0.20 + this.ballTweenObject.y;
 			this.ballCont.position.z = this.playerCont.position.z + 0.5 + this.ballTweenObject.z;
 
 			this.ballCont2.rotation.x+=this.e.dt*20;
+
+		}else if(this.ballAction==="start"){
+
+			this.ballCont.position.x = this.playerCont.position.x - 0.22;
+			this.ballCont.position.y = 0.215 + this.ballTweenObject.y;
+			this.ballCont.position.z = this.playerCont.position.z + 1.75;
 
 		}
 
@@ -1838,25 +2349,23 @@ export class Scene {
 
 		// MOVE CAMERA
 
-		this.e.camContY.position.x = this.e.u.lerp(
-			this.e.camContY.position.x,
-			this.playerCont.position.x,
-			20 * this.e.dt
-		);
-		this.e.camContY.position.z = this.e.u.lerp(
-			this.e.camContY.position.z,
-			this.playerCont.position.z,
-			20 * this.e.dt
-		);
+		if(this.lerpCamera===true){
+
+			this.e.camContY.position.x = this.e.u.lerp(this.e.camContY.position.x,this.playerCont.position.x,20 * this.e.dt);
+			this.e.camContY.position.z = this.e.u.lerp(this.e.camContY.position.z,this.playerCont.position.z,20 * this.e.dt);
+	
+		}
 
 		//--------------------------------------------------------------------------------------------------------------
 
 		// HANDLE ANIMATIONS
 
-		if (this.e.readyplayerme!==null){
-			if (this.e.readyplayerme.animMixer) {
+		if (this.e.myPlayerModel!==null){
+			if (this.e.myPlayerModel.animMixer) {
 				if(this.aniAction==="go"){
-					this.e.readyplayerme.animMixer.update(this.e.dt);
+					this.e.player1.animMixer.update(this.e.dt);
+					this.e.player2.animMixer.update(this.e.dt);
+					this.e.player3.animMixer.update(this.e.dt);
 				}
 			}
 		}
@@ -1872,7 +2381,7 @@ export class Scene {
 			this.speedIncrease = 40;
 
 			this.playerCount=0;
-			this.playerAction = "move";
+			this.playerAction = "game start";
 
 		} else if (this.playerAction === "move") {
 
@@ -1880,7 +2389,7 @@ export class Scene {
 
 			if(this.movePlayer===true){
 
-				this.playerCont.position.z += this.e.dt * this.gameSpeed;
+				this.movePlayerForward();
 				
 			}
 
@@ -1900,6 +2409,7 @@ export class Scene {
 					if (box1.intersectsBox(box2) === true) {
 
 						if(this.playerAction==="move"){
+							this.getScore(-250)
 							this.playerAction="crash";
 						}
 						
@@ -1920,12 +2430,12 @@ export class Scene {
 
 			//--------------------------------------------------------------------------------------------------------------
 
-			// for(var i=0; i<this.holeLines.length; i++){
+			// for(var i=0; i<this.dummyLines.length; i++){
 
-			// 	var d = this.holeLines[i].position.z - this.playerCont.position.z
+			// 	var d = this.dummyLines[i].position.z - this.playerCont.position.z
 			// 	if(d<30){
 	
-			// 		this.holeLines[i].action="alert";
+			// 		this.dummyLines[i].action="alert";
 	
 			// 	}
 
@@ -1971,6 +2481,46 @@ export class Scene {
 			//--------------------------------------------------------------------------------------------------------
 			//--------------------------------------------------------------------------------------------------------
 
+		} else if (this.playerAction === "crashBack") {
+
+			this.properFade(this.runningAction, this.stumbleBackAction, .2, 1.5, true)
+			this.playerCount = 0;
+			this.playerAction = "crashingBack"
+
+			this.preventMoving=1;
+
+			this.isCrashing=true;
+			this.crashingTime=0;
+
+		} else if (this.playerAction === "crashingBack") {
+
+			// xspeed
+
+			this.playerSideToSide();
+
+			// this.playerCont.position.x += this.e.dt * this.xspeed; 
+			this.movePlayerForward();
+
+			this.playerCount+=this.e.dt;
+
+			if(this.playerCount>.8){
+
+				this.properFade(this.stumbleBackAction, this.runningAction, .4)
+				this.playerAction = "move"
+
+				this.isCrashing=false;
+	
+			}
+
+			//--------------------------------------------------------------------------------------------------------
+			//--------------------------------------------------------------------------------------------------------
+			//--------------------------------------------------------------------------------------------------------
+			//--------------------------------------------------------------------------------------------------------
+			//--------------------------------------------------------------------------------------------------------
+			//--------------------------------------------------------------------------------------------------------
+			//--------------------------------------------------------------------------------------------------------
+			//--------------------------------------------------------------------------------------------------------
+
 		} else if (this.playerAction === "crash") {
 
 			this.properFade(this.runningAction, this.stumbleAction, .2, 1.5)
@@ -1987,7 +2537,7 @@ export class Scene {
 			this.playerSideToSide();
 
 			// this.playerCont.position.x += this.e.dt * this.xspeed; 
-			this.playerCont.position.z += this.e.dt * this.gameSpeed;
+			this.movePlayerForward();
 
 			this.playerCount+=this.e.dt;
 
@@ -2055,7 +2605,7 @@ export class Scene {
 		}else if(this.playerAction === "set spin"){
 
 				// keep moving player
-				this.playerCont.position.z += this.e.dt * this.gameSpeed;
+				this.movePlayerForward();
 				//
 
 			// console.log(this.mySpinnerBox)
@@ -2068,7 +2618,7 @@ export class Scene {
 		}else if(this.playerAction === "go to position"){
 
 				// keep moving player
-				this.playerCont.position.z += this.e.dt * this.gameSpeed;
+				this.movePlayerForward();
 				//
 
 			this.playerCount+=this.e.dt;
@@ -2083,7 +2633,7 @@ export class Scene {
 		}else if(this.playerAction === "wait get to ring"){
 
 				// keep moving player
-				this.playerCont.position.z += this.e.dt * this.gameSpeed;
+				this.movePlayerForward();
 				//
 
 			if(this.playerCont.position.z > this.doTheSpinAt){
@@ -2095,7 +2645,7 @@ export class Scene {
 		}else if(this.playerAction === "set spin move"){
 
 				// keep moving player
-				this.playerCont.position.z += this.e.dt * this.gameSpeed;
+				this.movePlayerForward();
 				//
 
 			this.properFade(this.runningAction, this.spinningAction, .2)
@@ -2108,7 +2658,7 @@ export class Scene {
 		}else if(this.playerAction === "wait spin move"){
 
 				// keep moving player
-				this.playerCont.position.z += this.e.dt * this.gameSpeed;
+				this.movePlayerForward();
 				//
 
 			this.playerCount+=this.e.dt;
@@ -2124,7 +2674,7 @@ export class Scene {
 		}else if(this.playerAction === "back to run"){
 
 				// keep moving player
-				this.playerCont.position.z += this.e.dt * this.gameSpeed;
+				this.movePlayerForward();
 				//
 
 			this.properFade(this.spinningAction, this.runningAction, .3)
@@ -2133,7 +2683,7 @@ export class Scene {
 
 
 			// this.mySpinnerBox = closestBox
-			// this.doTheSpinAt = this.holeLines[i].spinnerBoxes[j].position.z;
+			// this.doTheSpinAt = this.dummyLines[i].spinnerBoxes[j].position.z;
 
 		}
 
@@ -2151,6 +2701,46 @@ export class Scene {
 			}
 
 		}
+
+	}
+
+	getDate() {
+		
+		const currentDate = new Date();
+	
+		const day = String(currentDate.getDate()).padStart(2, '0');
+		const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+		const year = String(currentDate.getFullYear()).slice(-2);
+	
+		return `${month}/${day}/${year}`;
+
+	}
+
+	getTime(){
+		
+		const currentTime = new Date();
+	
+		this.hours = String(currentTime.getHours()).padStart(2, '0');
+		const minutes = String(currentTime.getMinutes()).padStart(2, '0');
+		const seconds = String(currentTime.getSeconds()).padStart(2, '0');
+			
+		const meridiem = this.hours >= 12 ? 'PM' : 'AM';
+		this.hours = this.hours % 12 || 12;
+
+		return `${this.hours}:${minutes} ${meridiem}`;
+
+	}
+
+	movePlayerForward(){
+
+		// this.playerCont.position.z += this.e.dt * this.gameSpeed * this.slowDownFactor.num;
+
+		if(this.preventMoving<=0){
+			this.playerCont.position.z += this.e.dt * this.gameSpeed;
+		}else{
+			this.preventMoving-=this.e.dt;
+		}
+		
 
 	}
 
@@ -2204,7 +2794,7 @@ export class Scene {
 
 	}
 
-	properFade(prev, next, time, timeScale){
+	properFade(prev, next, time, timeScale, isCrashBack){
 
 		if(timeScale===undefined){
 
@@ -2218,6 +2808,13 @@ export class Scene {
 
 		next.reset()
 		next.setEffectiveTimeScale( timeScale )
+		
+		if(isCrashBack===true){
+
+			next.time=.5;
+
+		}
+
 		next.play();
 
 		prev.fadeOut( time );
@@ -2254,7 +2851,7 @@ export class Scene {
 				c1_S,
 				c1_L
 			);
-			this.cleatsMaterial.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
+			this.skySphere.material.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
 			// this.skinMaterial.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
 			// this.rig.material.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
 			// this.roofBarsInner.material.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
@@ -2329,7 +2926,7 @@ export class Scene {
 			// this.dl_shad.position.y = num3;
 
 			// this.dotMaterial.opacity = num1/100;
-			this.water.material.opacity = num2;
+			// this.water.material.opacity = num2;
 			// this.castleDoors.material.roughness = num3/100;
 		}
 	}

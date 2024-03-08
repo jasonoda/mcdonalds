@@ -32,6 +32,18 @@ export class UI {
 
         this.counter=0;
 
+        this.startLabelOffset=0;
+
+        this.buttonTextLowOpacity=.5;
+
+        this.labelOffset = new Object();
+        this.labelOffset.num1 = this.startLabelOffset;
+        this.labelOffset.num2 = this.startLabelOffset;
+        this.labelOffset.num3 = this.startLabelOffset;
+        this.labelOffset.alpha1 = 0;
+        this.labelOffset.alpha2 = 0;
+        this.labelOffset.alpha3 = 0;
+
     }
 
     load() {
@@ -53,7 +65,7 @@ export class UI {
 
         this.loader.load((loader, resources) => {
 
-            console.log("UI LOADED")
+            console.log("---------------------------UI LOADED---------------------------")
 
             this.isLoaded_UI=true;
 
@@ -83,7 +95,7 @@ export class UI {
         this.vig.anchor.x=0
         this.vig.anchor.y=0
         this.vig._zIndex=80
-        this.vig.alpha=.85;
+        this.vig.alpha=.65;
         this.mainCont.addChild(this.vig);
 
         // console.log("cs "+this.e.scene.sLights.length)
@@ -141,11 +153,28 @@ export class UI {
         this.foodButton1 = document.getElementById("foodButton1");
         this.foodButton2 = document.getElementById("foodButton2");
         this.foodButton3 = document.getElementById("foodButton3");
+        
+        this.buttonLabel1 = document.getElementById("goldenMove");
+        this.buttonLabel2 = document.getElementById("bigShot");
+        this.buttonLabel3 = document.getElementById("electricRush");
 
         this.ringDiv = document.getElementById("ringDiv");
         this.ringImage = document.getElementById("ringImage");
+        this.meterDiv = document.getElementById("meterDiv");
+        this.meterImage = document.getElementById("meterImage");
+        this.meterBar = document.getElementById("meterBar");
 
-        this.offOpacity = .5;
+        this.resultDiv = document.getElementById("resultDiv");
+        this.resultInnerDiv = document.getElementById("resultInnerDiv");
+        this.scoreDisplay = document.getElementById("resultInnerDiv");
+
+        this.charSel1 = document.getElementById("charSel1");
+        this.charSel2 = document.getElementById("charSel2");
+        this.charSel3 = document.getElementById("charSel3");
+
+        this.splash = document.getElementById("splash");
+
+        this.offOpacity = 0;
 
         this.foodSizer1 = new Object();
         this.foodSizer1.scale = 0;
@@ -165,7 +194,7 @@ export class UI {
         this.ringSizer = new Object();
         this.ringSizer.scale = 80;
         this.ringSizer.opacity = 0;
-        this.ringSizerMax = 600;
+        this.ringSizerMax = 800;
 
         this.highlightTime = .5;
         this.highlightTime2 = .15;
@@ -199,6 +228,10 @@ export class UI {
 
         gsap.to(this.foodSizer2, { xOffset: 8, duration: this.highlightTime, ease: "expo.out"});
 
+        gsap.to(this.labelOffset, { num1: 14, alpha1: 1, duration: this.highlightTime, ease: "expo.out"});
+        gsap.to(this.labelOffset, { num2: this.startLabelOffset, alpha2: this.buttonTextLowOpacity, duration: this.highlightTime, ease: "expo.out"});
+        gsap.to(this.labelOffset, { num3: this.startLabelOffset, alpha3: this.buttonTextLowOpacity, duration: this.highlightTime, ease: "expo.out"});
+
         //
 
         this.highlightNum = 1;
@@ -206,7 +239,7 @@ export class UI {
         gsap.killTweensOf(this.ringSizer);
         this.ringSizer.scale = 60;
         this.ringSizer.opacity = 1;
-        gsap.to(this.ringSizer, { scale: this.ringSizerMax, opacity: 0, duration: this.ringTime, ease: "linear"});
+        gsap.to(this.ringSizer, { scale: this.ringSizerMax, opacity: 0, repeat: -1, duration: this.ringTime*2, ease: "sine.out"});
 
     }
 
@@ -232,6 +265,14 @@ export class UI {
         gsap.to(this.foodSizer1, { xOffset: -8, duration: this.highlightTime, ease: "expo.out"});
         gsap.to(this.foodSizer3, { xOffset: 8, duration: this.highlightTime, ease: "expo.out"});
 
+        // if(this.insAction==="done"){
+            
+            gsap.to(this.labelOffset, { num2: 14, alpha2: 1, duration: this.highlightTime, ease: "expo.out"});
+            gsap.to(this.labelOffset, { num1: this.startLabelOffset, alpha1: this.buttonTextLowOpacity, duration: this.highlightTime, ease: "expo.out"});
+            gsap.to(this.labelOffset, { num3: this.startLabelOffset, alpha3: this.buttonTextLowOpacity, duration: this.highlightTime, ease: "expo.out"});
+
+        // }
+
         //
 
         this.highlightNum = 2;
@@ -239,7 +280,7 @@ export class UI {
         gsap.killTweensOf(this.ringSizer);
         this.ringSizer.scale = 60;
         this.ringSizer.opacity = 1;
-        gsap.to(this.ringSizer, { scale: this.ringSizerMax, opacity: 0, duration: this.ringTime, ease: "linear"});
+        gsap.to(this.ringSizer, { scale: this.ringSizerMax, opacity: 0, repeat: -1, duration: this.ringTime*2, ease: "sine.out"});
 
     }
 
@@ -262,6 +303,10 @@ export class UI {
 
         gsap.to(this.foodSizer2, { xOffset: -8, duration: this.highlightTime, ease: "expo.out"});
 
+        gsap.to(this.labelOffset, { num3: 14, alpha3: 1, duration: this.highlightTime, ease: "expo.out"});
+        gsap.to(this.labelOffset, { num1: this.startLabelOffset, alpha1: this.buttonTextLowOpacity, duration: this.highlightTime, ease: "expo.out"});
+        gsap.to(this.labelOffset, { num2: this.startLabelOffset, alpha2: this.buttonTextLowOpacity, duration: this.highlightTime, ease: "expo.out"});
+
         //
 
         this.highlightNum = 3;
@@ -269,7 +314,7 @@ export class UI {
         gsap.killTweensOf(this.ringSizer);
         this.ringSizer.scale = 60;
         this.ringSizer.opacity = 1;
-        gsap.to(this.ringSizer, { scale: this.ringSizerMax, opacity: 0, duration: this.ringTime, ease: "linear"});
+        gsap.to(this.ringSizer, { scale: this.ringSizerMax, opacity: 0, repeat: -1, duration: this.ringTime*2, ease: "sine.out"});
         
     }
 
@@ -280,6 +325,10 @@ export class UI {
         gsap.killTweensOf(this.foodSizer1);
         gsap.killTweensOf(this.foodSizer2);
         gsap.killTweensOf(this.foodSizer3);
+        gsap.killTweensOf(this.labelOffset);
+
+        gsap.killTweensOf(this.ringSizer);
+        gsap.to(this.ringSizer, { opacity: 0, duration: this.ringTime, ease: "linear"});
 
         gsap.to(this.foodSizer1, { scale: 1, duration: this.resetTime, ease: "sine.out"});
         gsap.to(this.foodSizer2, { scale: 1, duration: this.resetTime, ease: "sine.out"});
@@ -293,11 +342,24 @@ export class UI {
         gsap.to(this.foodSizer2, { opacity: this.offOpacity, duration: this.resetTime, ease: "sine.out"});
         gsap.to(this.foodSizer3, { opacity: this.offOpacity, duration: this.resetTime, ease: "sine.out"});
 
+        gsap.to(this.labelOffset, { num1: this.startLabelOffset, alpha1: this.buttonTextLowOpacity, duration: this.resetTime, ease: "sine.out"});
+        gsap.to(this.labelOffset, { num2: this.startLabelOffset, alpha2: this.buttonTextLowOpacity, duration: this.resetTime, ease: "sine.out"});
+        gsap.to(this.labelOffset, { num3: this.startLabelOffset, alpha3: this.buttonTextLowOpacity, duration: this.resetTime, ease: "sine.out"});
+
     }
 
     update(){
 
-        // console.log(this.buttonSize1);
+        this.maxSplashWidth = 520;
+
+        if(this.maxSplashWidth>window.innerWidth){
+            this.maxSplashWidth = window.innerWidth;
+        }
+
+        this.splash.style.width = this.maxSplashWidth+"px"
+        this.splash.style.height = this.maxSplashWidth+"px"
+
+        // SIZE BUTTONS
 
         this.buttonSize1 = this.buttonSize + this.foodSizer1.scale;
         this.buttonSize2 = this.buttonSize + this.foodSizer2.scale;
@@ -325,6 +387,86 @@ export class UI {
 
 		//--------------------------------------------------------------------------------------------------------------
 
+        this.ridWidth = 800;
+
+        if(window.innerWidth<this.ridWidth){
+            this.ridWidth=window.innerWidth
+        }
+
+        this.resultInnerDiv.style.left = ((window.innerWidth/2) - (this.ridWidth/2))+"px";
+
+        // this.resultInnerDiv.style.left = "100px";
+        this.resultInnerDiv.style.width = this.ridWidth+"px";
+
+        // this.botPoint = document.getElementById("rmTitle").clientHeight;
+
+        // console.log(this.botPoint)
+
+        // this.scoreDisplay.style.top = (this.botPoint)+"px";
+
+        // console.log(document.getElementById("rmTitle").clientHeight);
+
+
+        // console.log(document.getElementById("rmTitle").clientHeight);
+
+		//--------------------------------------------------------------------------------------------------------------
+
+        if(this.meterAction===undefined){
+
+            this.meterAction="wait"
+            this.curBarTime = 10;
+
+        }else if(this.meterAction==="show"){
+
+            this.meterDiv.style.display="inline";
+
+            this.meterAction="down";
+
+        }else if(this.meterAction==="down"){
+
+            this.curBarTime-=this.e.dt;
+
+            if(this.curBarTime<=0){
+
+                this.curBarTime=0;
+
+                if(this.e.scene.gameAction==="shoot"){
+
+                    this.e.scene.gameAction="force shoot"
+
+                }
+
+            }
+
+        }
+
+        //----
+  
+        this.meterHeight = 225;
+
+        this.meterDiv.style.right = "0px";
+        this.meterDiv.style.height = this.meterHeight+"px";
+        this.meterDiv.style.top = (window.innerHeight/2) - (this.meterHeight/2) - (40) + "px";
+
+        this.meterImage.style.height = this.meterHeight+"px";
+
+        if(this.meterBarHeight===undefined){
+            this.meterBarTotalHeight = 180;
+            this.barTimeTotal = 10;
+        }
+
+        this.meterBarHeight = Math.round( (this.curBarTime/this.barTimeTotal) * this.meterBarTotalHeight );
+        
+        this.meterBar.style.right = "44px";
+        this.meterBar.style.height = this.meterBarHeight+"px";
+        this.meterBar.style.width = 12+"px";
+        this.meterBar.style.top = (180 - this.meterBarHeight) + (31) + "px";
+        this.meterBar.style.opacity = ".8";
+
+		//--------------------------------------------------------------------------------------------------------------
+
+        // PLACE BUTTONS
+
         this.foodDiv1.style.left = ((window.innerWidth/2) - (this.buttonSize1/2) + (this.foodSizer1.xOffset) - 120)+"px";
         this.foodDiv2.style.left = ((window.innerWidth/2) - (this.buttonSize2/2) + (this.foodSizer2.xOffset) )+"px";
         this.foodDiv3.style.left = ((window.innerWidth/2) - (this.buttonSize3/2) + (this.foodSizer3.xOffset) + 120)+"px";
@@ -337,7 +479,25 @@ export class UI {
 
 		//--------------------------------------------------------------------------------------------------------------
 
-        // console.log(this.ringSizer.scale)
+        // TEXT LABELS
+
+        this.buttonLabel1.style.left = ((window.innerWidth/2) - (100) + (this.foodSizer1.xOffset) - 120)+"px";
+        this.buttonLabel2.style.left = ((window.innerWidth/2) - (100) + (this.foodSizer2.xOffset) )+"px";
+        this.buttonLabel3.style.left = ((window.innerWidth/2) - (100) + (this.foodSizer3.xOffset) + 120)+"px";
+
+        this.bottomLabelOffset = 125;
+
+        this.buttonLabel1.style.top = window.innerHeight - this.bottomLabelOffset - this.labelOffset.num1 + "px";
+        this.buttonLabel2.style.top = window.innerHeight - this.bottomLabelOffset - this.labelOffset.num2 + "px";
+        this.buttonLabel3.style.top = window.innerHeight - this.bottomLabelOffset - this.labelOffset.num3 + "px";
+
+        this.buttonLabel1.style.opacity = this.labelOffset.alpha1+"";
+        this.buttonLabel2.style.opacity = this.labelOffset.alpha2+"";
+        this.buttonLabel3.style.opacity = this.labelOffset.alpha3+"";
+
+		//--------------------------------------------------------------------------------------------------------------
+
+        // CIRCLE RING
 
         this.ringImage.style.width = (this.ringSizer.scale) + "px";
         this.ringImage.style.height = (this.ringSizer.scale) + "px";
@@ -361,6 +521,27 @@ export class UI {
 
 		//--------------------------------------------------------------------------------------------------------------
 
+        // this.selButWidth = this.charSel1.clientWidth/2;
+
+        // if(this.selButWidth>100){
+        //     this.selButWidth=100
+        // }
+        // // this.selButWidth = 0;
+        // console.log(this.selButWidth)
+
+        // this.charSel1.style.left = ((window.innerWidth/2) - (this.selButWidth*2.5)) + "px";
+        // this.charSel2.style.left = ((window.innerWidth/2) + (this.selButWidth*.5)) + "px";
+
+        // this.charSel1.style.top = ((window.innerHeight/3)*.5)+ "px";
+        // this.charSel2.style.top = ((window.innerHeight/3)*.5) + "px";
+
+        // this.topDown = ((window.innerHeight/3)*.5) + (this.selButWidth*2);
+
+        // this.charSel3.style.left = ((window.innerWidth*.5) - this.selButWidth) + "px";
+        // this.charSel3.style.top = this.topDown + "px";
+
+		//--------------------------------------------------------------------------------------------------------------
+
         this.vig.width = window.innerWidth;
         this.vig.height = window.innerHeight;
 
@@ -372,41 +553,269 @@ export class UI {
 
         }
 
-        for(var i=0; i<this.e.scene.sLights.length; i++){
+        if(this.waitLightCount===undefined){
+            this.waitLightCount=0;
+        }
 
-            var sp = this.e.u.vectorToScreenPosLight( this.e.scene.sLights[i], this.e.camera )
+        // this.waitLightCount+=this.e.dt;
 
-            this.e.scene.sLights[i].glint2d.position.x = sp.x;
-            this.e.scene.sLights[i].glint2d.position.y = sp.y;
-            this.e.scene.sLights[i].glint2d.rotation = sp.y/30;
+        // if(this.waitLightCount>5){
 
-            this.gDist = this.e.u.getDistance( this.e.scene.playerCont.position.x, this.e.scene.playerCont.position.z, this.e.scene.sLights[i].position.x, this.e.scene.sLights[i].position.z)
-            // console.log(i+" / "+this.gDist);
-            // var percent = this.gDist/252;
-            // this.glintSize = 50*percent;
+            for(var i=0; i<this.e.scene.sLights.length; i++){
 
-            // this.e.scene.sLights[i].glint2d.width = this.e.scene.sLights[i].glint2d.height = this.glintSize;
+                var sp = this.e.u.vectorToScreenPosLight( this.e.scene.sLights[i], this.e.camera )
 
-            this.e.scene.sLights[i].glint2dB.position.x = sp.x+5;
-            this.e.scene.sLights[i].glint2dB.position.y = sp.y;
-            this.e.scene.sLights[i].glint2dB.rotation = sp.y/60;
+                this.e.scene.sLights[i].glint2d.position.x = sp.x;
+                this.e.scene.sLights[i].glint2d.position.y = sp.y;
+                this.e.scene.sLights[i].glint2d.rotation = sp.y/30;
 
-            if(sp.d===false){
+                this.gDist = this.e.u.getDistance( this.e.scene.playerCont.position.x, this.e.scene.playerCont.position.z, this.e.scene.sLights[i].position.x, this.e.scene.sLights[i].position.z)
+                // console.log(i+" / "+this.gDist);
+                // var percent = this.gDist/252;
+                // this.glintSize = 50*percent;
 
-                if(this.e.scene.sLights[i].glint2d.alpha>0){
-                    this.e.scene.sLights[i].glint2d.alpha-=this.e.dt*1
-                    this.e.scene.sLights[i].glint2dB.alpha-=this.e.dt*1
+                // this.e.scene.sLights[i].glint2d.width = this.e.scene.sLights[i].glint2d.height = this.glintSize;
+
+                this.e.scene.sLights[i].glint2dB.position.x = sp.x+5;
+                this.e.scene.sLights[i].glint2dB.position.y = sp.y;
+                this.e.scene.sLights[i].glint2dB.rotation = sp.y/60;
+
+                if(sp.d===false){
+
+                    if(this.e.scene.sLights[i].glint2d.alpha>0){
+                        this.e.scene.sLights[i].glint2d.alpha-=this.e.dt*1
+                        this.e.scene.sLights[i].glint2dB.alpha-=this.e.dt*1
+                    }
+                    
+                }else{
+
+                    this.e.scene.sLights[i].glint2d.alpha=1
+                    this.e.scene.sLights[i].glint2dB.alpha=.175
+
                 }
-                
-            }else{
-
-                this.e.scene.sLights[i].glint2d.alpha=1
-                this.e.scene.sLights[i].glint2dB.alpha=.175
 
             }
+            
+        // }
+		//--------------------------------------------------------------------------------------------------------------
+
+        if(this.insAction===undefined){
+
+            this.splash = document.getElementById("splash");
+            this.splashBlack = document.getElementById("splashBlack");
+
+            this.charContainer = document.getElementById("charContainer");
+
+            this.instructions1 = document.getElementById("instructions1");
+            this.rightInstructions = document.getElementById("rightInstructions");
+            this.leftInstructions = document.getElementById("leftInstructions");
+            this.rightBlack = document.getElementById("rightBlack");
+            this.leftBlack = document.getElementById("leftBlack");
+
+            this.instructions2 = document.getElementById("instructions2");
+            this.buttonInstructions = document.getElementById("buttonInstructions");
+            this.bottomGrad = document.getElementById("bottomGrad");
+
+            this.insOb = new Object();
+            this.insOb.splashAlpha = 1;
+            this.insOb.charAlpha = 0;
+            this.insOb.insAlpha1 = 0;
+            this.insOb.insAlpha2 = 0;
+            this.insOb.blackAlpha = 0;
+
+            this.insOb2 = new Object();
+            this.insOb2.rightBlackOpacity = .4
+            this.insOb2.leftBlackOpacity = .4
+            this.insOb2.rightInstructionsOpacity = 1
+            this.insOb2.leftInstructionsOpacity = 1
+
+            this.sideTime = 1.5
+
+            gsap.to(this.insOb2, { rightBlackOpacity: 0, duration: this.sideTime, yoyo: true, repeat: -1, ease: "sine.out"});
+            gsap.to(this.insOb2, { leftBlackOpacity: 0, duration: this.sideTime, delay: this.sideTime, yoyo: true, repeat: -1, ease: "sine.out"});
+
+            gsap.to(this.insOb2, { leftInstructionsOpacity: 0.5, duration: this.sideTime, yoyo: true, repeat: -1, ease: "sine.out"});
+            gsap.to(this.insOb2, { rightInstructionsOpacity: 0.5, duration: this.sideTime, delay: this.sideTime, yoyo: true, repeat: -1, ease: "sine.out"});
+
+            this.insCount=0
+            this.insAction="splash"
+
+            //
+
+            document.addEventListener("click", evt => {
+
+                if(this.e.mobile===false){
+                    this.nextIns();
+                }
+                
+            });
+
+            document.addEventListener("touchstart", evt => {
+
+                if(this.e.mobile===true){
+                    this.nextIns();
+                }
+                
+            });
+
+        }else if(this.insAction==="splash wait"){
+
+            this.insCount+=this.e.dt;
+            if(this.insCount>1){
+                this.insCount=0;
+                this.insAction="splash"
+            }
+
+        }else if(this.insAction==="splash"){
+
+            // wait
+
+            this.splash.style.opacity = 1;
+            this.instructions1.style.opacity = 0;
+            this.instructions2.style.opacity = 0;
+
+            this.transSpeed = .35;
+    
+            //--------------------------------------------------------------------------------------------------------------------------------
+
+        }else if(this.insAction==="fade splash2"){
+
+            gsap.killTweensOf(this.insOb);
+
+            gsap.to(this.insOb, { splashAlpha: 0, duration: 0, ease: "sine.out"});
+            gsap.to(this.insOb, { blackAlpha: 1, duration: 0, ease: "sine.out"});
+
+        }else if(this.insAction==="fade splash"){
+
+            this.e.scene.gameAction="fade splash"
+
+            gsap.killTweensOf(this.insOb);
+
+			// gsap.to(this.e.camContX.rotation, { x: this.e.u.ca(-8), duration: this.transSpeed*6, ease: "expo.out"});
+
+            // gsap.to(this.insOb, { blackAlpha: .5, duration: this.transSpeed*2, ease: "expo.out"});
+
+            gsap.to(this.insOb, { splashAlpha: 0, duration: this.transSpeed*2, ease: "expo.out"});
+            gsap.to(this.insOb, { charAlpha: 1, duration: this.transSpeed*2, ease: "expo.out"});
+
+            // gsap.to(this.e.camContY.position, { y: 3, duration: this.transSpeed*2, ease: "expo.out"});
+
+            this.insAction="char"
+
+            //--------------------------------------------------------------------------------------------------------------------------------
+
+        }else if(this.insAction==="char"){
+
+            this.setCamPosition=true
+
+            // wait
+
+        }else if(this.insAction==="fade char"){
+
+            gsap.killTweensOf(this.insOb);
+
+            gsap.to(this.insOb, { blackAlpha: 0, duration: this.transSpeed, ease: "sine.out"});
+            gsap.to(this.insOb, { charAlpha: 0, duration: this.transSpeed, ease: "sine.out"});
+            gsap.to(this.insOb, { insAlpha1: 1, duration: this.transSpeed, ease: "sine.out"});
+ 
+            // this.e.scene.playerBody.position.y=0;
+            // this.e.scene.ball.position.y=0;
+
+            this.insAction="ins1"
+
+            //--------------------------------------------------------------------------------------------------------------------------------
+
+        }else if(this.insAction==="ins1"){
+
+            // wait
+
+        }else if(this.insAction==="fade ins1"){
+
+            gsap.killTweensOf(this.insOb);
+
+            gsap.to(this.insOb, { splashAlpha: 0, duration: this.transSpeed, ease: "sine.out"});
+            gsap.to(this.insOb, { insAlpha1: 0, duration: this.transSpeed, ease: "sine.out"});
+            gsap.to(this.insOb, { insAlpha2: 1, duration: this.transSpeed, ease: "sine.out"});
+
+            this.insOb.charAlpha = 0;
+
+            this.offOpacity = .5;
+
+            this.highlight2();
+
+            this.insAction="ins2"
+
+            //--------------------------------------------------------------------------------------------------------------------------------
+
+        }else if(this.insAction==="ins2"){
+
+            // wait
+
+        }else if(this.insAction==="fade ins2"){
+
+            gsap.killTweensOf(this.insOb);
+
+            gsap.to(this.insOb, { splashAlpha: 0, duration: this.transSpeed, ease: "sine.out"});
+            gsap.to(this.insOb, { insAlpha1: 0, duration: this.transSpeed, ease: "sine.out"});
+            gsap.to(this.insOb, { insAlpha2: 0, duration: this.transSpeed, ease: "sine.out"});
+
+            this.highlightReset();
+
+            this.insAction="start game"
+
+        }else if(this.insAction==="start game"){
+
+            this.insOb.blackAlpha = 0;
+
+            this.e.scene.gameAction="game start"
+            this.insAction="done"
+
+        }else if(this.insAction==="done"){
+
+
 
         }
 
+        // set instruction parts every frame
+
+        this.rightBlack.style.opacity = this.insOb2.rightBlackOpacity;
+        this.leftBlack.style.opacity = this.insOb2.leftBlackOpacity;
+
+        this.rightInstructions.style.opacity = this.insOb2.rightInstructionsOpacity;
+        this.leftInstructions.style.opacity = this.insOb2.leftInstructionsOpacity;
+
+        this.rightInstructions.style.right = ((window.innerWidth/4) - 100)+"px"
+        this.leftInstructions.style.left = ((window.innerWidth/4) - 100)+"px"
+
+        this.splash.style.opacity = this.insOb.splashAlpha;
+        this.splashBlack.style.opacity = this.insOb.blackAlpha;
+        this.instructions1.style.opacity = this.insOb.insAlpha1;
+        this.instructions2.style.opacity = this.insOb.insAlpha2;
+        this.charContainer.style.opacity = this.insOb.charAlpha;
+        
+    }
+
+    nextIns(){
+
+        // console.log(this.insAction)
+
+        if(this.insAction==="splash"){
+
+            this.insAction="fade splash"
+
+        }else if(this.insAction==="char"){
+
+            // this.insAction="fade char"
+
+        }else if(this.insAction==="ins1"){
+
+            this.insAction="fade ins1"
+
+        }else if(this.insAction==="ins2"){
+
+            this.insAction="fade ins2"
+
+        } 
 
     }
 

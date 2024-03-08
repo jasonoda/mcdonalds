@@ -12,10 +12,538 @@ body{
 
 #feedback{
     position: fixed;
-    /* display: none; */
+    display: none;
     z-index:50000;
     color:aliceblue;
     background-color: rgb(0, 0, 0);
+}
+
+#gameScore{
+    position: absolute;
+    right: 30px;
+    top: 20px;
+    font-size: 18pt;
+    color: white;
+    font-family: 'speedeeBold';
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    /* border: 1px solid red; */
+}
+
+#showScore{
+    position: absolute;
+    font-size: 18pt;
+    color: #febb13;
+    font-family: 'speedeeBold';
+    z-index: 2000;
+    width: 200px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    /* border: 1px solid red; */
+}
+
+.boostText{
+    position: absolute;
+    font-weight: bold;
+    font-family: 'speedeeBold';
+    font-size: 14pt;
+    color: white;
+    z-index:6000;
+    /* border: 1px solid red; */
+    width: 200px;
+    text-align: center;
+}
+
+#meterDiv{
+
+    position: absolute;
+    /* left:20px; */
+    width: 100px;
+    height: 100px;
+    z-index:5000;
+    display: none;
+    /* border: 1px solid red; */
+
+}
+
+/* ---- */
+
+#instructions1{
+    position: absolute;
+    z-index:5000;
+    /* border: 1px solid red; */
+    /* opacity: 0; */
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+}
+
+#rightInstructions{
+    position: absolute;
+    right: 0px;
+    width: 240px;
+    top: 43%;
+    z-index:5000;
+    pointer-events: none;
+
+}
+
+#leftInstructions{
+    position: absolute;
+    left: 0px;
+    width: 240px;
+    top: 43%;
+    z-index:5000;
+    pointer-events: none;
+
+}
+
+#rightBlack{
+    position: absolute;
+    background-color: black;
+    opacity: .5;
+    left: 0px;
+    width: 50%;
+    height: 100%;
+    z-index:4000;
+    pointer-events: none;
+
+}
+
+#leftBlack{
+    position: absolute;
+    background-color: black;
+    right: 0px;
+    width: 50%;
+    height: 100%;
+    opacity: .5;
+    z-index:4000;
+    pointer-events: none;
+
+}
+
+#splash{
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    opacity: .5;
+    /* background-color: black; */
+    left: 50%;
+    top: 34%;
+    /* margin-bottom: 25%; */
+    transform: translate(-50%,-50%);
+    z-index:4000;
+    pointer-events: none;
+
+}
+
+#splashBlack{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: .5;
+    background-color: white;
+    /* transform: translate(-50%,-50%); */
+    z-index:3000;
+    pointer-events: none;
+}
+
+/* ---- */
+
+#instructions2{
+    position: absolute;
+    z-index:3001;
+    width: 100%;
+    height: 100%;
+    /* border: 1px solid red; */
+    /* background-color: blue; */
+    pointer-events: none;
+
+}
+
+#buttonInstructions{
+    position: absolute;
+    bottom: 150px;
+    width: 90%;
+    max-width: 700px;
+    z-index:4000;
+    left: 50%;
+    transform: translateX(-50%);
+    /* border: 1px solid red; */
+    pointer-events: none;
+
+}
+
+#bottomGrad{
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, .7), rgba(0, 0, 0, 0));
+    z-index:3000;
+    /* border: 1px solid red; */
+    pointer-events: none;
+
+}
+
+/* ---- */
+
+#meterImage{
+
+    position: absolute;
+    width: 100px;
+    /* height: 100px; */
+    z-index:15000;
+    pointer-events: none;
+
+}
+
+#meterBar{
+
+    position: absolute;
+    width: 20px;
+    height: 100px;
+    z-index:15000;
+    background-color: #ffbc0d;
+    pointer-events: none;
+
+}
+
+#electricRush{
+
+}
+
+#bigShot{
+
+}
+
+/* ----------------------------------------------------------------------------------- */
+
+#charContainer {
+    position: absolute;
+    /* 
+    text-align: center;
+    
+    top: 50%;
+    left: 50%;
+    max-width: 600px; 
+    transform: translate(-50%, -50%); */
+    width: 100%;
+    height: 100%;
+    /* border: 3px solid red; */
+    z-index:5000;
+  }
+
+  #charNextPrev{
+
+    position: absolute;
+    bottom: 19%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index:5000;
+
+    font-family: 'speedeeBold';
+    color: white;
+    font-size: 3vh;
+    letter-spacing: 1px;
+
+    display: flex; /* Use flexbox to align children */
+
+  }
+
+  #prevNextBar{
+
+    width: 2px;
+    height: 40px;
+    background-color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+
+  }
+
+#selText{
+
+    position: absolute;
+    font-family: 'speedeeBold';
+    color: white;
+    font-size: 3vh;
+    letter-spacing: 1px;
+    width: 400px;
+    /* border: 3px solid red; */
+    text-align: center;
+    /* margin-bottom: 40px; */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 20%;
+
+}
+
+#confirmChar{
+
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-family: 'speedeeBold';
+    color: black;
+    font-size: 3vh;
+    /* letter-spacing: 1px; */
+    margin-bottom: 40px;
+
+    background-color: #febb13;
+    display: inline-block;
+    padding: 16px 60px;
+    border-radius: 50px;
+    text-align: center;
+    /* font-size: 2.5vh; */
+    margin: 0 auto;
+
+}
+
+  /* ---------------------------------------------------------- */
+
+/* .charSelButton{ */
+
+    /* position: absolute; */
+    /* width: 30%; */
+    /* width: 200px; */
+    /* height: 200px; */
+    /* width: 60%; */
+    /* height: 60%; */
+    /* max-width: 200px; */
+
+/* } */
+
+/* .charContainer-wrapper {
+    position: relative; 
+    width: 100%; 
+    height: 100vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+
+  .top-images {
+    display: flex;
+    justify-content: center;
+    gap: 44px; 
+  }
+
+  .top-images img {
+    height: auto;
+  }
+
+  .bottom-image {
+    
+  }
+
+  .bottom-image img {
+    height: auto;
+  }
+
+/* ----------------------------------------------------------------------------------- */
+
+#resultDiv{
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index:115000;
+    opacity: 0;
+    pointer-events: none;
+
+}
+
+#resultInnerDiv{
+
+    position: absolute;
+    width: 500px;
+    height: 100%;
+    left: 0px;
+    /* border: 2px solid red; */
+    /* background-color: blue; */
+    z-index:115000;
+
+}
+
+#resultMenu{
+
+    position: absolute;
+    width: 100%;
+    /* height: 800px; */
+    margin-top: 5%;  
+    margin-right: 10%;
+    margin-left: 10%;
+    width: 80%;
+    height: 80%;
+    /* border: 2px solid blue; */
+    
+
+}
+
+#pointsLogo{
+    width: 48%;
+}
+
+.resultMenuItems{
+
+    /* border: 2px solid green; */
+    font-family: 'speedeeBold';
+
+}
+
+#rmTop{
+    
+    /* border: 2px solid green; */
+    /* position: absolute; */
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* gap: 20px; */
+    /* min-width: 415px; */
+
+}
+
+#scoreDisplay{
+
+    /* border: 2px solid red; */
+
+    text-align: right;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    font-size: 4vh;
+
+    margin-bottom: 2%;
+    /* margin-right: 10px; */
+
+}
+
+#rmTitle{
+
+    text-align: center;
+    font-size: 5vh;
+    margin-bottom: 1%;
+
+}
+
+#rmText{
+
+    margin-top: 3%;
+    margin-bottom: 3%;
+    line-height: 1.6;
+
+}
+
+#rmImage{
+    
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    min-height: 55%;
+    background-color: #333333;
+    background-image: url("src/img/resultBack1.png");
+    border-radius: 20px;
+
+    background-size: cover;
+    background-position: left;
+
+}
+
+#dateAndScore{
+
+    font-size: 3vh;
+    color: white;
+    /* border: 2px solid red; */
+    width: 50%;
+    height: 100%;
+    text-align: center;
+
+}
+
+#qrCode{
+    /* border: 2px solid red; */
+    width: 30%;
+}
+
+#playAgainBut{
+
+    background-color: #febb13;
+    display: inline-block;
+    padding: 16px 60px;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 2.5vh;
+    margin: 0 auto;
+
+    /* left: 50%; */
+    /* top: 50%; */
+    /* transform: translate(-50%, -50%); */
+
+}
+
+#redeemBut{
+
+    margin-top: 3%;
+    text-align: center;
+    font-size: 2.5vh;
+
+}
+
+#redeemBut a {
+    color: grey; /* Set the color of links */
+    text-decoration: underline; /* Add underline to links */
+}
+
+#resetBut{
+
+    text-align: center;
+    font-size: 2.5vh;
+
+}
+
+#resetBut a {
+    color: grey; /* Set the color of links */
+    text-decoration: underline; /* Add underline to links */
+}
+
+#rmButton{
+
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    
+    /* border: 2px solid green; */
+    
+}
+
+.mdBold{
+    font-family: 'speedeeBold';
+}
+
+.mdReg{
+    font-family: 'speedeeBold';
+}
+
+
+/* ----------------------------------------------------------------------------------- */
+
+@font-face{
+    font-family: 'speedeeBold';
+    src: url('src/fonts/Speedee-Bold.ttf');
+}
+
+@font-face{
+    font-family: 'speedeeBold';
+    src: url('src/fonts/Speedee-Bold.ttf');
 }
 
 @font-face{
@@ -53,7 +581,7 @@ body{
     height: 100px;
     bottom: 0px;
     /* border: 2px solid red; */
-    z-index:1110;
+    z-index:4110;
 }
 
 .foodButton{
@@ -61,7 +589,7 @@ body{
     width: 100px;
     height: 100px;
     /* border: 2px solid blue; */
-    z-index:1110;
+    z-index:3110;
 }
 
 /* 
@@ -128,8 +656,8 @@ body{
     width: 237px;
     height: 46px;
 
-    font-family: 'Gotham-Book';
-    color: #333333;
+    font-family: 'speedeeBold';
+    color: #febb13;
     font-size: 20pt;
     text-align: center;
     
@@ -138,7 +666,7 @@ body{
     left: 0;
     right: 0;
     margin:auto;
-    z-index: 11000;
+    z-index: 110000;
 
     image-rendering: smooth ;
     pointer-events: none;
@@ -156,8 +684,8 @@ body{
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index:10000;
-    background-color: rgb(0, 0, 0);
+    z-index:100000;
+    background-color: white;
     pointer-events: none;
     /* display: none; */
 }

@@ -36,8 +36,8 @@ export class Input {
 
                 console.log("ccc")
 
-                // this.e.scene.playerCont.position.z = 210;
-                this.e.scene.playerCont.position.z = 0;
+                this.e.scene.playerCont.position.z = 210;
+                // this.e.scene.playerCont.position.z = 0;
 
             } else if (event.key === "p") {
 
@@ -56,6 +56,10 @@ export class Input {
             //     this.e.camera.position.z-=2;
 
             //     //-------------------------------------------------------
+
+            } else if (event.key === "j") {
+
+                this.e.ui.insOb.splashAlpha = 0;
 
             } else if (event.key === "v") {
 
@@ -82,7 +86,9 @@ export class Input {
                 // e.scene.uniformMaterial.color.setHex( 0xff0000 );
 
                 // this.e.scene.uniformColor = 0xff0000;
-                this.e.scene.uniformFlash();
+                // this.e.scene.uniformFlash();
+
+                document.getElementById("meterDiv").style.display = "inline"
 
             } else if (event.key === "m") {
 
@@ -302,6 +308,77 @@ export class Input {
 
         });
 
+        //---touchcancel--------------------------------------------------------------------------------------------------------------
+
+        // document.getElementById("playAgainBut").addEventListener("mousedown", evt => {
+
+        //     this.e.scene.playAgain();
+
+        // });
+
+        // document.getElementById("playAgainBut").addEventListener("touchstart", evt => {
+
+        //     this.e.scene.playAgain();
+
+        // });
+
+        // --------------------------------------------------------------------------------------------------
+
+        document.getElementById("nextChar").addEventListener("mousedown", evt => {
+
+            this.e.scene.nextChar();
+
+        });
+
+        document.getElementById("nextChar").addEventListener("touchstart", evt => {
+
+            this.e.scene.nextChar();
+
+        });
+
+        // --------------------------------------------------------------------------------------------------
+
+        document.getElementById("prevChar").addEventListener("mousedown", evt => {
+
+            this.e.scene.prevChar();
+
+        });
+
+        document.getElementById("prevChar").addEventListener("touchstart", evt => {
+
+            this.e.scene.prevChar();
+
+        });
+
+        // --------------------------------------------------------------------------------------------------
+
+        document.getElementById("confirmChar").addEventListener("mousedown", evt => {
+
+            this.e.scene.confirmChar();
+
+        });
+
+        document.getElementById("confirmChar").addEventListener("touchstart", evt => {
+
+            this.e.scene.confirmChar();
+
+        });
+
+        // --------------------------------------------------------------------------------------------------
+
+        document.getElementById("resetBut").addEventListener("mousedown", evt => {
+
+            this.e.scene.resetGame();
+
+        });
+
+        document.getElementById("resetBut").addEventListener("touchstart", evt => {
+
+            this.e.scene.resetGame();
+
+        });
+
     }
+
 
 }

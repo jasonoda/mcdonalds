@@ -102,12 +102,13 @@ export class Engine {
         // }
 
         if(this.scene.playerCont!==undefined){
-            // document.getElementById("feedback").innerHTML = this.scene.playerAction + " / " + this.scene.gameAction + " / " + this.scene.playerCont.position.x;
+            // document.getElementById("feedback").innerHTML = this.scene.playerAction + " / " + this.scene.gameAction + " / " + this.ui.insAction+ " / " + this.ui.labelOffset.alpha1;
             // document.getElementById("feedback").innerHTML = this.mouseDown.x + " / " + this.mouseDown.y;
             // document.getElementById("feedback").innerHTML = this.scene.playerAction;
             // document.getElementById("feedback").innerHTML = this.scene.playerCont.position.z;
-            document.getElementById("feedback").innerHTML = this.scene.uniformColor;
-            // document.getElementById("feedback").innerHTML = this.scene.hasPushedButton1;
+            // document.getElementById("feedback").innerHTML = this.scene.uniformColor;
+            // document.getElementById("feedback").innerHTML = this.scene.aniAction+" / "+this.scene.ballAction;
+            document.getElementById("feedback").innerHTML = this.scene.playerNum;
         }
 
         if(this.action==="set up"){
@@ -116,11 +117,13 @@ export class Engine {
 
             //---scene parts--------------------------------------------------------------------------------------------------------------
 
+            this.camDistance=960;
+
             this.scene3D = new THREE.Scene();
-            this.camera = new THREE.PerspectiveCamera(30,window.innerWidth/window.innerHeight,.1, 940);
+            this.camera = new THREE.PerspectiveCamera(30,window.innerWidth/window.innerHeight,.1, this.camDistance);
             // this.scene3D.background = new THREE.Color( 0x000000 );
             // this.scene3D.fog = new THREE.Fog(0x000000, 0, 151);
-            this.scene3D.fog = new THREE.Fog(0x000000, 0, 330*1.6);
+            this.scene3D.fog = new THREE.Fog(0x000000, 0, 330*2.9);
 
             this.mainCont = new THREE.Group();
             this.scene3D.add(this.mainCont);
@@ -145,13 +148,25 @@ export class Engine {
 
             //-----------------------
 
-            this.camera.position.z = 12;
+            // this.camera.position.z = 12;
             this.camera.position.y = 0;
 
-            this.camContY.position.y=2;
+            // this.camera.position.z = 145;
+
+            // this.camContY.position.y=2;
+            // if(this.mobile===true){
+                this.camera.position.z = 17;
+                this.camContY.position.y = 3.75;
+            // }else{
+                // this.camera.position.z = 12;
+                // this.camContY.position.y = 2;
+            // }
+
+            this.setCamPosition=false;
 
             this.camContY.rotation.y = this.u.ca(180)
-            this.camContX.rotation.x = this.u.ca(-8)
+            // this.camContX.rotation.x = this.u.ca(-8)
+            this.camContX.rotation.x = this.u.ca(0)
 
             //---webgl--------------------------------------------------------------------------------------------------------------
 
@@ -217,27 +232,97 @@ export class Engine {
 
             // wait for 3d assets
 
-            // console.log(this.stadium+" / "+this.ring+" / "+this.soccerBall+" / "+this.goal+" / "+this.cone+" / "+this.waterLine+" / "+this.readyplayerme)
-            // console.log(this.loader.isLoaded_3DTEXTURES+" / "+this.loader.isLoaded_3D+" / "+this.loader.isLoaded_CUBE)
+            if(this.cone!==undefined && this.cone_load===undefined){
+                console.log("LOADED_cone")
+                this.cone_load=true;
+            }
 
-            if(this.stadium!==undefined&&
-                this.ring!==undefined&&
-                this.soccerBall!==undefined&&
-                this.goal!==undefined&&
-                this.cone!==undefined&&
-                this.cone2!==undefined&&
-                this.waterLine!==undefined&&
-                this.readyplayerme!==undefined&&
-                this.field!==undefined
-                ){
-                this.loader.isLoaded_3D=true
+            if(this.dummy!==undefined && this.dummy_load===undefined){
+                console.log("LOADED_dummy")
+                this.dummy_load=true;
+            }
+
+            if(this.field!==undefined && this.field_load===undefined){
+                console.log("LOADED_field")
+                this.field_load=true;
+            }
+
+            if(this.goal!==undefined && this.goal_load===undefined){
+                console.log("LOADED_goal")
+                this.goal_load=true;
+            }
+
+            if(this.hurdle!==undefined && this.hurdle_load===undefined){
+                console.log("LOADED_hurdle")
+                this.hurdle_load=true;
+            }
+
+            if(this.player1!==undefined && this.player1_load===undefined){
+                console.log("LOADED_player1")
+                this.player1_load=true;
+            }
+
+            if(this.player2!==undefined && this.player2_load===undefined){
+                console.log("LOADED_player1")
+                this.player2_load=true;
+            }
+
+            if(this.player3!==undefined && this.player3_load===undefined){
+                console.log("LOADED_player1")
+                this.player3_load=true;
+            }
+
+            if(this.ring!==undefined && this.ring_load===undefined){
+                console.log("LOADED_ring")
+                this.ring_load=true;
+            }
+
+            if(this.soccerBall!==undefined && this.soccerBall_load===undefined){
+                console.log("LOADED_soccerBall")
+                this.soccerBall_load=true;
+            }
+
+            if(this.stadium!==undefined && this.stadium_load===undefined){
+                console.log("LOADED_stadium")
+                this.stadium_load=true;
+            }
+
+            if(this.warning!==undefined && this.warning_load===undefined){
+                console.log("LOADED_warning")
+                this.warning_load=true;
+            }
+
+            if(this.sprinkler!==undefined && this.sprinkler_load===undefined){
+                console.log("LOADED_sprinkler")
+                this.sprinkler_load=true;
             }
 
             if(this.loader.isLoaded_3DTEXTURES===true && this.loader.isLoaded_3D===true && this.loader.isLoaded_CUBE===true){
                 this.action="wait before build";
             }
 
+            if(this.stadium!==undefined&&
+                this.cone!==undefined&&
+                this.dummy!==undefined&&
+                this.field!==undefined&&
+                this.goal!==undefined&&
+                this.hurdle!==undefined&&
+                this.player1!==undefined&&
+                this.player2!==undefined&&
+                this.player3!==undefined&&
+                this.ring!==undefined&&
+                this.soccerBall!==undefined&&
+                this.stadium!==undefined&&
+                this.sprinkler!==undefined&&
+                this.warning!==undefined
+                ){
+                this.loader.isLoaded_3D=true
+                console.log("---------------------------LOADER COMPLETE---------------------------")
+            }
+
         }else if(this.action==="wait before build"){
+
+            console.log("wait beore build");
 
             // wait before build
 
@@ -248,6 +333,8 @@ export class Engine {
             }
 
         }else if(this.action==="build"){
+
+            console.log(">>> start build");
 
             // build everything here
 
@@ -276,7 +363,11 @@ export class Engine {
             this.count=0;
             this.action="wait";
 
+            console.log(">>> end build");
+
         }else if(this.action==="wait"){
+
+            console.log(">>> fading load words");
 
             // fade out loading graphic
 
@@ -292,25 +383,53 @@ export class Engine {
 
             this.count+=this.dt;
             if(this.count>1){
+
+                console.log(">>> go to go");
+
                 this.count=0;
                 this.action="go"
             }
 
         }else if(this.action==="go"){
 
-            if(this.mobile===true){
-                this.camera.position.z = 17;
-                this.camContY.position.y = 3;
-            }else{
-                this.camera.position.z = 12;
-                this.camContY.position.y = 2;
+            // this.count+=this.dt;
+            // if(this.count>5){
+
+            //     if(this.camDistance<940){
+
+            //         this.camDistance+=this.dt*100;
+            //         this.camera.far = this.camDistance;
+            //         this.camera.updateProjectionMatrix();
+
+            //         console.log(this.camDistance)
+
+            //     }
+
+            // }
+
+            if(this.actionGoStart===undefined){
+                this.actionGoStart=""
+                console.log("actionGoStart")
+            }
+
+            if(this.setCamPosition===true){
+                
+                if(this.mobile===true){
+                    this.camera.position.z = 17;
+                    this.camContY.position.y = 3;
+                }else{
+                    this.camera.position.z = 12;
+                    this.camContY.position.y = 2;
+                }
+    
             }
 
             // fade out loading cover
 
             // this.camContY.rotation.y+=this.dt*.3;
 
-            this.loadBack-=this.dt;
+
+            this.loadBack-=this.dt*.5;
             if(this.loadBack.opacity<0){
                 this.loadBack.opacity=0;
             }
@@ -318,10 +437,32 @@ export class Engine {
 
             // loops
 
-           
+            if(this.fr1===undefined){
+                this.fr1=""
+                console.log("fr1")
+            }
+
             this.scene.update();
+            
+            if(this.fr2===undefined){
+                this.fr2=""
+                console.log("fr2")
+            }
+
             this.ui.update();
+
+            if(this.fr3===undefined){
+                this.fr3=""
+                console.log("fr3")
+            }
+
             this.render();
+            
+            if(this.fr4===undefined){
+                this.fr4=""
+                console.log("fr4")
+            }
+
 
         }
 
