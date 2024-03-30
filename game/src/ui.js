@@ -44,6 +44,9 @@ export class UI {
         this.labelOffset.alpha2 = 0;
         this.labelOffset.alpha3 = 0;
 
+        this.faderOb = new Object();
+        this.faderOb.opacity=0;
+
     }
 
     load() {
@@ -173,6 +176,7 @@ export class UI {
         this.charSel3 = document.getElementById("charSel3");
 
         this.splash = document.getElementById("splash");
+        this.fader = document.getElementById("fader");
 
         this.offOpacity = 0;
 
@@ -211,6 +215,10 @@ export class UI {
 
     highlight1(){
 
+        if(this.e.scene.gameAction==="run"){
+            this.e.s.p("shine")
+        }
+        
         gsap.killTweensOf(this.foodSizer1);
         gsap.killTweensOf(this.foodSizer2);
         gsap.killTweensOf(this.foodSizer3);
@@ -245,7 +253,11 @@ export class UI {
 
     highlight2(){
 
-        console.log("h2")
+        if(this.e.scene.gameAction==="run"){
+            this.e.s.p("shine")
+        }
+        
+        // console.log("h2")
 
         gsap.killTweensOf(this.foodSizer1);
         gsap.killTweensOf(this.foodSizer2);
@@ -286,6 +298,10 @@ export class UI {
 
     highlight3(){
 
+        if(this.e.scene.gameAction==="run"){
+            this.e.s.p("shine")
+        }
+        
         gsap.killTweensOf(this.foodSizer1);
         gsap.killTweensOf(this.foodSizer2);
         gsap.killTweensOf(this.foodSizer3);
@@ -320,6 +336,8 @@ export class UI {
 
     highlightReset(){
 
+        // console.log("HLR")
+
         this.resetTime = .2;
 
         gsap.killTweensOf(this.foodSizer1);
@@ -351,6 +369,28 @@ export class UI {
     update(){
 
         this.maxSplashWidth = 520;
+
+        //--------------------
+
+        this.idealLineHeight = window.innerWidth*.042
+        this.maxLineHeight = 38
+
+        this.rmSubTitle = document.getElementById("rmSubTitle")
+        // this.rmLineHeight = parseInt( window.getComputedStyle(this.rmSubTitle).getPropertyValue('line-height') );
+
+        // console.log(this.rmLineHeight)
+
+        // console.log( this.idealLineHeight )
+
+        // if(this.idealLineHeight>this.maxLineHeight){
+        //     this.rmSubTitle.style.lineHeight=this.maxLineHeight+"px";
+        // }else{
+        //     this.rmSubTitle.style.lineHeight=this.idealLineHeight+"px";
+        // }
+
+        //--------------------
+
+        this.fader.style.opacity = this.faderOb.opacity;
 
         if(this.maxSplashWidth>window.innerWidth){
             this.maxSplashWidth = window.innerWidth;
@@ -389,9 +429,19 @@ export class UI {
 
         this.ridWidth = 800;
 
+        // console.log(this.e.mobile)
+
+        if(this.e.mobile===true){
+            this.ridWidth = window.innerWidth;
+        }
+
         if(window.innerWidth<this.ridWidth){
             this.ridWidth=window.innerWidth
         }
+
+        document.getElementById("resPlayer1").style.right = ((window.innerWidth/2) - (this.ridWidth/2)) + "px"
+        document.getElementById("resPlayer2").style.right = ((window.innerWidth/2) - (this.ridWidth/2)) + "px"
+        document.getElementById("resPlayer3").style.right = ((window.innerWidth/2) - (this.ridWidth/2)) + "px"
 
         this.resultInnerDiv.style.left = ((window.innerWidth/2) - (this.ridWidth/2))+"px";
 
@@ -407,7 +457,12 @@ export class UI {
         // console.log(document.getElementById("rmTitle").clientHeight);
 
 
-        // console.log(document.getElementById("rmTitle").clientHeight);
+        // console.log(document.getElementById("resultMenu").clientHeight);
+
+        this.extraTop = Math.round(window.innerHeight*.02)
+
+        // document.getElementById("resultMenuLower").style.top = (document.getElementById("resultMenu").clientHeight + this.extraTop) + "px";
+        // document.getElementById("resultMenuLower").style.top = (document.getElementById("resultMenu").clientHeight + this.extraTop) + "px";
 
 		//--------------------------------------------------------------------------------------------------------------
 
@@ -606,7 +661,7 @@ export class UI {
 
             this.charContainer = document.getElementById("charContainer");
 
-            this.instructions1 = document.getElementById("instructions1");
+            this.instructions1b = document.getElementById("instructions1b");
             this.rightInstructions = document.getElementById("rightInstructions");
             this.leftInstructions = document.getElementById("leftInstructions");
             this.rightBlack = document.getElementById("rightBlack");
@@ -622,6 +677,10 @@ export class UI {
             this.insOb.insAlpha1 = 0;
             this.insOb.insAlpha2 = 0;
             this.insOb.blackAlpha = 0;
+
+            this.labelOffset.alpha1=0;
+            this.labelOffset.alpha2=0;
+            this.labelOffset.alpha3=0;
 
             this.insOb2 = new Object();
             this.insOb2.rightBlackOpacity = .4
@@ -645,15 +704,32 @@ export class UI {
             document.addEventListener("click", evt => {
 
                 if(this.e.mobile===false){
-                    this.nextIns();
+
+                    // console.log(evt.clientX)
+                    // console.log(evt.clientY)
+                   
+                    if(evt.clientX<50 && evt.clientY< 50){
+                        //
+                    }else{
+                        this.nextIns();
+                    }
+
                 }
                 
             });
 
             document.addEventListener("touchstart", evt => {
 
+                console.log("t1 "+this.e.mobile)
+
                 if(this.e.mobile===true){
-                    this.nextIns();
+                    
+                    if(evt.touches[0].clientX<50 && evt.touches[0].clientY< 50){
+                        //
+                    }else{
+                        this.nextIns();
+                    }
+
                 }
                 
             });
@@ -671,7 +747,6 @@ export class UI {
             // wait
 
             this.splash.style.opacity = 1;
-            this.instructions1.style.opacity = 0;
             this.instructions2.style.opacity = 0;
 
             this.transSpeed = .35;
@@ -696,17 +771,50 @@ export class UI {
             // gsap.to(this.insOb, { blackAlpha: .5, duration: this.transSpeed*2, ease: "expo.out"});
 
             gsap.to(this.insOb, { splashAlpha: 0, duration: this.transSpeed*2, ease: "expo.out"});
-            gsap.to(this.insOb, { charAlpha: 1, duration: this.transSpeed*2, ease: "expo.out"});
+
+            if(this.e.skipCharSelect===true){
+
+                gsap.to(this.insOb, { insAlpha1: 1, duration: this.transSpeed, ease: "sine.out"});
+                this.insAction="ins1 wait"
+                // this.insAction="char"
+                this.insOb.splashAlpha = 0;
+                this.e.scene.gameAction="char set"
+
+                document.getElementById("charContainer").style.pointerEvents="none"
+
+                this.setCamPosition=true
+
+                this.fader.style.opacity = 1;
+                this.faderOb.opacity = 1;
+                gsap.to(this.faderOb, { opacity: 0, duration: 1, ease: "linear"});
+
+            }else{
+                    
+                this.e.ui.faderOb.opacity = 1
+                gsap.to(this.e.ui.faderOb, { opacity: 0, duration: .5, ease: "linear"});
+
+                gsap.to(this.insOb, { charAlpha: 1, duration: this.transSpeed*2, ease: "expo.out"});
+                this.insAction="char"
+            }
+            
 
             // gsap.to(this.e.camContY.position, { y: 3, duration: this.transSpeed*2, ease: "expo.out"});
 
-            this.insAction="char"
+            this.labelOffset.alpha1=0;
+            this.labelOffset.alpha2=0;
+            this.labelOffset.alpha3=0;
+
+            
 
             //--------------------------------------------------------------------------------------------------------------------------------
 
         }else if(this.insAction==="char"){
 
             this.setCamPosition=true
+
+            this.labelOffset.alpha1=0;
+            this.labelOffset.alpha2=0;
+            this.labelOffset.alpha3=0;
 
             // wait
 
@@ -718,14 +826,33 @@ export class UI {
             gsap.to(this.insOb, { charAlpha: 0, duration: this.transSpeed, ease: "sine.out"});
             gsap.to(this.insOb, { insAlpha1: 1, duration: this.transSpeed, ease: "sine.out"});
  
+            this.labelOffset.alpha1=0;
+            this.labelOffset.alpha2=0;
+            this.labelOffset.alpha3=0;
+
             // this.e.scene.playerBody.position.y=0;
             // this.e.scene.ball.position.y=0;
 
-            this.insAction="ins1"
+            this.insCount=0;
+            this.insAction="ins1 wait"
 
             //--------------------------------------------------------------------------------------------------------------------------------
 
+        }else if(this.insAction==="ins1 wait"){
+
+            this.insCount+=this.e.dt;
+            if(this.insCount>1){
+
+                this.insCount=0;
+                this.insAction="ins1"
+
+            }
+
         }else if(this.insAction==="ins1"){
+
+            this.labelOffset.alpha1=0;
+            this.labelOffset.alpha2=0;
+            this.labelOffset.alpha3=0;
 
             // wait
 
@@ -784,12 +911,17 @@ export class UI {
         this.rightInstructions.style.opacity = this.insOb2.rightInstructionsOpacity;
         this.leftInstructions.style.opacity = this.insOb2.leftInstructionsOpacity;
 
-        this.rightInstructions.style.right = ((window.innerWidth/4) - 100)+"px"
-        this.leftInstructions.style.left = ((window.innerWidth/4) - 100)+"px"
+        this.rightInstructions.style.right = ((window.innerWidth/4) - (this.rightInstructions.clientWidth/2))+"px"
+        this.leftInstructions.style.left = ((window.innerWidth/4) - (this.rightInstructions.clientWidth/2))+"px"
 
         this.splash.style.opacity = this.insOb.splashAlpha;
         this.splashBlack.style.opacity = this.insOb.blackAlpha;
-        this.instructions1.style.opacity = this.insOb.insAlpha1;
+        if(this.e.controlType==="side"){
+            this.instructions1b.style.opacity = this.insOb.insAlpha1;
+        }else{
+            this.instructions1b.style.opacity = 0;
+        }
+        
         this.instructions2.style.opacity = this.insOb.insAlpha2;
         this.charContainer.style.opacity = this.insOb.charAlpha;
         
@@ -797,25 +929,49 @@ export class UI {
 
     nextIns(){
 
-        // console.log(this.insAction)
+        // console.log("----"+this.insAction)
+        console.log("----"+this.e.scene.gameAction+" / "+this.insAction)
 
-        if(this.insAction==="splash"){
+        if(this.e.scene.gameAction!=="show result menu" && this.e.scene.gameAction!=="play again"){
+            
+            if(this.insAction==="splash"){
 
-            this.insAction="fade splash"
+                // console.log(this.e.loadBack);
 
-        }else if(this.insAction==="char"){
+                if(this.e.loadBack<=0){
+                    this.e.s.p("start")
+                    this.insAction="fade splash"
+                    this.e.s.p("drums")
+                    // this.faderOb.opacity = .5;
+                    // gsap.to(this.faderOb, { opacity: 0, duration: .5, ease: "linear"});
+                    
+                }
 
-            // this.insAction="fade char"
+            }else if(this.insAction==="char"){
 
-        }else if(this.insAction==="ins1"){
+                
+                // this.insAction="fade char"
 
-            this.insAction="fade ins1"
+            }else if(this.insAction==="ins1"){
 
-        }else if(this.insAction==="ins2"){
+                // console.log("click ins 1")
 
-            this.insAction="fade ins2"
+                this.e.s.p("click")
+                this.insAction="fade ins1"
 
-        } 
+            }else if(this.insAction==="ins2"){
+
+                this.e.s.p("whistle")
+                this.e.s.p("cheer")
+                this.insAction="fade ins2"
+                
+                this.faderOb.opacity = .5;
+                gsap.to(this.faderOb, { opacity: 0, duration: 1.5, ease: "linear"});
+
+            }  
+            
+        }
+
 
     }
 

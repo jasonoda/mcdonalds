@@ -3,7 +3,7 @@ export class Sounds {
     setUp(e) {
 
         this.e=e;
-        this.soundArray = ["click"];
+        this.soundArray = ["blip", "boost", "cheer", "click", "coin", "kick", "metalHit", "shine", "splash", "start", "whistle", "woosh", "cone", "win", "readyChime", "metalTargetHit", "targetSwitch", "zoom", "drums", "tally", "tally2"];
         this.loadedSounds = [];
 
         for(var i=0; i<this.soundArray.length; i++){
@@ -22,20 +22,38 @@ export class Sounds {
             theSound.name=url;
             this.loadedSounds.push(theSound);
             // console.log("SOUND: "+url+" - "+this.loadedSounds.length+" / "+this.soundArray.length);
+
+            
         });
+
+    }
+
+    stopAll(){
+
+        console.log("stop all")
+
+        for(var i=0; i<this.loadedSounds.length; i++){
+
+            this.loadedSounds[i].stop();
+            
+        }
 
     }
 
     p(type){
 
-        for(var i=0; i<this.loadedSounds.length; i++){
+        if(this.e.playSounds===true){
 
-            // console.log(type+" / "+this.loadedSounds[i].name)
+            for(var i=0; i<this.loadedSounds.length; i++){
 
-            if(this.loadedSounds[i].name===type){
-                this.loadedSounds[i].play();
+                // console.log(type+" / "+this.loadedSounds[i].name)
+    
+                if(this.loadedSounds[i].name===type){
+                    this.loadedSounds[i].play();
+                }
+                
             }
-            
+    
         }
 
     }

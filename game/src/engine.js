@@ -23,9 +23,14 @@ export class Engine {
         this.mouse = new Object;
         this.mouse.x=0;
         this.mouse.y=0;
+        this.mouseIsDown=false;
         this.touch = new Object;
         this.touch.x=0;
         this.touch.y=0;
+        this.playSounds=true
+
+        this.skipCharSelect=false;
+        this.controlType = "side"
          
         this.mobile = false;
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent ) ) {
@@ -48,16 +53,69 @@ export class Engine {
             }
             
         });
+
+        //---params--------------------------------------------------------------------------------------------------------------
+
+		this.params = new URLSearchParams(window.location.search);
+		this.version = this.params.get('v');
+		this.char = this.params.get('char');
+		this.gm = this.params.get('gm'); //goldenMove
+		this.sr = this.params.get('sr'); //sodaRush
+		this.mm = this.params.get('mm'); //myMult
+		this.en = this.params.get('en'); //energy
+		this.pen = this.params.get('pen'); //penalty
+		this.score = this.params.get('score'); //score
+		this.date = this.params.get('date'); //date
+		this.time = this.params.get('time'); //time
+
+        console.log(this.date);
+        console.log(this.time);
+
+		// console.log(this.version);
+
+		if(this.version==="m"){
+
+			console.log(this.char)
+
+			if(this.char!==null){
+
+				this.isLoadingOnMobile=true;
+                this.skipCharSelect=true;
+                this.mobileGameNumber=0;
+
+			}else{
+
+                // this.isLoadingOnMobile=true;
+                this.mobileGameNumber=1
+
+            }
+
+		}
         
+       
+
     }
 
     start(){
 
     }
 
+    isIpadPro() {
+        // iPad Pros have a higher pixel density and larger screen sizes. Adjust these as new models are released.
+        var screenCheck = (window.matchMedia && window.matchMedia("(min-device-width: 1024px) and (max-device-width: 1366px)").matches);
+        var pixelDensityCheck = (window.devicePixelRatio && window.devicePixelRatio > 1);
+    
+        // Safari on iPadOS should no longer distinguish itself as an iPad specifically, but this is a good additional check for older devices
+        var userAgentCheck = /Macintosh/.test(navigator.userAgent) && 'ontouchend' in document;
+    
+        return screenCheck && pixelDensityCheck && userAgentCheck;
+    }
+
     update(){
 
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent ) ) {
+        if (
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent ) 
+            || this.isIpadPro()===true ) {
             this.mobile = true;
         }
 
@@ -78,22 +136,6 @@ export class Engine {
 
         //---loop--------------------------------------------------------------------------------------------------------------
 
-        // mouse and touch
-
-        if(this.mobile===true){
-
-            if(this.input.ongoingTouches.length>0){
-                this.touch.x = this.input.ongoingTouches[0].clientX
-                this.touch.y = this.input.ongoingTouches[0].clientY
-            }else{
-                this.touch.x = 0
-                this.touch.y = 0
-            }
-
-            this.mouse.x=this.touch.x;
-            this.mouse.y=this.touch.y;
-        }
-
         // feedback
 
         // if(this.ui.tester!==null && this.ui.tester!==undefined){
@@ -101,14 +143,19 @@ export class Engine {
         //     this.ui.tester.position.y=this.mouse.y;
         // }
 
-        if(this.scene.playerCont!==undefined){
-            // document.getElementById("feedback").innerHTML = this.scene.playerAction + " / " + this.scene.gameAction + " / " + this.ui.insAction+ " / " + this.ui.labelOffset.alpha1;
-            // document.getElementById("feedback").innerHTML = this.mouseDown.x + " / " + this.mouseDown.y;
-            // document.getElementById("feedback").innerHTML = this.scene.playerAction;
+        if(this.scene.playerCont!==undefined && this.input.ongoingTouches!==undefined){
+            //document.getElementById("feedback").innerHTML = this.scene.playerAction + " / " + this.scene.gameAction + " / " + this.ui.insAction+ " / " + this.ui.labelOffset.alpha1;
+            document.getElementById("feedback").innerHTML = this.mobile;
+            // if(this.input.ongoingTouches.length>0){
+            //     document.getElementById("feedback").innerHTML =  this.touch.x - this.mouseDown.x;
+            // }
+            // console.log( this.touch.x )
+            // document.getElementById("feedback").innerHTML = this.scene.playerNum;
             // document.getElementById("feedback").innerHTML = this.scene.playerCont.position.z;
             // document.getElementById("feedback").innerHTML = this.scene.uniformColor;
             // document.getElementById("feedback").innerHTML = this.scene.aniAction+" / "+this.scene.ballAction;
-            document.getElementById("feedback").innerHTML = this.scene.playerNum;
+            // document.getElementById("feedback").innerHTML = this.scene.playerNum;
+            // document.getElementById("feedback").innerHTML = this.u.ca2( this.camContX.rotation.x ) + " / "+this.camContY.position.y;
         }
 
         if(this.action==="set up"){
@@ -262,14 +309,32 @@ export class Engine {
                 this.player1_load=true;
             }
 
-            if(this.player2!==undefined && this.player2_load===undefined){
+            if(this.player2!==undefined && this.player2_load===undefined || this.loader.loadPlayer2===false){
                 console.log("LOADED_player1")
                 this.player2_load=true;
             }
 
-            if(this.player3!==undefined && this.player3_load===undefined){
+            if(this.player3!==undefined && this.player3_load===undefined || this.loader.loadPlayer3===false){
                 console.log("LOADED_player1")
                 this.player3_load=true;
+            }
+
+            if(this.loader.loadPlayer1===false){
+                console.log("SKIPPED_player1")
+                this.player1_load=true;
+                this.player1 = new Object();
+            }
+
+            if(this.loader.loadPlayer2===false){
+                console.log("SKIPPED_player2")
+                this.player2_load=true;
+                this.player2 = new Object();
+            }
+
+            if(this.loader.loadPlayer3===false){
+                console.log("SKIPPED_player3")
+                this.player3_load=true;
+                this.player3 = new Object();
             }
 
             if(this.ring!==undefined && this.ring_load===undefined){
@@ -322,7 +387,7 @@ export class Engine {
 
         }else if(this.action==="wait before build"){
 
-            console.log("wait beore build");
+            // console.log("wait beore build");
 
             // wait before build
 
@@ -334,7 +399,7 @@ export class Engine {
 
         }else if(this.action==="build"){
 
-            console.log(">>> start build");
+            // console.log(">>> start build");
 
             // build everything here
 
@@ -363,16 +428,17 @@ export class Engine {
             this.count=0;
             this.action="wait";
 
-            console.log(">>> end build");
+            // console.log(">>> end build");
 
         }else if(this.action==="wait"){
 
-            console.log(">>> fading load words");
+            // console.log(">>> fading load words");
 
             // fade out loading graphic
 
             this.loadWords-=this.dt;
             document.getElementById("loadingImage").style.opacity = this.loadWords+""
+            document.getElementById("loadingImage2").style.opacity = this.loadWords+""
 
             // loop
 
@@ -384,7 +450,7 @@ export class Engine {
             this.count+=this.dt;
             if(this.count>1){
 
-                console.log(">>> go to go");
+                // console.log(">>> go to go");
 
                 this.count=0;
                 this.action="go"
@@ -409,7 +475,7 @@ export class Engine {
 
             if(this.actionGoStart===undefined){
                 this.actionGoStart=""
-                console.log("actionGoStart")
+                // console.log("actionGoStart")
             }
 
             if(this.setCamPosition===true){
@@ -439,28 +505,24 @@ export class Engine {
 
             if(this.fr1===undefined){
                 this.fr1=""
-                console.log("fr1")
             }
 
             this.scene.update();
             
             if(this.fr2===undefined){
                 this.fr2=""
-                console.log("fr2")
             }
 
             this.ui.update();
 
             if(this.fr3===undefined){
                 this.fr3=""
-                console.log("fr3")
             }
 
             this.render();
             
             if(this.fr4===undefined){
                 this.fr4=""
-                console.log("fr4")
             }
 
 

@@ -32,24 +32,25 @@ export class Input {
 
                 this.keyDown = true;
 
+            } else if (event.key === "x") {
+
+                // this.e.scene.playerCont.position.z = -180;
+
             } else if (event.key === "c") {
 
-                console.log("ccc")
-
                 this.e.scene.playerCont.position.z = 210;
-                // this.e.scene.playerCont.position.z = 0;
 
             } else if (event.key === "p") {
 
-                this.e.scene.movePlayer = false
+                // this.e.scene.movePlayer = false
 
             } else if (event.key === "t") {
 
-                this.e.camContX.rotation.x+=this.e.u.ca(2);
+                // this.e.camContX.rotation.x+=this.e.u.ca(2);
 
             } else if (event.key === "g") {
 
-                this.e.camContX.rotation.x-=this.e.u.ca(2);
+                // this.e.camContX.rotation.x-=this.e.u.ca(2);
 
             // } else if (event.key === "b") {
 
@@ -59,21 +60,25 @@ export class Input {
 
             } else if (event.key === "j") {
 
-                this.e.ui.insOb.splashAlpha = 0;
+                // this.e.ui.insOb.splashAlpha = 0;
 
             } else if (event.key === "v") {
 
-                this.e.ui.highlight1()
+                // this.e.ui.highlight1()
 
             } else if (event.key === "b") {
 
-                this.e.ui.highlight2()
+                // this.e.ui.highlight2()
 
             } else if (event.key === "n") {
 
+                console.log(this.e.player1)
+                console.log(this.e.player2)
+                console.log(this.e.player3)
+
                 // this.e.camera.position.z+=2;
 
-                this.e.ui.highlight3()
+                // this.e.ui.highlight3()
 
                 //-------------------------------------------------------
 
@@ -88,14 +93,14 @@ export class Input {
                 // this.e.scene.uniformColor = 0xff0000;
                 // this.e.scene.uniformFlash();
 
-                document.getElementById("meterDiv").style.display = "inline"
+                // document.getElementById("meterDiv").style.display = "inline"
 
             } else if (event.key === "m") {
 
                 // console.log( this.e.u.ca( this.e.camera.rotation.x ) );
                 // console.log( this.e.camera.position.z );
 
-                this.e.ui.highlightReset()
+                // this.e.ui.highlightReset()
 
                 //-------------------------------------------------------
 
@@ -141,62 +146,7 @@ export class Input {
 
         });
 
-        //---touchstart--------------------------------------------------------------------------------------------------------------
-
-        this.ongoingTouches = [];
-
-        document.addEventListener("touchstart", evt => {
-
-            for (var i = 0; i < evt.touches.length; i++) {
-                var found = false;
-
-                //only add the touch if it is not listed yet, prevent doubles
-
-                for (var j = 0; j < this.ongoingTouches.length; j++) {
-
-                    if (evt.touches[i].identifier === this.ongoingTouches[j].identifier) {
-                        found = true;
-                    }
-
-                }
-
-                if (found === false) {
-                    this.ongoingTouches.push(evt.touches[i]);
-                }
-                
-                // console.log( this.ongoingTouches[0] );
-
-                this.e.mouseDown.x = this.ongoingTouches[0].clientX
-                this.e.mouseDown.y = this.ongoingTouches[0].clientY
-            
-            }
-
-        });
-
-        //---mousemove--------------------------------------------------------------------------------------------------------------
-
-        document.addEventListener("mousemove", evt => {
-            
-            // this.e.mouse = new THREE.Vector2();
-            // this.e.mouse.x = (evt.clientX / window.innerWidth) * 2 - 1;
-            // this.e.mouse.y = -(evt.clientY / window.innerHeight) * 2 + 1;
-        
-            if(this.e.mobile===false){
-
-                this.e.mouse = new THREE.Vector2();
-                this.e.mouse.x = evt.clientX
-                this.e.mouse.y = evt.clientY
-            
-            }
-
-        });
-
-        document.addEventListener("mousedown", evt => {
-
-            this.e.mouseDown.x = evt.clientX
-            this.e.mouseDown.y = evt.clientY
-
-        });
+        //---food buttons--------------------------------------------------------------------------------------------------------------
 
         document.getElementById("foodButton1").addEventListener("mousedown", evt => {
 
@@ -209,7 +159,7 @@ export class Input {
 
             if(this.e.scene.gameAction==="shoot" && this.e.mobile===false){
                 console.log("d button2");
-                console.log("---shoot")
+                // console.log("---shoot")
                 this.e.scene.gameAction="pick target"
             }
 
@@ -236,8 +186,8 @@ export class Input {
             console.log("---button2")
 
             if(this.e.scene.gameAction==="shoot" && this.e.mobile===true){
-                console.log("t button2");
-                console.log("---shoot")
+                // console.log("t button2");
+                // console.log("---shoot")
                 this.e.scene.gameAction="pick target"
             }
 
@@ -250,6 +200,75 @@ export class Input {
         
         });
 
+        //---mousemove--------------------------------------------------------------------------------------------------------------
+
+        document.addEventListener("mousedown", evt => {
+
+            this.e.mouseIsDown=true;
+
+            this.e.mouseDown.x = evt.clientX
+            this.e.mouseDown.y = evt.clientY
+
+        });
+
+        document.addEventListener("mousemove", evt => {
+            
+            if(this.e.mobile===false){
+
+                this.e.mouse = new THREE.Vector2();
+                this.e.mouse.x = evt.clientX
+                this.e.mouse.y = evt.clientY
+            
+            }
+
+        });
+
+        document.addEventListener("mouseup", evt => {
+
+            this.e.mouseIsDown=false;
+
+        });
+
+        //---touchstart--------------------------------------------------------------------------------------------------------------
+
+        this.ongoingTouches = [];
+
+        document.addEventListener("touchstart", evt => {
+
+            for (var i = 0; i < evt.touches.length; i++) {
+                var found = false;
+
+                if(evt.touches[i].clientX<50 && evt.touches[i].clientY< 50){
+
+                    console.log("mb hit")
+
+                }else{
+
+                    //only add the touch if it is not listed yet, prevent doubles
+
+                    for (var j = 0; j < this.ongoingTouches.length; j++) {
+
+                        if (evt.touches[i].identifier === this.ongoingTouches[j].identifier) {
+                            found = true;
+                        }
+
+                    }
+
+                    if (found === false) {
+                        this.ongoingTouches.push(evt.touches[i]);
+                    }
+                    
+                    // console.log( this.ongoingTouches[0] );
+
+                    this.e.mouseDown.x = this.ongoingTouches[0].clientX
+                    this.e.mouseDown.y = this.ongoingTouches[0].clientY
+                
+                }
+
+            }
+
+        });
+
         //---touchmove--------------------------------------------------------------------------------------------------------------
 
         this.ongoingTouches = [];
@@ -258,11 +277,13 @@ export class Input {
 
             for (var i = 0; i < evt.touches.length; i++) {
             
-                this.e.touch.x=evt.touches[i].clientX
-                this.e.touch.y=evt.touches[i].clientY
+                this.e.touch.x = evt.touches[0].clientX
+                this.e.touch.y = evt.touches[0].clientY
 
                 this.e.mouse.x = evt.touches[i].clientX
                 this.e.mouse.y = evt.touches[i].clientY
+
+                // console.log(this.e.touch.x);
 
             }
 
@@ -310,29 +331,35 @@ export class Input {
 
         //---touchcancel--------------------------------------------------------------------------------------------------------------
 
-        // document.getElementById("playAgainBut").addEventListener("mousedown", evt => {
+        document.getElementById("playAgainBut").addEventListener("mousedown", evt => {
 
-        //     this.e.scene.playAgain();
+            // this.e.scene.resetGame();
+            this.e.scene.gameAction="play again"
 
-        // });
+        });
 
-        // document.getElementById("playAgainBut").addEventListener("touchstart", evt => {
+        document.getElementById("playAgainBut").addEventListener("touchstart", evt => {
 
-        //     this.e.scene.playAgain();
+            // this.e.scene.resetGame();
+            this.e.scene.gameAction="play again"
 
-        // });
+        });
 
         // --------------------------------------------------------------------------------------------------
 
         document.getElementById("nextChar").addEventListener("mousedown", evt => {
 
-            this.e.scene.nextChar();
+            if(this.e.scene.gameAction==="char select wait"){
+                this.e.scene.nextChar();
+            }
 
         });
 
         document.getElementById("nextChar").addEventListener("touchstart", evt => {
 
-            this.e.scene.nextChar();
+            if(this.e.scene.gameAction==="char select wait"){
+                this.e.scene.nextChar();
+            }
 
         });
 
@@ -340,13 +367,17 @@ export class Input {
 
         document.getElementById("prevChar").addEventListener("mousedown", evt => {
 
-            this.e.scene.prevChar();
-
+            if(this.e.scene.gameAction==="char select wait"){
+                this.e.scene.prevChar();
+            }
+            
         });
 
         document.getElementById("prevChar").addEventListener("touchstart", evt => {
 
-            this.e.scene.prevChar();
+            if(this.e.scene.gameAction==="char select wait"){
+                this.e.scene.prevChar();
+            }
 
         });
 
@@ -354,27 +385,97 @@ export class Input {
 
         document.getElementById("confirmChar").addEventListener("mousedown", evt => {
 
-            this.e.scene.confirmChar();
+            if(this.e.scene.gameAction==="char select wait"){
+                this.e.scene.confirmChar();
+            }
 
         });
 
         document.getElementById("confirmChar").addEventListener("touchstart", evt => {
 
-            this.e.scene.confirmChar();
+            if(this.e.scene.gameAction==="char select wait"){
+                this.e.scene.confirmChar();
+            }
 
         });
 
         // --------------------------------------------------------------------------------------------------
 
-        document.getElementById("resetBut").addEventListener("mousedown", evt => {
+        // document.getElementById("resetBut").addEventListener("mousedown", evt => {
 
-            this.e.scene.resetGame();
+        //     this.e.scene.resetGame();
+
+        // });
+
+        // document.getElementById("resetBut").addEventListener("touchstart", evt => {
+
+        //     this.e.scene.resetGame();
+
+        // });
+
+        document.getElementById("volOn").addEventListener("touchstart", evt => {
+
+            // turn sounds off
+
+            if(this.e.mobile===true){
+                this.e.playSounds=false;
+                document.getElementById("volOn").style.display="none";
+                document.getElementById("volOff").style.display="block";
+                // console.log("vol off")
+                this.e.s.stopAll()
+            }
+            
+        });
+
+        document.getElementById("volOff").addEventListener("touchstart", evt => {
+
+            // turn sounds on
+
+            if(this.e.mobile===true){
+                this.e.playSounds=true;
+                document.getElementById("volOn").style.display="block";
+                document.getElementById("volOff").style.display="none";
+                // console.log("vol on")
+            }
 
         });
 
-        document.getElementById("resetBut").addEventListener("touchstart", evt => {
+        document.getElementById("volOn").addEventListener("mousedown", evt => {
 
-            this.e.scene.resetGame();
+            if(this.e.mobile===false){
+                this.e.playSounds=false;
+                document.getElementById("volOn").style.display="none";
+                document.getElementById("volOff").style.display="block";
+                // console.log("vol on")
+            }
+            
+        });
+
+        document.getElementById("volOff").addEventListener("mousedown", evt => {
+
+            if(this.e.mobile===false){
+                this.e.playSounds=true;
+                document.getElementById("volOn").style.display="block";
+                document.getElementById("volOff").style.display="none";
+                // console.log("vol off")
+            }
+            
+        });
+
+        document.getElementById("otherReset").addEventListener("mousedown", evt => {
+
+            if(this.e.scene.gameAction==="show result menu"){
+                this.e.scene.resetGame();
+            }
+
+        });
+
+        document.getElementById("otherReset").addEventListener("touchstart", evt => {
+
+            if(this.e.scene.gameAction==="show result menu"){
+                this.e.scene.resetGame();
+            }
+
 
         });
 

@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Title</title>
+    <title>Goal Rush</title>
 
     <!-- <link rel="shortcut icon" href="./src/img/tabIcon.png"> -->
 
@@ -12,51 +13,10 @@
 
     <link rel="stylesheet" type="text/css" href="main.css" />
 
-    <!--google fonts---------------------------------------------------------------------------------------------------------- -->
-<!-- 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet"> -->
-
     <!--meta---------------------------------------------------------------------------------------------------------- -->
 
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <!-- <meta
-      name="description"
-      content="Burn Ghost Product Roadmap"
-    />
-    <meta
-      name="keywords"
-      content="Burn Ghost"
-    />
-
-    <meta property="og:url" content="https://burnghost.com/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Burn Ghost Product Roadmap" />
-    <meta
-      property="og:description"
-      content="Explore the future of Burn Ghost with our interactive roadmap."
-    />
-    <meta
-      property="og:image"
-      content="http://burnghost/fbImage.png"
-    />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@burnghostgames" />
-    <meta name="twitter:creator" content="@burnghostgames" />
-    <meta property="og:url" content="https://burnghost.com/" />
-    <meta property="og:title" content="Burn Ghost Product Roadmap" />
-    <meta
-      property="og:description"
-      content="Explore the future of Burn Ghost with our interactive roadmap."
-    />
-    <meta
-      property="og:image"
-      content="http://burnghost/fbImage.png"
-    />  -->
-    
 </head>
 
 <body>
@@ -69,11 +29,14 @@
     <!-- loading -->
 
     <div id="loadingImage">Loading</div>
+    <img id="loadingImage2" src="./src/img/loading.svg">
     <div id="loadingBack"></div>
+    <div id="fader"></div>
 
     <!-- main -->
 
     <script src="./src/howler/howler.js"></script>
+    <script src="./src/qrcode.js"></script>
 
     <canvas id="mycanvas"></canvas>
     <script type="text/javascript" src="./src/pixi.js"></script>
@@ -81,150 +44,146 @@
 
     <div id="testLoc"></div>
 
-    <!-- <div id="foodButtonDiv">
+    <!-- food buttons -->
 
-      <img id="foodButton1" class="foodButton" src="./src/img/foodButton.png">
-      <img id="foodButton2" class="foodButton" src="./src/img/foodButton.png">
-      <img id="foodButton3" class="foodButton" src="./src/img/foodButton.png">
+    <div id="foodDiv1" class="foodDiv">
+      <img id="foodButton1" class="foodButton" src="./src/img/foodButton1.svg" alt="Goldan Move Button">
+    </div>
+    
+    <div id="foodDiv2" class="foodDiv">
+      <img id="foodButton2" class="foodButton" src="./src/img/foodButton2.svg" alt="Big Shot Button">
+    </div>
+    
+    <div id="foodDiv3" class="foodDiv">
+      <img id="foodButton3" class="foodButton" src="./src/img/foodButton3.svg" alt="Electric Pop">
+    </div>
+    
+    <div id="ringDiv" class="foodDiv">
+      <img id="ringImage" class="foodButton" src="./src/img/highlightRing.svg" alt="Highlight Ring">
+    </div>
 
-    </div> -->
+    <!-- food button labels -->
 
-    <!-- <div class="container"> -->
-      <!-- <div class="image-container"> -->
+    <div id="goldenMove" class="boostText">Golden Move</div>
+    <div id="bigShot" class="boostText">Big Shot</div>
+    <div id="electricRush" class="boostText">Electric Pop</div>
+    
+    <!-- meter -->
 
-        <div id="foodDiv1" class="foodDiv">
-          <img id="foodButton1" class="foodButton" src="./src/img/foodButton1.svg">
-        </div>
+    <div id="meterDiv">
+      <img id="meterImage" src="./src/img/meter.svg" alt="Time Meter">
+      <div id="meterBar"></div>
+    </div>
+
+    <!-- char select -->
+
+    <div id="charContainer">
+
+      <div id="selText">Choose your player</div>
+      <div id="charNextPrev">
+
+        <div id="prevChar">Prev</div>
+        <div id="prevNextBar">|</div>
+        <div id="nextChar">Next</div>
         
-        <div id="foodDiv2" class="foodDiv">
-          <img id="foodButton2" class="foodButton" src="./src/img/foodButton2.svg">
-        </div>
+      </div>
+      <div id="confirmChar">Select</div>
+      
+    </div>
+
+    <!-- splash -->
+
+    <img id="splash" src="./src/img/splashLogo.png" alt="Goal Rush Logo">
+
+    <div id="gameScore">0</div>
+    <div id="showScore">250</div>
+
+    <div id="splashBlack"></div>
+
+    <div id="instructions1b">
+
+      <img id="rightInstructions" src="./src/img/instructionsRight.svg" alt="Tap this side to go right">
+      <img id="leftInstructions" src="./src/img/instructionsLeft.svg" alt="Tap this side to go left">
+
+      <div id="rightBlack"></div>
+      <div id="leftBlack"></div>
+
+    </div>
+
+    <!-- instructions -->
+
+    <div id="instructions2">
+
+      <img id="buttonInstructions" src="./src/img/buttonInstructions.svg" alt="Tap the skill button when it lights up for a score boost">
+      <div id="bottomGrad"></div>
+
+    </div>
+
+    <!-- volume buttons -->
+
+    <img id="volOn" class="volBut" src="./src/img/volOn.svg" alt="Volume on">
+    <img id="volOff" class="volBut" src="./src/img/volOff.svg" alt="Volume off">
+
+    <!-- results -->
+
+    <div id="resultDiv">
+
+      <div id="rmTop" class="resultMenuItems">
+
+        <img id="pointsLogo" src="./src/img/pointsLogo.svg" alt="MyMcDonald’s Logo">
+        <div id="scoreDisplay">1000 pts</div>
         
-        <div id="foodDiv3" class="foodDiv">
-          <img id="foodButton3" class="foodButton" src="./src/img/foodButton3.svg">
-        </div>
-        
-        <div id="ringDiv" class="foodDiv">
-          <img id="ringImage" class="foodButton" src="./src/img/highlightRing.svg">
-        </div>
+      </div>
+      
+      <div id="pointsBar"></div>
 
-        <div id="meterDiv">
-          <img id="meterImage" src="./src/img/meter.svg">
-          <div id="meterBar"></div>
-        </div>
+      <img id="resPlayer1" class="resPlayer" src="./src/img/resultBack1b.png" alt="Result window player">
+      <img id="resPlayer2" class="resPlayer" src="./src/img/resultBack2b.png" alt="Result window player">
+      <img id="resPlayer3" class="resPlayer" src="./src/img/resultBack3b.png" alt="Result window player">
 
-        <!-- ---- -->
+      <div id="resultInnerDiv">
 
-        <div id="charContainer">
+        <div id="resultMenu">
 
-          <div id="selText">Choose your avatar</div>
-          <div id="charNextPrev">
+          <div id="topContainer">
 
-            <div id="prevChar">Prev</div>
-            <div id="prevNextBar"></div>
-            <div id="nextChar">Next</div>
-            
-          </div>
-          <div id="confirmChar">Select</div>
-          
-          <!-- <div class="top-images">
-            <img class="charSelButton" src="./src/img/charSel1.png">
-            <img class="charSelButton" src="./src/img/charSel2.png">
-          </div>
-
-          <div class="bottom-image">
-            <img class="charSelButton" src="./src/img/charSel3.png">
-          </div> -->
-
-        </div>
-
-        <!-- <div id="charSel">
-
-          <img id="charSel1" class="charSelButton" src="./src/img/charSel1.png">
-          <img id="charSel2" class="charSelButton" src="./src/img/charSel2.png">
-          <img id="charSel3" class="charSelButton" src="./src/img/charSel3.png">
-
-        </div> -->
-
-        <!-- ---- -->
-
-        <img id="splash"  src="./src/img/splashLogo.png">
-
-        <div id="gameScore">0</div>
-        <div id="showScore">250</div>
-
-        <div id="splashBlack"></div>
-
-        <!-- ---- -->
-
-        <div id="resultDiv">
-          <div id="resultInnerDiv">
-
-            <div id="resultMenu">
-
-              <div id="rmTop" class="resultMenuItems">
-
-                  <img id="pointsLogo" src="./src/img/pointsLogo.svg">
-                  <div id="scoreDisplay">1000 pts</div>
-                
-              </div>
-              
-              <div id="rmBar" class="resultMenuItems">
-                <img id="pointsBar" src="./src/img/pointsBar.svg">
-              </div>
-
-              <div id="rmTitle" class="resultMenuItems">Nice One!</div>
-
-              <div id="rmImage" class="resultMenuItems">
-
-                <div id="dateAndScore">Date:<br>04/04/24<br><br>Time:<br>11:05<br><br>Score:<br>1000</div>
-
-              </div>
-
-              <div id="rmText" class="resultMenuItems">
-                <span class="mdBold">Scan the QR code with your mobile to replay the game with your MyMcDonald's Rewards Points, or to redeem your prize</span>
-                </div>
-              <div id="rmButton" class="resultMenuItems">
-                <img id="qrCode" src="./src/img/qrCode.png">
-                <div id="resetBut"><a>Reset</a></div>
-                <!-- <div id="playAgainBut">Play Again</div> -->
-                <!-- <div id="redeemBut"><a href="http://mcdonalds.com">Redeem Prize</a></div> -->
-              </div>
+            <div id="topContainerBar">
+              <div id="rmTitle" >Think you can top that?</div>
             </div>
-
             
+            <div id="rmContent">
+
+              <div id="qrCode"></div>
+
+              <div id="rmText">
+                <span id="rmt1" class="mdBold">Scan the QR code to play again on your mobile</span><span id="rmt2" class="mdReg"> for only 50 MyMcDonald’s Rewards points—or to redeem a prize</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div id="resultYellow">
+
+            <div id="playAgainBut">Play Again (50 Pts)</div>
+
+            <div id="rightYellow">
+
+              <div id="finalScore">2345</div>
+              <div id="finalScore2">Final Score</div>
+
+            </div>
+              
           </div>
         </div>
 
-        <!-- ---- -->
+      <div id="dateDiv">
+        <div id="resultDate">14 March</div>
+        <div id="resultTime">11:01 AM</div>
+      </div>
 
-        <div id="instructions1">
+    </div>
 
-          <img id="rightInstructions" src="./src/img/instructionsRight.svg">
-          <img id="leftInstructions" src="./src/img/instructionsLeft.svg">
-
-          <div id="rightBlack"></div>
-          <div id="leftBlack"></div>
-
-        </div>
-
-        <!-- ---- -->
-
-        <div id="instructions2">
-
-          <img id="buttonInstructions" src="./src/img/buttonInstructions.svg">
-          <div id="bottomGrad"></div>
-
-        </div>
-
-        <!-- ---- -->
-
-        <div id="goldenMove" class="boostText">Golden Move</div>
-        <div id="bigShot" class="boostText">Big Shot</div>
-        <div id="electricRush" class="boostText">Electric Pop</div>
-        
-      <!-- </div> -->
-    <!-- </div> -->
+    <div id="otherReset"></div>
 
     <!-- mixer -->
 
@@ -263,5 +222,5 @@
   
     </div>
       
-</body>
+  </body>
 </html>

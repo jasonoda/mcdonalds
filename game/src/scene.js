@@ -9,31 +9,71 @@ export class Scene {
 		this.uniformArray3=[];
 		this.uniformArray4=[];
 		this.uniformArray5=[];
+		this.switchShirtMatCount=0
+		this.usePlayerRot=true;
+
+		this.goldenMove=0;
+		this.sodaRush=0;
+		this.energy=0;
+		this.penaltyScore=0;
+		this.myMult=1;
+
+		this.tally = new Object();
+		this.tally.score = 0;
+		this.tally.points = 0;
+		this.myMcdPoints = 1000;
+
+		// var qr = new QRCode(document.getElementById("qrTest"), {
+		// 	text: "http://google.com", // URL or text to encode
+		// 	width: 128, // Width of QR code in pixels
+		// 	height: 128, // Height of QR code in pixels
+		// 	colorDark: "#000000", // Color of the dark squares
+		// 	colorLight: "#ffffff", // Color of the light squares
+		// 	correctLevel: QRCode.CorrectLevel.H // Error correction level (L, M, Q, H)
+		// });
+
 	}
 
 	resetGame(){
 
 		console.log("reset game ")
 
+		this.e.mobileGameNumber+=1;
+
 		this.e.loadBack=1;
+
+		this.tally.score = 0;
+		this.tally.points = 0;
 
 		this.playerAction = "set";
 		this.count = 0;
 		this.movePlayer = false;
 		this.aniAction = "go"
 		this.ballAction = "start"
-		this.gameAction = "splash";
-		this.e.ui.uiAction = "splash"
-		this.e.ui.insAction = "splash wait";
+		// this.gameAction = "char set";
+		this.gameAction = "char set";
+		this.e.ui.insAction = "ins1 wait";
 		this.score=0;
 
+		this.e.ui.insOb.charAlpha = 0;
+		document.getElementById("charContainer").style.pointerEvents="none"
+		document.getElementById("foodDiv1").style.pointerEvents="auto"
+		document.getElementById("foodDiv2").style.pointerEvents="auto"
+		document.getElementById("foodDiv3").style.pointerEvents="auto"
+
+		this.goldenMove=0;
+		this.sodaRush=0;
+		this.energy=0;
+		this.penaltyScore=0;
+		this.myMult=1;
+		
 		this.e.camera.position.z = 17;
         this.e.camContY.position.y = 3.75;
 		this.e.setCamPosition=false;
 		this.e.camContX.rotation.x = this.e.u.ca(0)
 		
 		this.e.ui.insOb = new Object();
-		this.e.ui.insOb.splashAlpha = 1;
+		this.e.ui.insOb.splashAlpha = 0;
 		this.e.ui.insOb.charAlpha = 0;
 		this.e.ui.insOb.insAlpha1 = 0;
 		this.e.ui.insOb.insAlpha2 = 0;
@@ -50,7 +90,14 @@ export class Scene {
 		this.ballCont2.position.x=0;
 		this.ballCont2.position.z=0;
 
+		this.usePlayerRot=true
+
 		this.lerpCamera = false;
+
+		this.playerCont.position.y=0;
+		this.playerCont.position.x=0;
+		this.e.camContY.position.x=0;
+		this.e.camContY.rotation.y=0;
 		
 		// this.playerCont.position.z = this.fieldStart;
 		// this.e.camContY.position.z = this.playerCont.position.z
@@ -100,7 +147,6 @@ export class Scene {
 
 		}
 
-		this.gameAction="reset"
 		document.getElementById("charContainer").style.pointerEvents="auto"
 
 		//hidde the timer
@@ -111,64 +157,70 @@ export class Scene {
 
 	positionPlayersForSplash(){
 
-		this.e.player1.animMixer.stopAllAction();
-		this.e.player2.animMixer.stopAllAction();
-		this.e.player3.animMixer.stopAllAction();
+		if(this.e.loader.loadPlayer1===true){
+			this.e.player1.animMixer.stopAllAction();
+			this.e.player1.position.y=0;
+			this.e.player1.rotation.y = this.e.u.ca(120);
+			var direction = new THREE.Vector3(0, 0, 1);
+			direction.applyQuaternion(this.e.player1.quaternion);
+			this.e.player1.position.add(direction.multiplyScalar(1));
+			this.idleClip1 = THREE.AnimationClip.findByName(this.e.player1.animations, "Idle");
+			this.idleAnimation1 = this.e.player1.animMixer.clipAction(this.idleClip1);
+			this.idleAnimation1.reset()
+			this.idleAnimation1.play()
+		}
 
-		this.e.player1.position.y=0;
-		this.e.player2.position.y=0;
-		this.e.player3.position.y=0;
+		if(this.e.loader.loadPlayer2===true){
+			this.e.player2.animMixer.stopAllAction();
+			this.e.player2.position.y=0;
+			this.e.player2.rotation.y = this.e.u.ca(0);
+			var direction = new THREE.Vector3(0, 0, 1);
+			direction.applyQuaternion(this.e.player2.quaternion);
+			this.e.player2.position.add(direction.multiplyScalar(1));
+			this.idleClip2 = THREE.AnimationClip.findByName(this.e.player2.animations, "Idle");
+			this.idleAnimation2 = this.e.player2.animMixer.clipAction(this.idleClip2);
+			this.idleAnimation2.reset()
+			this.idleAnimation2.play()
+		}
 
-		this.e.player1.rotation.y = this.e.u.ca(120);
-		this.e.player2.rotation.y = this.e.u.ca(0);
-		this.e.player3.rotation.y = this.e.u.ca(240);
-
-		var direction = new THREE.Vector3(0, 0, 1);
-		direction.applyQuaternion(this.e.player1.quaternion);
-		this.e.player1.position.add(direction.multiplyScalar(1));
-
-		var direction = new THREE.Vector3(0, 0, 1);
-		direction.applyQuaternion(this.e.player2.quaternion);
-		this.e.player2.position.add(direction.multiplyScalar(1));
-
-		var direction = new THREE.Vector3(0, 0, 1);
-		direction.applyQuaternion(this.e.player3.quaternion);
-		this.e.player3.position.add(direction.multiplyScalar(1));
-
-		this.idleClip1 = THREE.AnimationClip.findByName(this.e.player1.animations, "Idle");
-		this.idleAnimation1 = this.e.player1.animMixer.clipAction(this.idleClip1);
-		this.idleAnimation1.reset()
-		this.idleAnimation1.play()
-		
-		this.idleClip2 = THREE.AnimationClip.findByName(this.e.player2.animations, "Idle");
-		this.idleAnimation2 = this.e.player2.animMixer.clipAction(this.idleClip2);
-		this.idleAnimation2.reset()
-		this.idleAnimation2.play()
-		
-		this.idleClip3 = THREE.AnimationClip.findByName(this.e.player3.animations, "Idle");
-		this.idleAnimation3 = this.e.player3.animMixer.clipAction(this.idleClip3);
-		this.idleAnimation3.reset()
-		this.idleAnimation3.play()
+		if(this.e.loader.loadPlayer3===true){
+			this.e.player3.animMixer.stopAllAction();
+			this.e.player3.position.y=0;
+			this.e.player3.rotation.y = this.e.u.ca(240);
+			var direction = new THREE.Vector3(0, 0, 1);
+			direction.applyQuaternion(this.e.player3.quaternion);
+			this.e.player3.position.add(direction.multiplyScalar(1));
+			this.idleClip3 = THREE.AnimationClip.findByName(this.e.player3.animations, "Idle");
+			this.idleAnimation3 = this.e.player3.animMixer.clipAction(this.idleClip3);
+			this.idleAnimation3.reset()
+			this.idleAnimation3.play()
+		}
 
 	}
 
 	
 	loadPlayer(num){
 
+		console.log("LOAD PLAYER "+num)
+
+		if(this.e.loader.loadPlayer1===true){
+			this.e.player1.animMixer.stopAllAction();
+			this.playerCont.add(this.e.player1);
+			this.e.player1.scale.set(.015, .015, .015);
+		}
 		
-		this.e.player1.animMixer.stopAllAction();
-		this.e.player2.animMixer.stopAllAction();
-		this.e.player3.animMixer.stopAllAction();
-
-
-		this.playerCont.add(this.e.player1);
-		this.playerCont.add(this.e.player2);
-		this.playerCont.add(this.e.player3);
-			
-		this.e.player1.scale.set(.015, .015, .015);
-		this.e.player2.scale.set(1.5, 1.5, 1.5);
-		this.e.player3.scale.set(1.5, 1.5, 1.5);
-
+		if(this.e.loader.loadPlayer2===true){
+			this.e.player2.animMixer.stopAllAction();
+			this.playerCont.add(this.e.player2);
+			this.e.player2.scale.set(1.5, 1.5, 1.5);
+		}
+		
+		if(this.e.loader.loadPlayer3===true){
+			this.e.player3.animMixer.stopAllAction();
+			this.playerCont.add(this.e.player3);
+			this.e.player3.scale.set(1.5, 1.5, 1.5);
+		}
+		
 		//-----------------------------------------
 
 		if(num===1){
@@ -182,41 +234,32 @@ export class Scene {
 		this.animations = this.e.myPlayerModel.animations;
 
 		this.runningClip = THREE.AnimationClip.findByName(this.animations, "Running");
-		this.runningAction = this.e.myPlayerModel.animMixer.clipAction(this.runningClip);
+		this.runningAction = this.e.myPlayerModel.animMixer.clipAction(this.runningClip); this.runningAction.name = "runningAction";
 
 		this.spinningClip = THREE.AnimationClip.findByName(this.animations, "Spinning");
-		this.spinningAction = this.e.myPlayerModel.animMixer.clipAction(this.spinningClip)
+		this.spinningAction = this.e.myPlayerModel.animMixer.clipAction(this.spinningClip); this.spinningAction.name = "spinningAction";
 
 		this.strikeClip = THREE.AnimationClip.findByName(this.animations, "Strike");
-		this.strikeAction = this.e.myPlayerModel.animMixer.clipAction(this.strikeClip)
+		this.strikeAction = this.e.myPlayerModel.animMixer.clipAction(this.strikeClip); this.strikeAction.name = "strikeAction";
 
 		this.idleClip = THREE.AnimationClip.findByName(this.animations, "Idle");
-		this.idleAction = this.e.myPlayerModel.animMixer.clipAction(this.idleClip)
+		this.idleAction = this.e.myPlayerModel.animMixer.clipAction(this.idleClip); this.idleAction.name = "idleAction";
 
 		this.victoryClip = THREE.AnimationClip.findByName(this.animations, "Victory");
-		this.victoryAction = this.e.myPlayerModel.animMixer.clipAction(this.victoryClip)
+		this.victoryAction = this.e.myPlayerModel.animMixer.clipAction(this.victoryClip); this.victoryAction.name = "victoryAction";
 
 		this.rushClip = THREE.AnimationClip.findByName(this.animations, "SodaRush");
-		this.rushAction = this.e.myPlayerModel.animMixer.clipAction(this.rushClip)
+		this.rushAction = this.e.myPlayerModel.animMixer.clipAction(this.rushClip); this.rushAction.name = "rushAction";
 		this.rushAction.setEffectiveWeight(1)
 		this.rushAction.enabled=true;
 
-		// if(num===1){
-
-		// 	this.stumbleBackClip = THREE.AnimationClip.findByName(this.animations, "Stumble");
-			
-		// }else{
-
-			this.stumbleBackClip = THREE.AnimationClip.findByName(this.animations, "StumbleBack");
-			
-		// }
-
-		this.stumbleBackAction = this.e.myPlayerModel.animMixer.clipAction(this.stumbleBackClip);
+		this.stumbleBackClip = THREE.AnimationClip.findByName(this.animations, "StumbleBack");
+		this.stumbleBackAction = this.e.myPlayerModel.animMixer.clipAction(this.stumbleBackClip); this.stumbleBackAction.name = "stumbleBackAction";
 		this.stumbleBackAction.setEffectiveWeight(1)
 		this.stumbleBackAction.enabled=true;
 
 		this.stumbleClip = THREE.AnimationClip.findByName(this.animations, "Stumble");
-		this.stumbleAction = this.e.myPlayerModel.animMixer.clipAction(this.stumbleClip);
+		this.stumbleAction = this.e.myPlayerModel.animMixer.clipAction(this.stumbleClip); this.stumbleAction.name = "stumbleAction";
 		this.stumbleAction.setEffectiveWeight(1)
 		this.stumbleAction.enabled=true;
 		
@@ -298,18 +341,14 @@ export class Scene {
 				
 			this.dl_shad.castShadow = true;
 
-			this.shadowMapMult=.125;
-
+			this.shadowMapMult=.5;
 			this.dl_shad.shadow.mapSize.width = Math.round(4096*this.shadowMapMult);
 			this.dl_shad.shadow.mapSize.height = Math.round(4096*this.shadowMapMult);
-			// this.dl_shad.shadow.bias = 0.001;
-
-			this.e.sSize = 55;
-			// this.e.sSize = 5;
+			this.e.sSize = 15;
 			this.dl_shad.shadow.camera.near = 0.1;
 			this.dl_shad.shadow.camera.far = 380;
-			this.dl_shad.shadow.camera.left = -this.e.sSize/2;
-			this.dl_shad.shadow.camera.right = this.e.sSize/2;
+			this.dl_shad.shadow.camera.left = -this.e.sSize;
+			this.dl_shad.shadow.camera.right = this.e.sSize;
 			this.dl_shad.shadow.camera.top = this.e.sSize;
 			this.dl_shad.shadow.camera.bottom = -this.e.sSize;
 			this.dl_shad.shadow.radius = 2;
@@ -377,7 +416,17 @@ export class Scene {
 
 		// animatedd body
 
-		this.loadPlayer(3)
+		console.log("LP 3")
+		if(this.e.char==="1"){
+			this.loadPlayer(1)
+		}else if(this.e.char==="2"){
+			this.loadPlayer(2)
+		}else if(this.e.char==="3"){
+			this.loadPlayer(3)
+		}else {
+			this.loadPlayer(3)
+		}
+		
 
 		//-----------------------------------------------------------
 
@@ -421,6 +470,7 @@ export class Scene {
 		this.ballTween = gsap.to(this.ballTweenObject, { y: 0, z: 2.7, duration: 0.365, repeat: -1, yoyo: true, ease: "sine.expo"});
 
 		this.crashers=[];
+		this.crashersDummy=[];
 
 		//---MATERIALS--------------------------------------------------------------------------
 
@@ -500,10 +550,21 @@ export class Scene {
 						color: 0xbf4240,
 						map: this.saveMat,
 					});
-				} else if (object.material.name === "blueSeats") {
-					object.material = new THREE.MeshStandardMaterial({
+				// } else if (object.material.name === "blueSeats2") {
+
+				// 	object.material = new THREE.MeshStandardMaterial({
+				// 		wireframe: false,
+				// 		// color: 0xff0000,
+				// 		color: 0x06172a,
+				// 	});
+
+				} else if (object.material.name === "runner") {
+
+					object.material = new THREE.MeshBasicMaterial({
 						wireframe: false,
-						color: 0x06172a,
+						color: 0xffffff,
+						fog: false,
+						map: this.saveMat,
 					});
 					
 				} else if (object.material.name === "upperFence") {
@@ -570,7 +631,7 @@ export class Scene {
 						color: 0x171717,
 					});
 				} else if (object.material.name === "jumbotron") {
-					object.material = new THREE.MeshStandardMaterial({
+					object.material = new THREE.MeshBasicMaterial({
 						wireframe: false,
 						color: 0xffffff,
 						fog: false,
@@ -609,28 +670,28 @@ export class Scene {
 
 			} else if (object.name === "lines" || object.name === "lines2" || object.name === "lines3") {
 
-				object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xff960d });
+				object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xa36200 });
 
 				object.material.transparent = true;
-				object.material.opacity = 0.5;
+				object.material.opacity = 0.75;
 				object.position.y += -0.025;
 
 			} else if (object.name === "logo") {
 
-				object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xff960d });
+				object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xa36200 });
 
 				object.receiveShadow=true;
 
 				object.material.transparent = true;
-				object.material.opacity = 0.5;
+				object.material.opacity = 0.75;
 				object.position.y += -0.05;
 
 				this.fieldLogo = object;
 
 			} else if (object.name === "seats") {
-				object.material = new THREE.MeshStandardMaterial({
+				object.material = new THREE.MeshBasicMaterial({
 					wireframe: false,
-					color: 0x0e1a1a,
+					color: 0x01060b,
 				});
 				this.seats = object;
 			} else if (object.name === "field") {
@@ -696,7 +757,7 @@ export class Scene {
 				object.startTexture=this.e.target2000;
 				object.highlightTexture=this.e.target2000_b;
 				object.material.map=object.startTexture;
-				object.material = new THREE.MeshStandardMaterial({ color: 0xffffff, map: object.startTexture });
+				object.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: object.startTexture });
 
 				object.startRot = object.cont.rotation.x;
 
@@ -712,7 +773,7 @@ export class Scene {
 				object.startTexture=this.e.target1000;
 				object.highlightTexture=this.e.target1000_b;
 				object.material.map=object.startTexture;
-				object.material = new THREE.MeshStandardMaterial({ color: 0xffffff, map: object.startTexture });
+				object.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: object.startTexture });
 
 				object.startRot = object.cont.rotation.x;
 
@@ -728,7 +789,7 @@ export class Scene {
 				object.startTexture=this.e.target500;
 				object.highlightTexture=this.e.target500_b;
 				object.material.map=object.startTexture;
-				object.material = new THREE.MeshStandardMaterial({ color: 0xffffff, map: object.startTexture });
+				object.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: object.startTexture });
 
 				object.startRot = object.cont.rotation.x;
 
@@ -744,7 +805,7 @@ export class Scene {
 				object.startTexture=this.e.target1000;
 				object.highlightTexture=this.e.target1000_b;
 				object.material.map=object.startTexture;
-				object.material = new THREE.MeshStandardMaterial({ color: 0xffffff, map: object.startTexture });
+				object.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: object.startTexture });
 
 				object.startRot = object.cont.rotation.x;
 
@@ -760,7 +821,7 @@ export class Scene {
 				object.startTexture=this.e.target500;
 				object.highlightTexture=this.e.target500_b;
 				object.material.map=object.startTexture;
-				object.material = new THREE.MeshStandardMaterial({ color: 0xffffff, map: object.startTexture });
+				object.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: object.startTexture });
 
 				object.startRot = object.cont.rotation.x;
 
@@ -776,7 +837,7 @@ export class Scene {
 				object.startTexture=this.e.target1000;
 				object.highlightTexture=this.e.target1000_b;
 				object.material.map=object.startTexture;
-				object.material = new THREE.MeshStandardMaterial({ color: 0xffffff, map: object.startTexture });
+				object.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: object.startTexture });
 
 				object.startRot = object.cont.rotation.x;
 
@@ -792,7 +853,7 @@ export class Scene {
 				object.startTexture=this.e.target2000;
 				object.highlightTexture=this.e.target2000_b;
 				object.material.map=object.startTexture;
-				object.material = new THREE.MeshStandardMaterial({ color: 0xffffff, map: object.startTexture });
+				object.material = new THREE.MeshBasicMaterial({ color: 0xffffff, map: object.startTexture });
 
 				object.startRot = object.cont.rotation.x;
 
@@ -909,6 +970,11 @@ export class Scene {
 		this.makePellet(-240-5, 0);
 		this.makeConeLine(-250, 2);
 
+		this.runVolume = 0;
+		this.runLoop = new Howl({src: ['./src/sounds/runLoop.mp3'], volume:.5, loop:true});
+		this.runLoop.play();
+	
+
 	}
 
     playAgain(){
@@ -972,7 +1038,7 @@ export class Scene {
 			this.holeBox.position.x = i*11.9;
 			this.mainCont.add( this.holeBox );
 	
-			this.crashers.push(this.holeBox)
+			this.crashersDummy.push(this.holeBox)
 
 			//
 
@@ -981,6 +1047,19 @@ export class Scene {
 			this.dummy.position.x = i*11.9;
 			this.mainCont.add( this.dummy );
 
+			this.dummy.traverse((object) => {
+
+				if(object.name==="lines"){
+
+					object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xa36200 });
+
+					object.material.transparent = true;
+					object.material.opacity = 0.75;
+
+				}
+				
+			});
+			
 		}
 
 		var geometry = new THREE.BoxGeometry(1, 21, 1);
@@ -1028,9 +1107,14 @@ export class Scene {
 
 			}else if(this.dummyLines[i].action==="ready"){
 
-				if(this.hasPushedButton1===true){
+				console.log(">>>"+this.myCurrentAnimation);
 
+				if(this.hasPushedButton1===true && this.myCurrentAnimation!=="stumbleAction"){
+
+					this.goldenMove+=1;
 					this.getScore(1000);
+
+					this.e.s.p("zoom")
 
 					this.uniformFlash()
 
@@ -1133,7 +1217,11 @@ export class Scene {
 
 		this.warning.traverse((object) => {
 
-			object.material = new THREE.MeshBasicMaterial({ color: 0xffbc0d, transparent: true, opacity:.5 });
+			object.material = new THREE.MeshStandardMaterial({ wireframe: false, color: 0xa36200 });
+
+			object.material.transparent = true;
+			object.material.opacity = 0.75;
+			object.position.y += -0.025;
 
 		});
 
@@ -1172,7 +1260,7 @@ export class Scene {
 				var d = this.hurdleLines[i].position.z - this.playerCont.position.z
 				if(d<5 && this.playerAction==="move"){
 
-					console.log("hurdle crash "+i)
+					// console.log("hurdle crash "+i)
 
 					this.getScore(-500)
 
@@ -1185,9 +1273,10 @@ export class Scene {
 
 				if(this.hasPushedButton3===true){
 
-					console.log("success")
+					// console.log("success")
 
 					this.getScore(1000, true);
+					this.sodaRush+=1;
 
 					this.uniformFlash()
 
@@ -1226,9 +1315,11 @@ export class Scene {
 
 		for (var i = -6; i < 6; i++) {
 
-			if(type===1 && i===2 || type===1 && i===-2 || type===1 && i===5 || type===1 && i===-5){
+			if(type===1 && i===1 || type===1 && i===-1 || type===1 && i===5 || type===1 && i===-5){
 
 				this.cone = this.e.sprinkler.clone();
+
+				this.cone.num = i;
 
 				this.cone.traverse((object) => {
 
@@ -1237,8 +1328,6 @@ export class Scene {
 						this.saveMap = object.material.map;
 
 						if(object.material.name==="water"){
-
-							console.log("found water")
 
 							object.material = new THREE.MeshBasicMaterial({ wireframe: false, map: this.saveMap, color: 0xffffff, transparent: true});
 							this.cone.water=object;
@@ -1278,6 +1367,12 @@ export class Scene {
 					this.cone.add( this.crashBox );
 
 					this.waterHits.push(this.crashBox);
+
+				}
+
+				if(i<0){
+					this.cone.rotation.y+=this.e.u.ca(90)
+				}else{
 
 				}
 
@@ -1338,7 +1433,7 @@ export class Scene {
 
 			for(var i=0; i<this.sprinklers.length; i++){
 
-				this.sprinklers[i].spray
+				// this.sprinklers[i].spray
 
 				if(this.sprinklers[i].water.material.opacity===.8){
 
@@ -1357,7 +1452,13 @@ export class Scene {
 		for(var i=0; i<this.sprinklers.length; i++){
 
 			this.sprinklers[i].sprayTexture.offset.y+=this.e.dt*-.2
-			this.sprinklers[i].rotation.y+=this.e.dt
+
+			if(this.sprinklers[i].num<0){
+				this.sprinklers[i].rotation.y+=this.e.dt
+			}else{
+				this.sprinklers[i].rotation.y+=this.e.dt
+			}
+			
 			
 
 		}
@@ -1375,9 +1476,11 @@ export class Scene {
 			const box1 = new THREE.Box3().setFromObject(this.playerHit);
 			const box2 = new THREE.Box3().setFromObject(this.waterHits[i]);
 
-			if (box1.intersectsBox(box2) === true && this.waterHitDelay<=0) {
+			if (box1.intersectsBox(box2) === true && this.waterHitDelay<=0 && this.gameAction==="run") {
 
 				// console.log("hit")
+
+				this.e.s.p("splash")
 
 				this.waterHitDelay=2;
 
@@ -1401,68 +1504,83 @@ export class Scene {
 		
 		// create clone object
 
-		this.pellet = this.e.ring.clone();
+		for(var i=0; i<3; i++){
+				
+			this.pellet = this.e.ring.clone();
 
-		this.pellet.traverse( ( object ) =>  {
+			this.pellet.traverse( ( object ) =>  {
 
-			if(object.name==="glowBall"){
-				// object.material = new THREE.MeshStandardMaterial({ wireframe: false, envMap: this.e.reflectionTexture, metalness: .5, roughness: 0.1, color: 0xffffff});
-				object.material = new THREE.MeshBasicMaterial({ wireframe: false, color: 0xffffff});
+				if(object.name==="glowBall"){
+					// object.material = new THREE.MeshStandardMaterial({ wireframe: false, envMap: this.e.reflectionTexture, metalness: .5, roughness: 0.1, color: 0xffffff});
+					object.material = new THREE.MeshBasicMaterial({ wireframe: false, color: 0xffffff});
+				}
+
+				object.castShadow=false
+
+			});
+
+			// set up
+
+			this.pellet.scale.x = this.pellet.scale.y = this.pellet.scale.z = 0.3;
+			this.pellet.castShadow = false;
+			this.pellet.receiveShadow = false;
+			this.pellet.glows=[];
+			
+			this.pellet.position.y = 1.2;
+			this.pellet.position.y = 0;
+			this.pellet.position.z = z;
+
+			if(addRan===false){
+				this.pellet.position.x = x;
+			}else{
+				this.pellet.position.x = x + (this.e.u.nran(4)*10)/10;
 			}
 
-			object.castShadow=false
+			if(i===0){
 
-		});
+			}else if(i===1){
+				this.pellet.position.x+=15;
+			}else if(i===2){
+				this.pellet.position.x-=15;
+			}
+			
+			
+			this.pellet.action = "ready";
 
-		// set up
+			this.mainCont.add(this.pellet);
+			this.pellets.push(this.pellet);
 
-		this.pellet.scale.x = this.pellet.scale.y = this.pellet.scale.z = 0.3;
-		this.pellet.castShadow = false;
-		this.pellet.receiveShadow = false;
-		this.pellet.glows=[];
-		
-		this.pellet.position.y = 1.2;
-		this.pellet.position.y = 0;
-		this.pellet.position.z = z;
+			// make glows
 
-		if(addRan===false){
-			this.pellet.position.x = x;
-		}else{
-			this.pellet.position.x = x + (this.e.u.nran(4)*10)/10;
-		}
+			for(var j=0; j<40/3; j++){
 
-		
-		
-		this.pellet.action = "ready";
+				// this.planeGeo = new THREE.PlaneGeometry( 1.1, 1.1 );
+				// this.planeMat = new THREE.MeshStandardMaterial({ map: this.e.glowTexture, transparent:true, side: THREE.DoubleSide});
 
-		this.mainCont.add(this.pellet);
-		this.pellets.push(this.pellet);
+				this.planeGeo = new THREE.SphereGeometry( 0.2, 10, 8 );
+				this.planeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1});
 
-		// make glows
+				this.glintPlane = new THREE.Mesh( this.planeGeo, this.planeMat );
+				this.mainCont.add( this.glintPlane );
 
-		for(var i=0; i<40; i++){
+				this.glintPlane.scale.x = this.glintPlane.scale.y = this.glintPlane.scale.z = 0
 
-			// this.planeGeo = new THREE.PlaneGeometry( 1.1, 1.1 );
-			// this.planeMat = new THREE.MeshStandardMaterial({ map: this.e.glowTexture, transparent:true, side: THREE.DoubleSide});
+				this.glintPlane.position.x = this.pellet.position.x;
+				this.glintPlane.position.y = this.pellet.position.y;
+				this.glintPlane.position.z = this.pellet.position.z;
+				this.glintPlane.startx = this.pellet.position.z;
+				this.glintPlane.starty = this.pellet.position.y;
+				this.glintPlane.startz = this.pellet.position.z;
 
-			this.planeGeo = new THREE.SphereGeometry( 0.2, 10, 8 );
-			this.planeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1});
+				this.glintPlane.myPellet = this.pellet;
 
-			this.glintPlane = new THREE.Mesh( this.planeGeo, this.planeMat );
-			this.mainCont.add( this.glintPlane );
+				this.pellet.glows.push(this.glintPlane);
 
-			this.glintPlane.scale.x = this.glintPlane.scale.y = this.glintPlane.scale.z = 0
+			}
 
-			this.glintPlane.position.x = this.pellet.position.x;
-			this.glintPlane.position.y = this.pellet.position.y;
-			this.glintPlane.position.z = this.pellet.position.z;
-			this.glintPlane.startx = this.pellet.position.z;
-			this.glintPlane.starty = this.pellet.position.y;
-			this.glintPlane.startz = this.pellet.position.z;
-
-			this.glintPlane.myPellet = this.pellet;
-
-			this.pellet.glows.push(this.glintPlane);
+			if(addRan===false){
+				i=5;
+			}
 
 		}
 
@@ -1565,9 +1683,12 @@ export class Scene {
 
 				this.pellets[i].action = "done";
 
-				this.getScore(250);
+				this.e.s.p("coin")
 
-				console.log("add 250")
+				this.getScore(250);
+				this.energy+=1;
+
+				// console.log("add 250")
 
 				gsap.to(this.pellets[i].scale, {x: 0, y: 0, z: 0, duration: 0.2, ease: "sine.out" });
 				gsap.to(this.pellets[i].position, {y: this.pellets[i].position.y+.5, duration: 0.2, ease: "sine.out" });
@@ -1598,8 +1719,10 @@ export class Scene {
 
 		this.uniformColor2 = new THREE.Color( "#00fff6" );
 
-		var endColor = new THREE.Color( "#111111" );
-    	gsap.to(this.uniformColor2, { r: endColor.r, g: endColor.g, b: endColor.b, duration: 1});
+		// var endColor = new THREE.Color( "#111111" );
+    	// gsap.to(this.uniformColor2, { r: endColor.r, g: endColor.g, b: endColor.b, duration: 1});
+
+		this.switchShirtMatCount=1.3;
 
 
 		this.uniformColor3 = new THREE.Color( "#00fff6" );
@@ -1622,6 +1745,10 @@ export class Scene {
 
 	getScore(num, height){
 
+		if(num<0 && this.score>0){
+			this.penaltyScore+=num;
+		}
+
 		this.score+=num;
 
 		if(this.score<0){
@@ -1637,7 +1764,7 @@ export class Scene {
 		this.showScore.innerHTML=num+"";
 
 		if(height===true){
-			console.log('extraheight')
+			// console.log('extraheight')
 			this.extraHeight=200;
 		}else{
 			this.extraHeight=0;
@@ -1657,6 +1784,8 @@ export class Scene {
 
 		if(this.charCount<=0){
 
+			this.e.s.p("woosh")
+
 			console.log("next char")
 	
 			gsap.to(this.playerCont.rotation, { y: this.playerCont.rotation.y+this.e.u.ca(120), duration: .25, ease: "expo.out"});
@@ -1675,6 +1804,8 @@ export class Scene {
 		
 		if(this.charCount<=0){
 
+			this.e.s.p("woosh")
+
 			console.log("prev char")
 	
 			gsap.to(this.playerCont.rotation, { y: this.playerCont.rotation.y-this.e.u.ca(120), duration: .25, ease: "expo.out"});
@@ -1691,11 +1822,31 @@ export class Scene {
 
 	confirmChar(){
 
+		console.log("confirm")
+
+		this.e.s.p("click")
+
 		this.gameAction="char selected"
 
 	}
 
 	update() {
+
+		this.runLoop.volume(this.runVolume);
+
+		if(this.e.shirtMat!==undefined){
+
+			if(this.switchShirtMatCount>0){
+				this.switchShirtMatCount-=this.e.dt
+				this.e.shirtMat.map = this.e.blueShirt
+				this.uniformColor2 = new THREE.Color( "#00fff6" );
+			}else{
+				
+				this.e.shirtMat.map = this.e.blackShirt
+				this.uniformColor2 = new THREE.Color( "#111111" );
+			}
+	
+		}
 
 		if(this.charCount>0){
 			this.charCount-=this.e.dt;
@@ -1794,6 +1945,8 @@ export class Scene {
 
 		// GAME ACTIONS
 
+		// console.log(this.gameAction)
+
 		if(this.gameAction===undefined){
 
 			this.gameAction="reset";
@@ -1816,8 +1969,17 @@ export class Scene {
 			this.playerNum = 1;
 	
 			this.positionPlayersForSplash()
-			this.gameAction="splash"
+
+			if(this.e.isLoadingOnMobile===true && this.e.mobileGameNumber===0){
+
+				this.gameAction="load result"
 	
+			}else{
+
+				this.gameAction="splash"
+	
+			}
+
 		}else if(this.gameAction==="splash"){
 
 			// if(this.e.ui.insAction==="splash"){
@@ -1851,7 +2013,15 @@ export class Scene {
 			// this.camContY.rotation.y=0
 			gsap.to(this.e.camContX.rotation, { x: this.e.u.ca(-7.5), duration: this.transSpeed*6, ease: "expo.inOut"});
 
-			this.gameAction="char select wait"
+			this.gameAction="char select wait 1"
+
+		}else if(this.gameAction==="char select wait 1"){
+
+			this.gameCount+=this.e.dt;
+			if(this.gameCount>1){
+				this.gameAction="char select wait"
+				this.gameCount=0;
+			}
 
 		}else if(this.gameAction==="char select wait"){
 
@@ -1861,29 +2031,52 @@ export class Scene {
 
 			document.getElementById("charContainer").style.pointerEvents="none"
 
-			gsap.to(this.e.ui.insOb, { charAlpha: 0, duration: 0, ease: "sine.out"});
+			// gsap.to(this.e.ui.insOb, { charAlpha: 0, duration: 0, ease: "sine.out"});
 			// gsap.to(this.e.ui.insOb, { blackAlpha: 1, duration: 0, ease: "sine.out"});
 
 			this.e.ui.insOb.charAlpha = 0;
-			this.e.ui.insOb.blackAlpha = .3
+			// this.e.ui.insOb.blackAlpha = .3
 
-			this.gameAction="char fading in"
+			// this.gameAction="char fading in"
+			this.gameAction="char set"
 
-		}else if(this.gameAction==="char fading in"){
+		// }else if(this.gameAction==="char fading in"){
 
-			this.gameCount+=this.e.dt;
-			if(this.gameCount>0){
+		// 	this.gameCount+=this.e.dt;
+		// 	if(this.gameCount>0){
 
-				this.gameCount=0;
-				this.gameAction="char faded in"
+		// 		this.gameCount=0;
+		// 		this.gameAction="char faded in"
 
+		// 	}
+
+		}else if(this.gameAction==="char set"){
+
+			document.getElementById("charContainer").style.pointerEvents="none"
+
+			this.e.ui.labelOffset.alpha1=0;
+			this.e.ui.labelOffset.alpha2=0;
+			this.e.ui.labelOffset.alpha3=0;
+
+			console.log("CHAR SET")
+
+			gsap.killTweensOf(this.e.camContY.rotation);
+			gsap.killTweensOf(this.e.camContY.position);
+			gsap.killTweensOf(this.e.camContX.rotation);
+			gsap.killTweensOf(this.e.camera.position);
+
+
+			if(this.e.loader.loadPlayer1===true){
+				this.e.player1.position.x=0; this.e.player1.position.y=0; this.e.player1.position.z=0; this.e.player1.rotation.y=0;
+			}
+			
+			if(this.e.loader.loadPlayer2===true){
+				this.e.player2.position.x=0; this.e.player2.position.y=0; this.e.player2.position.z=0; this.e.player2.rotation.y=0;
 			}
 
-		}else if(this.gameAction==="char faded in"){
-
-			this.e.player1.position.x=0; this.e.player1.position.y=0; this.e.player1.position.z=0; this.e.player1.rotation.y=0;
-			this.e.player2.position.x=0; this.e.player2.position.y=0; this.e.player2.position.z=0; this.e.player2.rotation.y=0;
-			this.e.player3.position.x=0; this.e.player3.position.y=0; this.e.player3.position.z=0; this.e.player3.rotation.y=0;
+			if(this.e.loader.loadPlayer3===true){
+				this.e.player3.position.x=0; this.e.player3.position.y=0; this.e.player3.position.z=0; this.e.player3.rotation.y=0;
+			}
 
 			this.playerCont.rotation.y = this.e.u.ca(0);
 			this.playerCont.position.z = this.fieldStart;
@@ -1899,7 +2092,6 @@ export class Scene {
             this.setCamPosition = false;
 
 			this.e.ui.insOb.blackAlpha = 0
-
             this.e.camContY.rotation.y = this.e.u.ca(180)
             this.e.camContX.rotation.x = this.e.u.ca(-8)
 			
@@ -1919,30 +2111,69 @@ export class Scene {
 
 			}
 
+			console.log("LOAD "+this.playerNum)
+			console.log("LOAD2 "+this.e.char)
+
+			if(this.e.char!==null){
+				this.playerNum= Number(this.e.char) 
+			}
+
 			if(this.playerNum===1){
-				this.e.player2.position.y=-20;
-				this.e.player3.position.y=-20;
+				if(this.e.loader.loadPlayer2===true){
+					this.e.player2.position.y=-20;
+				}
+				if(this.e.loader.loadPlayer3===true){
+					this.e.player3.position.y=-20;
+				}
 				this.loadPlayer(1);
 			}else if(this.playerNum===2){
-				this.e.player1.position.y=-20;
-				this.e.player3.position.y=-20;
+				if(this.e.loader.loadPlayer1===true){
+					this.e.player1.position.y=-20;
+				}
+				if(this.e.loader.loadPlayer3===true){
+					this.e.player3.position.y=-20;
+				}
 				this.loadPlayer(2);
 			}else if(this.playerNum===3){
-				this.e.player1.position.y=-20;
-				this.e.player2.position.y=-20;
+				// console.log("333")
+				if(this.e.loader.loadPlayer1===true){
+					this.e.player1.position.y=-20;
+				}
+				if(this.e.loader.loadPlayer2===true){
+					this.e.player2.position.y=-20;
+				}
 				this.loadPlayer(3);
 			}
 
-			this.e.ui.highlightReset()
+			// this.e.ui.highlightReset()
 
 			this.gameAction="instructions"
-			this.e.ui.insAction="ins1"
+			// this.e.ui.insAction="ins1"
+			this.e.ui.insAction="ins1 wait"
+
+			
+			// this.shadowMapMult=.125;
+			// this.dl_shad.shadow.mapSize.width = Math.round(4096*this.shadowMapMult);
+			// this.dl_shad.shadow.mapSize.height = Math.round(4096*this.shadowMapMult);
+			this.e.sSize = 55;
+			this.dl_shad.shadow.camera.near = 0.1;
+			this.dl_shad.shadow.camera.far = 380;
+			this.dl_shad.shadow.camera.left = -this.e.sSize;
+			this.dl_shad.shadow.camera.right = this.e.sSize;
+			this.dl_shad.shadow.camera.top = this.e.sSize;
+			this.dl_shad.shadow.camera.bottom = -this.e.sSize;
+			this.dl_shad.shadow.radius = 2;
+
 
 			// this.e.ui.insAction="fade ins1"
 
 		}else if(this.gameAction==="splash"){
 
 		}else if(this.gameAction==="game start"){
+
+            this.e.camContY.rotation.y = this.e.u.ca(180)
+            this.e.camContX.rotation.x = this.e.u.ca(-8)
+			this.e.camContY.position.y = 3.25;
 
 			document.getElementById("gameScore").style.opacity=1;
 
@@ -1963,6 +2194,7 @@ export class Scene {
 			if(this.playerCont.position.z > this.fieldEnd-15){
 
 				this.gameAction="set move to center";
+				this.usePlayerRot=false;
 
 			}
 
@@ -1981,6 +2213,8 @@ export class Scene {
 			gsap.to(this.e.camContX.rotation, { x: this.e.u.ca(-8), duration: this.et, ease: "expo.out"});
 
 			gsap.to(this.playerCont.position, { x: 0, duration: this.et, ease: "sine.inOut"});
+
+			gsap.killTweensOf(this.playerCont.rotation);
 
 			if( this.playerCont.position.x < -10){
 				gsap.to(this.playerCont.rotation, { y: this.e.u.ca(45), duration: this.et/2, ease: "sine.out"});
@@ -2013,10 +2247,15 @@ export class Scene {
 
 			}
 
-			console.log(">>>>>"+this.ballAction);
+			// console.log(">>>>>"+this.ballAction);
 
 		}else if(this.gameAction==="set shoot"){
 			
+			this.e.s.p("readyChime")
+
+            this.e.ui.faderOb.opacity = .5;
+            gsap.to(this.e.ui.faderOb, { opacity: 0, duration: .5, ease: "linear"});
+            
 			this.ballTween.pause();
 			gsap.to(this.ballCont.position, { z: this.playerCont.position.z + 2, duration: .3, ease: "sine.out"});
 
@@ -2059,6 +2298,8 @@ export class Scene {
 				// console.log(this.currentTarget);
 
 				this.gameCount=0;
+
+				this.e.s.p("targetSwitch")
 
 				if(this.targetDirection==="up"){
 
@@ -2160,8 +2401,10 @@ export class Scene {
 			this.pickedTargetLoc = new THREE.Vector3();
 			this.pickedTarget.getWorldPosition(this.pickedTargetLoc);
 
-			this.uniformFlash()
-
+			if(this.playerNum!==2){
+				this.uniformFlash()
+			}
+			
 			this.ballFlyTime=.4;
 
 			gsap.to(this.ballCont2.position, { x: this.ballCont.position.x+1, y: this.ballCont.position.y+1, duration: this.ballFlyTime/2, delay:.15, ease: "sine.out"});
@@ -2178,7 +2421,15 @@ export class Scene {
 
 			this.playerCont.rotation.y=0
 
+			this.makeKickSound=true;
+
 		}else if(this.gameAction==="shooting"){
+
+			if(this.makeKickSound===true && this.gameCount>.15){
+
+				this.e.s.p("kick")
+				this.makeKickSound=false;
+			}
 
 			this.strikeActionPauseCount+=this.e.dt;
 
@@ -2196,6 +2447,8 @@ export class Scene {
 			// ball has hit target
 
 			// rotate the sign accordingly
+
+			this.e.s.p("metalHit")
 
 			if(this.pickedTarget.num===1 || this.pickedTarget.num===4 || this.pickedTarget.num===7){
 				gsap.to(this.pickedTarget.cont.rotation, { x: this.e.u.ca(90), duration: .1, ease: "sine.out"});
@@ -2235,13 +2488,14 @@ export class Scene {
 			this.gameAction="has hit target"
 
 			if(this.pickedTarget.num===1 || this.pickedTarget.num===7){
-				// this.getScore(3000);
 				this.score*=3;
-			}else if(this.pickedTarget.num===2 || this.pickedTarget.num===4 || this.pickedTarget.num===5){
+				this.myMult=3;
+			}else if(this.pickedTarget.num===2 || this.pickedTarget.num===4 || this.pickedTarget.num===6){
 				this.score*=2;
-				// this.getScore(2000);
+				this.myMult=2;
 			}else if(this.pickedTarget.num===3 || this.pickedTarget.num===5){
-				// this.getScore(1000);
+				this.myMult=1;
+				//
 			}
 
 		}else if(this.gameAction==="has hit target"){
@@ -2254,76 +2508,428 @@ export class Scene {
 
 				this.properFade(this.strikeAction, this.idleAction, .2)
 
+				this.e.s.p("cheer")
+
 				this.gameAction="wait before victory"
 
 			}
 
 		}else if(this.gameAction==="wait before victory"){
 
+			// this.e.camContY.rotation.y-=this.e.dt;
+
 			this.gameCount+=this.e.dt;
-			if(this.gameCount>2){
-
-				// for(var i=0; i<this.targets.length; i++){
-				// 	this.targets[i].cont.rotation.x=this.targets[i].startRot;
-				// }
-
-				// this.ballCont.position.x=0;
-
-				if(this.playerNum===1){
-					document.getElementById('rmImage').style.backgroundImage = "url('src/img/resultBack1.png')";
-				}else if(this.playerNum===2){
-					document.getElementById('rmImage').style.backgroundImage = "url('src/img/resultBack2.png')";
-				}else if(this.playerNum===3){
-					document.getElementById('rmImage').style.backgroundImage = "url('src/img/resultBack3.png')";
-				}
+			if(this.gameCount>.5){
 
 				this.properFade(this.idleAction, this.victoryAction, .2)
 
+				this.victoryToIdle=false
 				this.gameAction = "show victory"
 
 			}
 
 		}else if(this.gameAction==="show victory"){
 
-			this.gameCount+=this.e.dt;
+			this.e.camContY.rotation.y-=this.e.dt*.8;
 
-			if(this.gameCount>5.5){
+			if(this.gameCount>4 && this.victoryToIdle===false){
 
-				this.rmOpacity = 0;
-				this.gameAction="fade in result menu"
-
-				document.getElementById("scoreDisplay").innerHTML = "1000 pts";
-				this.date=this.getDate();
-				this.time=this.getTime();
-				document.getElementById("dateAndScore").innerHTML = "Date:<br>"+this.date+"<br><br>Time:<br>"+this.time+"<br><br>Score:<br>"+this.score;
-
-				document.getElementById('resultDiv').style.pointerEvents = 'auto';
-
+				this.victoryToIdle=true
+				this.properFade(this.victoryAction, this.idleAction, .2)
+				// this.victoryAction.stop();
 
 			}
 
-		}else if(this.gameAction==="fade in result menu"){
+			this.gameCount+=this.e.dt;
 
-			this.rmOpacity+=this.e.dt*3;
+			if(this.gameCount>4){
 
-			document.getElementById("resultDiv").style.opacity = this.rmOpacity+"";
+				this.e.s.p("win")
 
-			if(this.rmOpacity>=1){
+				this.gameAction="load result"
+	
+			}
+
+		}else if(this.gameAction==="load result"){
+
+			//--------------------------------------------------------------------------------------------------------------
+
+			// --- if loading from mobile
+			
+			if(this.e.version==="m"){
+
+				this.e.skipCharSelect=true;
+
+				if(this.e.char!==undefined && this.e.char!==null){
+					console.log("char "+this.e.char)
+					this.playerNum=Number(this.e.char);
+				}
+				
+				this.finalScore=Number(this.e.score);
+
+				if(this.e.date!==null){
+
+					this.date=this.fixURLString(this.e.date);
+					this.time=this.fixURLString(this.e.time);
+	
+				}
+
+				if(this.e.mobileGameNumber===0){
+
+					this.e.ui.insOb.splashAlpha=0;
+
+					document.getElementById("rmTitle").innerHTML = "Want your prize now?";
+					document.getElementById("rmt1").innerHTML = 'Show this at the Pay & Collect Zone to redeem a prize. ';
+					document.getElementById("rmt2").innerHTML = 'Or, play again for just 50 MyMcDonald’s Rewards points.';
+
+					document.getElementById('scoreDisplay').innerHTML = "1000 pts";
+
+					document.getElementById("playAgainBut").style.display = "inline";
+
+					document.getElementById("finalScore").innerHTML = this.finalScore;
+
+					this.mymdPoints=1000;
+
+				}else if(this.e.mobileGameNumber===1){
+
+					if(this.e.char===null){
+						document.getElementById("rmTitle").innerHTML = "Nice! Go for the prize.";
+					}else{
+						document.getElementById("rmTitle").innerHTML = "Want your prize now?";
+					}
+					
+					document.getElementById("rmt1").innerHTML = 'Show this at the Pay & Collect Zone to redeem a prize. ';
+					document.getElementById("rmt2").innerHTML = 'Or, play again for just 50 MyMcDonald’s Rewards points.';
+
+					document.getElementById('scoreDisplay').innerHTML = "950 pts";
+
+					document.getElementById("playAgainBut").style.display = "inline";
+
+					document.getElementById("finalScore").innerHTML = 0;
+
+					this.mymdPoints=950;
+
+				}else if(this.e.mobileGameNumber===2){
+
+					document.getElementById("rmTitle").innerHTML = "Goooooaaaaaaaaaaall!";
+					document.getElementById("rmt1").innerHTML = 'Show this at the Pay & Collect Zone to redeem a prize. ';
+					document.getElementById("rmt2").innerHTML = 'Or, play again for just 50 MyMcDonald’s Rewards points.';
+
+					document.getElementById('scoreDisplay').innerHTML = "900 pts";
+
+					document.getElementById("playAgainBut").style.display = "inline";
+
+					document.getElementById("finalScore").innerHTML = 0;
+
+					this.mymdPoints=900;
+
+				}else if(this.e.mobileGameNumber>=3){
+
+					document.getElementById("rmTitle").innerHTML = "Congratulations!";
+					document.getElementById("rmt1").innerHTML = 'Show this at the Pay & Collect Zone to redeem a prize. ';
+					document.getElementById("rmt2").innerHTML = 'Play daily for your chance to win a Gold or Platinum Ticket, thru 11 April';
+
+					document.getElementById('scoreDisplay').innerHTML = "850 pts";
+
+					document.getElementById("playAgainBut").style.display = "none";
+
+					document.getElementById("finalScore").innerHTML = 0;
+
+					this.mymdPoints=850;
+
+				}
+
+				document.getElementById("resultDate").innerHTML = this.e.date;
+				document.getElementById("resultTime").innerHTML = this.e.time;
+				
+				document.getElementById("qrCode").style.display = "none";
+				document.getElementById("rmText").style.width = "100%";
+				document.getElementById("rmText").style.fontSize = "2.25vh";
+
+				if(this.e.mobile===false){
+					document.getElementById("rmText").style.fontSize = "3.25vh";
+				}
+				
+
+			}else{
+
+				document.getElementById("playAgainBut").style.display="none"
+
+				this.date=this.getDate();
+				this.time=this.getTime();
+
+				// if ipad, load the qr url
+					
+				this.urlString = "https://podapp.com/t5/mcdonalds48/game/index.html?";
+
+				this.urlString+="v=m"
+				this.urlString+="&"
+				this.urlString+="char="+this.playerNum;
+				this.urlString+="&"
+				this.urlString+="score="+this.score;
+				this.urlString+="&"
+				this.urlString+="date="+this.makeURLString(this.date);
+				this.urlString+="&"
+				this.urlString+="time="+this.makeURLString(this.time);
+
+				console.log(this.urlString)
+
+				// --- set the final score
+
+				this.finalScore=Number(this.score);
+				document.getElementById("finalScore").innerHTML = 0;
+
+				document.getElementById("rmTitle").innerHTML = "Nice! Go for the prize.";
+				document.getElementById("rmt1").innerHTML = 'Scan the QR code to redeem a prize now ';
+				document.getElementById("rmt2").innerHTML = 'or to play again on your mobile for only 50 MyMcDonald’s Rewards points.';
+				document.getElementById("rmText").style.fontSize = "2.25vh"
+				
+				// --- set mcd points
+
+				document.getElementById('scoreDisplay').innerHTML = "1000 pts";
+
+				//
+
+				var qr = new QRCode(document.getElementById("qrCode"), {
+					text: this.urlString,
+					width: Math.round(window.innerHeight*.12),
+					height: Math.round(window.innerHeight*.12), 
+					colorDark: "#000000",
+					colorLight: "#ffffff", 
+					correctLevel: QRCode.CorrectLevel.H 
+				});
+
+				this.mymdPoints=1000;
+
+			}
+
+			if(this.e.mobileGameNumber!==0){
+
+				// --- tally
+
+				console.log("tally "+this.score)
+
+				gsap.to(this.tally, { score: this.score, duration: 4, delay: 1, ease: "linear"});
+
+			}
+
+			//--------------------------------------------------------------------------------------------------------------
+
+			// --- set the date and time
+
+			if(this.date===undefined){
+				this.date=this.getDate();
+			}
+
+			if(this.time===undefined){
+				this.time=this.getTime();
+			}
+
+			document.getElementById("resultDate").innerHTML = this.date;
+			document.getElementById("resultTime").innerHTML = this.time;
+
+			
+			//--------------------------------------------------------------------------------------------------------------
+
+			// --- white fade in
+
+			this.e.ui.faderOb.opacity = 1;
+			gsap.to(this.e.ui.faderOb, { opacity: 0, duration: 1.5, ease: "linear"});
+
+			// --- make result div visible and clickable
+			
+			document.getElementById("resultDiv").style.opacity = 1;
+			document.getElementById('resultDiv').style.pointerEvents = 'auto';
+
+			// --- set the player graphic visibility
+
+			console.log("player num "+this.playerNum)
+
+			document.getElementById('resPlayer1').style.opacity=0;
+			document.getElementById('resPlayer2').style.opacity=0;
+			document.getElementById('resPlayer3').style.opacity=0;
+
+			if(this.playerNum===1){
+				document.getElementById('resPlayer1').style.opacity=1;
+			}else if(this.playerNum===2){
+				document.getElementById('resPlayer2').style.opacity=1;
+			}else if(this.playerNum===3){
+				document.getElementById('resPlayer3').style.opacity=1;
+			}
+
+			// --- position background scene
+
+			this.lerpCamera=false;
+
+			this.stadium.scale.z = 5;
+			this.field.scale.z = 3;
+			
+			this.playerCont.position.y=-10;
+			this.playerCont.position.x=10;
+			this.e.camContY.position.z=-10;
+			this.e.camContY.rotation.y=this.e.u.ca(-45);
+			this.e.camContX.rotation.x=this.e.u.ca(-8);
+
+			for(var i=0; i<this.pellets.length; i++){
+	
+				this.pellets[i].position.y=-10;
+	
+			}
+
+			// --- hide meter
+
+			document.getElementById('meterDiv').style.display = 'none';
+
+			// --- hide food buttons
+
+			this.e.ui.foodSizer1.opacity = 0;
+			this.e.ui.foodSizer2.opacity = 0;
+			this.e.ui.foodSizer3.opacity = 0;
+
+			this.e.ui.labelOffset.alpha1 = 0;
+			this.e.ui.labelOffset.alpha2 = 0;
+			this.e.ui.labelOffset.alpha3 = 0;
+
+			// --- prepare for next action
+
+			this.bingCount=0;
+			this.scoreIsTallied=false
+
+			this.gameCount=0;
+			
+			this.e.ui.insAction=""
+
+
+			if(this.e.mobileGameNumber!==0){
 
 				this.gameAction="show result menu"
-				this.rmOpacity=0;
+
+				document.getElementById("playAgainBut").style.opacity=".5"
+				document.getElementById("playAgainBut").style.pointerEvents="none"
+
+			}else{
+
+				this.gameAction="start mobile"
 
 			}
 
 		}else if(this.gameAction==="show result menu"){
 
+			this.gameCount+=this.e.dt;
 
+			if(this.gameCount>1 && this.scoreIsTallied===false){
+
+				// if(this.e.isLoadingOnMobile===true){
+				if(this.e.mobileGameNumber===0){
+
+					// --- just set it if loading in
+
+					// document.getElementById("finalScore").innerHTML = this.finalScore;
+
+				}else{
+					
+					// --- use tally if not
+
+					this.bingCount+=this.e.dt;
+
+					if(this.bingCount>.2){
+
+						this.bingCount=0;
+
+						document.getElementById("finalScore").innerHTML = Math.round(this.tally.score);
+
+						if(this.gameCount>=4){
+
+							document.getElementById("finalScore").innerHTML = this.score;
+
+							this.scoreIsTallied=true
+							this.e.s.p("start");
+							this.e.ui.faderOb.opacity = .75;
+							gsap.to(this.e.ui.faderOb, { opacity: 0, duration: 1.5, ease: "linear"});
+								
+							document.getElementById("playAgainBut").style.opacity="1"
+							document.getElementById("playAgainBut").style.pointerEvents="auto"
+
+						}else{
+
+							this.e.s.p("tally");
+
+						}
+
+					}	
+					
+				}
+
+			}
+
+		}else if(this.gameAction==="start mobile"){
+
+			document.getElementById("playAgainBut").style.opacity="1"
+			document.getElementById("playAgainBut").style.pointerEvents="auto"
+
+		}else if(this.gameAction==="play again"){
+
+			// console.log("play again")
+
+			document.getElementById("playAgainBut").style.opacity=".5"
+			document.getElementById("playAgainBut").style.pointerEvents="none"
+
+			this.e.s.p("win");
+			this.gameCount=0;
+			this.bingCount=0;
+			this.gameAction="subtract mcd"
+
+		}else if(this.gameAction==="subtract mcd"){
+
+			this.gameCount+=this.e.dt;
+			if(this.gameCount>.3){
+
+				this.e.s.p("tally2");
+				this.gameCount=0;
+				this.bingCount+=1;
+
+				this.mymdPoints-=10;
+				document.getElementById('scoreDisplay').innerHTML = this.mymdPoints+" pts";
+
+				if(this.bingCount>=5){
+					this.bingCount=0;
+					this.gameAction="wait before reset2"
+				}
+
+			}
+
+		}else if(this.gameAction==="wait before reset2"){
+
+			this.gameCount+=this.e.dt;
+			if(this.gameCount>1){
+				this.gameAction="reset2"
+			}
+
+		}else if(this.gameAction==="reset2"){
+
+			this.e.ui.insAction="ins1"
+
+			// document.getElementById("playAgainBut").style.opacity="1"
+			// document.getElementById("playAgainBut").style.pointerEvents="auto"
+
+			this.e.ui.faderOb.opacity = 1;
+			gsap.to(this.e.ui.faderOb, { opacity: 0, duration: 1.5, ease: "linear"});
+
+			this.e.s.p("zoom");
+
+			this.gameAction="";
+			this.resetGame();
 
 		}
 
-		// if (this.playerCont.position.z > this.fieldEnd) {
-		// 	this.resetBoard();
-		// }
+		// --- reset after time
+
+		if(this.gameCount>120 && this.e.mobileGameNumber<3){
+
+			this.gameCount=0;
+			this.resetGame();
+
+		}
 
 		//--------------------------------------------------------------------------------------------------------------
 
@@ -2363,9 +2969,15 @@ export class Scene {
 		if (this.e.myPlayerModel!==null){
 			if (this.e.myPlayerModel.animMixer) {
 				if(this.aniAction==="go"){
-					this.e.player1.animMixer.update(this.e.dt);
-					this.e.player2.animMixer.update(this.e.dt);
-					this.e.player3.animMixer.update(this.e.dt);
+					if(this.e.loader.loadPlayer1===true){
+						this.e.player1.animMixer.update(this.e.dt);
+					}
+					if(this.e.loader.loadPlayer2===true){
+						this.e.player2.animMixer.update(this.e.dt);
+					}
+					if(this.e.loader.loadPlayer3===true){
+						this.e.player3.animMixer.update(this.e.dt);
+					}
 				}
 			}
 		}
@@ -2397,6 +3009,14 @@ export class Scene {
 
 			// crash intersections
 
+			if(this.playerCrashCount===undefined){
+				this.playerCrashCount=0;
+			}
+
+			if(this.playerCrashCount>0){
+				this.playerCrashCount-=this.e.dt;
+			}
+
 			this.hasHit=false;
 
 			if(this.playerCont.position.z>this.fieldStart+30){
@@ -2408,12 +3028,37 @@ export class Scene {
 		
 					if (box1.intersectsBox(box2) === true) {
 
-						if(this.playerAction==="move"){
+						if(this.playerAction==="move" && this.playerCrashCount<=0){
+							this.playerCrashCount=1.5
 							this.getScore(-250)
 							this.playerAction="crash";
+							this.e.s.p("cone")
 						}
 						
 						console.log("HIT "+this.crashers[i].name)
+						this.hasHit=true;
+						
+					}
+
+				}
+
+				for(var i=0; i<this.crashersDummy.length; i++){
+
+					const box1 = new THREE.Box3().setFromObject(this.playerHit2);
+					const box2 = new THREE.Box3().setFromObject(this.crashersDummy[i]);
+		
+					if (box1.intersectsBox(box2) === true) {
+
+						if(this.playerAction==="move" && this.playerCrashCount<=0){
+							this.getScore(-500)
+
+							this.playerAction="crashBack"
+							this.playerCrashCount=1.5
+
+							this.e.ui.highlightReset()
+						}
+						
+						console.log("HIT "+this.crashersDummy[i].name)
 						this.hasHit=true;
 						
 					}
@@ -2464,8 +3109,12 @@ export class Scene {
 
 			// rotation
 
-			this.playerCont.rotation.y = this.e.u.ca(this.xspeed * 2);
-
+			if(this.usePlayerRot===true){
+				this.playerCont.rotation.y = this.e.u.ca(this.xspeed * 2);
+			}else{
+				this.playerCont.rotation.y *= .95
+			}
+			
 			//--------------------------------------------------------------------------------------------------------------
 
 			// xspeed
@@ -2482,6 +3131,8 @@ export class Scene {
 			//--------------------------------------------------------------------------------------------------------
 
 		} else if (this.playerAction === "crashBack") {
+
+			this.e.s.p("metalHit")
 
 			this.properFade(this.runningAction, this.stumbleBackAction, .2, 1.5, true)
 			this.playerCount = 0;
@@ -2541,7 +3192,7 @@ export class Scene {
 
 			this.playerCount+=this.e.dt;
 
-			if(this.playerCount>.8){
+			if(this.playerCount>.4){
 
 				this.properFade(this.stumbleAction, this.runningAction, .4)
 				this.playerAction = "move"
@@ -2560,6 +3211,8 @@ export class Scene {
 			//--------------------------------------------------------------------------------------------------------
 
 		} else if (this.playerAction === "fly set") {
+
+			this.e.s.p("zoom")
 
 			this.properFade(this.runningAction, this.rushAction, .4)
 
@@ -2704,15 +3357,54 @@ export class Scene {
 
 	}
 
+	makeURLString(str){
+		return str.replace(/ /g, "%20");
+	}
+
+	fixURLString(str){
+		return str.replace(/%20/g, " ");
+	}
+
 	getDate() {
 		
 		const currentDate = new Date();
 	
 		const day = String(currentDate.getDate()).padStart(2, '0');
-		const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+		var month = String(currentDate.getMonth() + 1).padStart(2, '0');
 		const year = String(currentDate.getFullYear()).slice(-2);
+
+		var myMonth = "January"
+
+		// console.log("my month "+month)
+
+		if(month==="01"){
+			myMonth = "January"
+		}else if(month==="02"){
+			myMonth = "February"
+		}else if(month==="03"){
+			myMonth = "March"
+		}else if(month==="04"){
+			myMonth = "April"
+		}else if(month==="05"){
+			myMonth = "May"
+		}else if(month==="06"){
+			myMonth = "June"
+		}else if(month==="07"){
+			myMonth = "July"
+		}else if(month==="08"){
+			myMonth = "August"
+		}else if(month==="09"){
+			myMonth = "September"
+		}else if(month==="10"){
+			myMonth = "October"
+		}else if(month==="11"){
+			myMonth = "November"
+		}else if(month==="12"){
+			myMonth = "December"
+		}
 	
-		return `${month}/${day}/${year}`;
+		// return `${myMonth} ${day}, 20${year}`;
+		return `${day} ${myMonth}`;
 
 	}
 
@@ -2728,6 +3420,7 @@ export class Scene {
 		this.hours = this.hours % 12 || 12;
 
 		return `${this.hours}:${minutes} ${meridiem}`;
+		// return `${this.hours}:${minutes}`;
 
 	}
 
@@ -2746,30 +3439,117 @@ export class Scene {
 
 	playerSideToSide(){
 
-		if (this.e.mobile === true) {
+		if(this.e.controlType==="drag"){
 
-			if (this.e.input.ongoingTouches.length === 0) {
-				this.xspeed *= 0.9;
-			} else if (
-				this.e.input.ongoingTouches[0].clientX >
-				window.innerWidth / 2
-			) {
-				this.xspeed -= this.e.dt * this.speedIncrease;
-			} else if (
-				this.e.input.ongoingTouches[0].clientX <
-				window.innerWidth / 2
-			) {
-				this.xspeed += this.e.dt * this.speedIncrease;
-			}
+			// if (this.e.mobile === true) {
 
-		} else {
+				if (this.e.input.ongoingTouches.length === 0) {
 
-			if (this.e.input.keyRight === true) {
-				this.xspeed -= this.e.dt * this.speedIncrease;
-			} else if (this.e.input.keyLeft === true) {
-				this.xspeed += this.e.dt * this.speedIncrease;
+					this.xspeed *= 0.9;
+
+				} else if ( this.e.touch.x - this.e.mouseDown.x < 0 ) {
+
+					if( this.e.touch.y<window.innerHeight-100 ){
+						this.xspeed += this.e.dt * this.speedIncrease;
+					}
+					
+				} else if ( this.e.touch.x - this.e.mouseDown.x > 0 ) {
+
+					if( this.e.touch.y<window.innerHeight-100 ){
+						this.xspeed -= this.e.dt * this.speedIncrease;
+					}
+
+				}
+
+			// } else {
+
+				// if (this.e.mouseIsDown === false) {
+
+				// 	this.xspeed *= 0.9;
+
+				// } else if ( this.e.mouse.x - this.e.mouseDown.x < -20 ) {
+
+				// 	this.xspeed += this.e.dt * this.speedIncrease;
+
+				// } else if ( this.e.mouse.x - this.e.mouseDown.x > 20 ) {
+
+				// 	this.xspeed -= this.e.dt * this.speedIncrease;
+
+				// }
+
+				// if (this.e.input.keyRight === true) {
+
+				// 	this.xspeed -= this.e.dt * this.speedIncrease;
+
+				// } else if (this.e.input.keyLeft === true) {
+
+				// 	this.xspeed += this.e.dt * this.speedIncrease;
+
+				// } else {
+
+				// 	this.xspeed *= 0.9;
+					
+				// }
+
+			// }
+
+
+		}else if(this.e.controlType==="side"){
+
+			if (this.e.mobile === true) {
+
+				if (this.e.input.ongoingTouches.length === 0) {
+
+					this.xspeed *= 0.9;
+
+				} else if (this.e.input.ongoingTouches[0].clientX > window.innerWidth / 2) {
+
+					if( this.e.touch.y<window.innerHeight-100 ){
+						this.xspeed -= this.e.dt * this.speedIncrease;
+					}
+					
+				} else if (this.e.input.ongoingTouches[0].clientX < window.innerWidth / 2) {
+
+					if( this.e.touch.y<window.innerHeight-100 ){
+						this.xspeed += this.e.dt * this.speedIncrease;
+					}
+
+				}
+
 			} else {
-				this.xspeed *= 0.9;
+
+				if (this.e.mouseIsDown === false) {
+
+					this.xspeed *= 0.9;
+
+				} else if ( this.e.mouse.x > window.innerWidth / 2 ) {
+
+					if( this.e.mouse.y<window.innerHeight-100 ){
+						this.xspeed -= this.e.dt * this.speedIncrease;
+					}
+
+				} else if ( this.e.mouse.x < window.innerWidth / 2 ) {
+
+					if( this.e.mouse.y<window.innerHeight-100 ){
+						this.xspeed += this.e.dt * this.speedIncrease;
+					}
+
+				}
+
+				// if (this.e.input.keyRight === true) {
+
+				// 	this.xspeed -= this.e.dt * this.speedIncrease;
+
+				// } else if (this.e.input.keyLeft === true) {
+
+				// 	this.xspeed += this.e.dt * this.speedIncrease;
+
+				// } else {
+
+				// 	this.xspeed *= 0.9;
+					
+				// }
+
 			}
 
 		}
@@ -2796,9 +3576,26 @@ export class Scene {
 
 	properFade(prev, next, time, timeScale, isCrashBack){
 
+		console.log(prev.name+" / "+next.name)
+
 		if(timeScale===undefined){
 
 			timeScale=1;
+
+		}
+
+		if(next===this.runningAction || next===this.spinningAction){
+
+			if(this.e.playSounds===true){
+				this.runVolume=.5
+			}else{
+				this.runVolume=0
+			}
+			
+
+		}else{
+			
+			this.runVolume=0
 
 		}
 
@@ -2819,6 +3616,8 @@ export class Scene {
 
 		prev.fadeOut( time );
 		next.fadeIn( time );
+
+		this.myCurrentAnimation=next.name;
 
 	}
 
@@ -2851,7 +3650,7 @@ export class Scene {
 				c1_S,
 				c1_L
 			);
-			this.skySphere.material.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
+			this.fieldLogo.material.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
 			// this.skinMaterial.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
 			// this.rig.material.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
 			// this.roofBarsInner.material.color.setHex( "0x"+this.hslToHex(c1_H,c1_S,c1_L) );
@@ -2883,9 +3682,9 @@ export class Scene {
 				c3_S,
 				c3_L
 			);
-			this.roofEdge.material.color.setHex(
-				"0x" + this.hslToHex(c3_H, c3_S, c3_L)
-			);
+			// this.roofEdge.material.color.setHex(
+			// 	"0x" + this.hslToHex(c3_H, c3_S, c3_L)
+			// );
 
 			// this.water.material.color.setHex( "0x"+this.hslToHex(c3_H,c3_S,c3_L) );
 
