@@ -2567,11 +2567,18 @@ export class Scene {
 				
 				this.finalScore=Number(this.e.score);
 
-				if(this.e.date!==null){
+				if(this.e.date!==null && this.e.mobileGameNumber===0){
 
+					console.log(">>>>stored time")
 					this.date=this.fixURLString(this.e.date);
 					this.time=this.fixURLString(this.e.time);
 	
+				}else{
+						
+					console.log(">>>>real time")
+					this.date=this.getDate();
+					this.time=this.getTime();
+
 				}
 
 				if(this.e.mobileGameNumber===0){
@@ -2655,6 +2662,7 @@ export class Scene {
 
 				document.getElementById("playAgainBut").style.display="none"
 
+				console.log(">>>>real time 2")
 				this.date=this.getDate();
 				this.time=this.getTime();
 
